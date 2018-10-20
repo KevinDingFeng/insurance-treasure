@@ -13,18 +13,19 @@
 	<br />
 	
 	<input type="button" value="获取登录用户信息" onclick="getInfo()"/>
-	
+	<input type="text" id="token" />
 	<script>
 
 	function login(){
 		$.ajax({
 			type: 'POST',
 			url: "http://localhost:4455/login",
-			data: {account : "Kevin", password : "35f52ebae9312418f2eae2d4eb13505d"},
+			data: {account : "Kevin", password : "911fcc1e37681a710e25007bbcc79284"},
 			success: function(res){
 				console.log(res);
 				if(res.code == 200){
 					console.log(res.data);
+					$("#token").val(res.data);
 				}else{
 					alert(res.data);
 				}
@@ -33,11 +34,13 @@
 	}
 	
 	function getInfo(){
+		var t = $("#token").val();
 		$.ajax({
+			beforeSend: function(request) {
+	            request.setRequestHeader("treasure_token",t);
+	         },
 			type: 'GET',
 			url: "http://localhost:4455/api/index",
-			headers: {treasure_token : "eyJhbGciOiJIUzUxMiJ9.eyJpZCI6MSwiZXhwIjoxNTM5OTE5NTgxLCJhY2NvdW50IjoiS2V2aW4ifQ.vtKBgu4941twu0L1BLnuEeuIAdCYsFs6rF73feKmf9iWDSyFrkJ_W3j_5SjauIW1X1BZDE1hUGzlN2Tmw35pBA"},
-			data: {},
 			success: function(res){
 				console.log(res);
 				if(res.code == 200){

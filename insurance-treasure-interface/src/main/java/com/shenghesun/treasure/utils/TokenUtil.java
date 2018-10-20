@@ -11,7 +11,7 @@ public class TokenUtil {
 	 * @return
 	 */
 	public static String create(Long userId, String account) {
-		return JWTUtil.create(userId, account, System.currentTimeMillis());
+		return JWTUtil.create(userId + "", account, System.currentTimeMillis());
 	}
 	
 	/**
@@ -34,7 +34,7 @@ public class TokenUtil {
 	}
 	
 	public static Long getLoginUserId(Map<String, Object> map) {
-		return (Long)map.get(JWTUtil.ID_KEY);
+		return Long.parseLong((String)map.get(JWTUtil.ID_KEY));
 	}
 
 	/**

@@ -2,7 +2,6 @@ package com.shenghesun.treasure.utils;
 
 import java.sql.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import com.shenghesun.treasure.config.CustomConfig;
@@ -26,7 +25,7 @@ public class JWTUtil {
 	 * @param generateTime 用户登录时间戳
 	 * @return
 	 */
-	public static String create(Long userId, String userAccount, Long generateTime) {
+	public static String create(String userId, String userAccount, Long generateTime) {
 		Map<String, Object> map = new HashMap<>();
 		// 可以把任何安全的数据放到map里面
 		map.put(ACCOUNT_KEY, userAccount);
@@ -49,13 +48,13 @@ public class JWTUtil {
 				Map<String, Object> body = Jwts.parser().setSigningKey(CustomConfig.SECRET).parseClaimsJws(token)
 						.getBody();
 				String userAccount = (String) (body.get(ACCOUNT_KEY));
-				printMap(body);
+//				printMap(body);
 				if (userAccount == null || userAccount.isEmpty()) {
 					resp.put("ERR_MSG", "用户名为空");
 					return resp;
 				}
 				resp.put(ACCOUNT_KEY, userAccount);
-				resp.put(ID_KEY, (Long) body.get(ID_KEY));
+				resp.put(ID_KEY, body.get(ID_KEY));
 				return resp;
 			} catch (SignatureException | MalformedJwtException e) {
 				//  handle exception
@@ -77,11 +76,11 @@ public class JWTUtil {
 		}
 	}
 
-	private static void printMap(Map<String, Object> body) {
+	/*private static void printMap(Map<String, Object> body) {
 		Iterator<String> it = body.keySet().iterator();
 		while (it.hasNext()) {
 			String key = it.next();
 			System.out.println("key = " + key + "; value = " + body.get(key));
 		}
-	}
+	}*/
 }

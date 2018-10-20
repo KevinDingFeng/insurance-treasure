@@ -45,7 +45,7 @@ public class SysPool extends BaseEntity {
 	/**
 	 * 备注
 	 */
-	@Column(nullable = false, length = 255)
+	@Column(nullable = true, length = 255)
 	private String remark;
 	/**
 	 * 是否已删除

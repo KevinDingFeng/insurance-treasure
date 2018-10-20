@@ -4,9 +4,9 @@ spring:
     cache:
         type: simple
     datasource:
-        url: jdbc:mysql://192.168.3.7:3306/treasure_dev?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT&&useSSL=false
+        url: jdbc:mysql://127.0.0.1:3306/treasure_dev?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT&&useSSL=false
         username: root
-        password: Root123!
+        password: 1234
         driver-class-name: com.mysql.jdbc.Driver
         type: com.alibaba.druid.pool.DruidDataSource
 
@@ -16,6 +16,6 @@ spring:
         hibernate:
             ddl-auto: update
     redis:
-        host: 47.99.134.58
+        host: 127.0.0.1
         port: 6379
         timeout: 0

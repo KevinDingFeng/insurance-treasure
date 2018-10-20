@@ -1,0 +1,3 @@
+insert into sys_pool(creation,last_modified,version,demo,internal,level,name,removed,sys_id) value(now(),now(),0,true,true,10,'盛禾阳光',false,'System');
+insert into sys_user(creation,last_modified,version,account,active,audited,cellphone_verified,email_verified,name,password,removed,salt,sys_id,sys_pool_id) 
+value(now(),now(),0,'Kevin',true,true,false,false,'任强','911fcc1e37681a710e25007bbcc79284',false,'amxcjksao','System',1);

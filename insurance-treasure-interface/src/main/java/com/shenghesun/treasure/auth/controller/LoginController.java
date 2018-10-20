@@ -9,10 +9,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
+import com.shenghesun.treasure.config.CustomConfig;
 import com.shenghesun.treasure.system.entity.SysUser;
 import com.shenghesun.treasure.system.service.SysUserService;
 import com.shenghesun.treasure.utils.JsonUtil;
 import com.shenghesun.treasure.utils.PasswordUtil;
+import com.shenghesun.treasure.utils.RedisUtil;
 import com.shenghesun.treasure.utils.TokenUtil;
 
 @RestController
@@ -20,6 +22,8 @@ public class LoginController {
 
 	@Autowired
 	private SysUserService sysUserService;
+	@Autowired
+	private RedisUtil redisUtil;
 
 	/**
 	 * 加密算法，接收登录名和明文的密码 如果登录名在数据库存在，则找到对应的盐值，完成对明文密码加密操作，把密文返回
@@ -63,13 +67,19 @@ public class LoginController {
 			}
 //			根据用户名和密码（密文）校验是否登录成功
 			return this.login(user.getPassword(), password)
-					? JsonUtil.getSuccessJSONObject(TokenUtil.create(user.getId(), user.getAccount()))
+					? this.getLoginToken(user.getId(), user.getAccount())
 					: JsonUtil.getFailJSONObject("用户名密码错误");
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("特殊错误");
 			return JsonUtil.getFailJSONObject("特殊错误");
 		}
+	}
+	
+	public JSONObject getLoginToken(Long loginUserId, String loginUserAccount) {
+		String token = TokenUtil.create(loginUserId, loginUserAccount);
+		redisUtil.set(token, loginUserAccount, CustomConfig.EXPIRE_TIME_SECOND);//TODO 缓存到 redis 中的　key 和　value 可以再调整
+		return JsonUtil.getSuccessJSONObject(token);
 	}
 
 	/**

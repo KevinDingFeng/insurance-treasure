@@ -35,6 +35,7 @@ public class CheckTokenFilter implements Filter{
 			throws IOException, ServletException {
 		if(request instanceof HttpServletRequest) {
 			String token = HttpHeaderUtil.getToken((HttpServletRequest) request);
+//			System.out.println("token = " + token);
 			if(StringUtils.isEmpty(token)) {
 				this.setReturnResponse((HttpServletResponse) response, "invalid token");
 				return;
