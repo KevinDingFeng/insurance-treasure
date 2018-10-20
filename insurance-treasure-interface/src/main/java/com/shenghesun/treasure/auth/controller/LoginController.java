@@ -17,7 +17,10 @@ import com.shenghesun.treasure.utils.PasswordUtil;
 import com.shenghesun.treasure.utils.RedisUtil;
 import com.shenghesun.treasure.utils.TokenUtil;
 
+import lombok.extern.slf4j.Slf4j;
+
 @RestController
+@Slf4j
 public class LoginController {
 
 	@Autowired
@@ -79,6 +82,7 @@ public class LoginController {
 	public JSONObject getLoginToken(Long loginUserId, String loginUserAccount) {
 		String token = TokenUtil.create(loginUserId, loginUserAccount);
 		redisUtil.set(token, loginUserAccount, CustomConfig.EXPIRE_TIME_SECOND);//TODO 缓存到 redis 中的　key 和　value 可以再调整
+		log.info("login " + loginUserId + " " + loginUserAccount);
 		return JsonUtil.getSuccessJSONObject(token);
 	}
 
