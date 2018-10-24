@@ -1,10 +1,14 @@
 package com.shenghesun.treasure.system.entity;
 
+import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -108,5 +112,11 @@ public class SysUser extends BaseEntity {
 	 */
 	@Column(nullable = true, length = 255)
 	private String openId;
+	
+	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@JoinTable(name = "sys_user_role", inverseJoinColumns = { @JoinColumn(name = "role_id") }, joinColumns = {
+			@JoinColumn(name = "user_id") })
+	private Set<SysRole> roles;
+	
 	
 }

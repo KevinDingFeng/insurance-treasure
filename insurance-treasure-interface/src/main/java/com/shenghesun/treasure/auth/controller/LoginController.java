@@ -69,9 +69,13 @@ public class LoginController {
 				return JsonUtil.getFailJSONObject("输入信息有误");
 			}
 //			根据用户名和密码（密文）校验是否登录成功
-			return this.login(user.getPassword(), password)
-					? this.getLoginToken(user.getId(), user.getAccount())
-					: JsonUtil.getFailJSONObject("用户名密码错误");
+			if(this.login(user.getPassword(), password)) {
+				//缓存用户的权限和角色
+				this.setRolesAndPerms(user.getId(), user.getRoles());
+				return this.getLoginToken(user.getId(), user.getAccount()); 
+			}else {
+				return JsonUtil.getFailJSONObject("用户名密码错误"); 
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("特殊错误");
@@ -81,7 +85,7 @@ public class LoginController {
 	
 	public JSONObject getLoginToken(Long loginUserId, String loginUserAccount) {
 		String token = TokenUtil.create(loginUserId, loginUserAccount);
-		redisUtil.set(token, loginUserAccount, CustomConfig.EXPIRE_TIME_SECOND);//TODO 缓存到 redis 中的　key 和　value 可以再调整
+		redisUtil.set(CustomConfig.REDIS_TOKEN_PREFIX + token, loginUserAccount, CustomConfig.EXPIRE_TIME_SECOND);//TODO 缓存到 redis 中的　key 和　value 可以再调整
 		log.info("login " + loginUserId + " " + loginUserAccount);
 		return JsonUtil.getSuccessJSONObject(token);
 	}

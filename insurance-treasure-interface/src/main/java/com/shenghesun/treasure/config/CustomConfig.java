@@ -14,6 +14,7 @@ import com.shenghesun.treasure.filter.CrossFilter;
 public class CustomConfig {
 	
 	public static final Long EXPIRE_TIME_SECOND = 1800L; //秒值
+	public static final String REDIS_TOKEN_PREFIX = "login_token:";
 	public static final String URL_PATTERNS = "/api/*";
 	
 	public static final String HASH_ALGORITHM_NAME = "md5";// 散列算法:这里使用MD5算法;;

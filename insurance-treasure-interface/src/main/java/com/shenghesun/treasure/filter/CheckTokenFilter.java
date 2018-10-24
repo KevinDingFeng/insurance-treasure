@@ -40,13 +40,13 @@ public class CheckTokenFilter implements Filter{
 				this.setReturnResponse((HttpServletResponse) response, "invalid token");
 				return;
 			}
-			String userInfoId = redisUtil.get(token);//TODO 根据业务需求，修改缓存的内容
+			String userInfoId = redisUtil.get(CustomConfig.REDIS_TOKEN_PREFIX + token);//TODO 根据业务需求，修改缓存的内容
 			if(StringUtils.isEmpty(userInfoId)) {
 				this.setReturnResponse((HttpServletResponse) response, "invalid token");
 				return;
 			}
 			//更新有效时长
-			redisUtil.set(token, userInfoId, CustomConfig.EXPIRE_TIME_SECOND);// 缓存token 到 redis ，使用配置中的时长
+			redisUtil.set(CustomConfig.REDIS_TOKEN_PREFIX + token, userInfoId, CustomConfig.EXPIRE_TIME_SECOND);// 缓存token 到 redis ，使用配置中的时长
 			chain.doFilter(request, response);
 		}else {
 			//
