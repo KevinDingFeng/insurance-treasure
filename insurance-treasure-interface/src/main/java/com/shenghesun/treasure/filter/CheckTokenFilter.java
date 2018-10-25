@@ -2,6 +2,7 @@ package com.shenghesun.treasure.filter;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Map;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -17,8 +18,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.alibaba.druid.util.StringUtils;
 import com.shenghesun.treasure.config.CustomConfig;
 import com.shenghesun.treasure.utils.HttpHeaderUtil;
+import com.shenghesun.treasure.utils.JWTUtil;
 import com.shenghesun.treasure.utils.JsonUtil;
 import com.shenghesun.treasure.utils.RedisUtil;
+import com.shenghesun.treasure.utils.TokenUtil;
 
 public class CheckTokenFilter implements Filter{
 	
@@ -35,12 +38,17 @@ public class CheckTokenFilter implements Filter{
 			throws IOException, ServletException {
 		if(request instanceof HttpServletRequest) {
 			String token = HttpHeaderUtil.getToken((HttpServletRequest) request);
-//			System.out.println("token = " + token);
 			if(StringUtils.isEmpty(token)) {
 				this.setReturnResponse((HttpServletResponse) response, "invalid token");
 				return;
 			}
-			String userInfoId = redisUtil.get(CustomConfig.REDIS_TOKEN_PREFIX + token);//TODO 根据业务需求，修改缓存的内容
+			Map<String, Object> userInfoMap = TokenUtil.decode(token);
+			if(userInfoMap.get(JWTUtil.ERR_MSG) != null) {
+				this.setReturnResponse((HttpServletResponse) response, "invalid token");
+				return;
+			}
+			String userInfoId = redisUtil.get(CustomConfig.REDIS_TOKEN_PREFIX + token);
+			//TODO 如果有必要，可以再加更严谨的校验方式，比如解析 token 获取到的数据和数据库进行匹配
 			if(StringUtils.isEmpty(userInfoId)) {
 				this.setReturnResponse((HttpServletResponse) response, "invalid token");
 				return;
@@ -49,7 +57,6 @@ public class CheckTokenFilter implements Filter{
 			redisUtil.set(CustomConfig.REDIS_TOKEN_PREFIX + token, userInfoId, CustomConfig.EXPIRE_TIME_SECOND);// 缓存token 到 redis ，使用配置中的时长
 			chain.doFilter(request, response);
 		}else {
-			//
 			return;
 		}
 	}

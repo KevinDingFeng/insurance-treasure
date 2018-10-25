@@ -9,13 +9,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
-import com.shenghesun.treasure.config.CustomConfig;
+import com.shenghesun.treasure.auth.support.LoginService;
 import com.shenghesun.treasure.system.entity.SysUser;
 import com.shenghesun.treasure.system.service.SysUserService;
 import com.shenghesun.treasure.utils.JsonUtil;
 import com.shenghesun.treasure.utils.PasswordUtil;
-import com.shenghesun.treasure.utils.RedisUtil;
-import com.shenghesun.treasure.utils.TokenUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,7 +24,7 @@ public class LoginController {
 	@Autowired
 	private SysUserService sysUserService;
 	@Autowired
-	private RedisUtil redisUtil;
+	private LoginService loginService;
 
 	/**
 	 * 加密算法，接收登录名和明文的密码 如果登录名在数据库存在，则找到对应的盐值，完成对明文密码加密操作，把密文返回
@@ -70,9 +68,8 @@ public class LoginController {
 			}
 //			根据用户名和密码（密文）校验是否登录成功
 			if(this.login(user.getPassword(), password)) {
-				//缓存用户的权限和角色
-				this.setRolesAndPerms(user.getId(), user.getRoles());
-				return this.getLoginToken(user.getId(), user.getAccount()); 
+				log.info("login " + account);
+				return JsonUtil.getSuccessJSONObject(loginService.login(user.getId(), account));
 			}else {
 				return JsonUtil.getFailJSONObject("用户名密码错误"); 
 			}
@@ -83,13 +80,6 @@ public class LoginController {
 		}
 	}
 	
-	public JSONObject getLoginToken(Long loginUserId, String loginUserAccount) {
-		String token = TokenUtil.create(loginUserId, loginUserAccount);
-		redisUtil.set(CustomConfig.REDIS_TOKEN_PREFIX + token, loginUserAccount, CustomConfig.EXPIRE_TIME_SECOND);//TODO 缓存到 redis 中的　key 和　value 可以再调整
-		log.info("login " + loginUserId + " " + loginUserAccount);
-		return JsonUtil.getSuccessJSONObject(token);
-	}
-
 	/**
 	 * 判断是否可以登录逻辑，库存密码存在且与输入的现有密码相等，即登录成功
 	 * 
@@ -97,7 +87,7 @@ public class LoginController {
 	 * @param password       现有密码
 	 * @return
 	 */
-	public boolean login(String passwordSource, String password) {
+	private boolean login(String passwordSource, String password) {
 		return passwordSource != null && passwordSource.equals(password);
 	}
 }

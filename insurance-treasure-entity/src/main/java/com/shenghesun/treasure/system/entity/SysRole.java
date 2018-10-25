@@ -35,14 +35,16 @@ public class SysRole extends BaseEntity {
 	 * 	一版情况，等级越高，看到的权限范围越大
 	 */
 	private int level;
-	@Column(length = 64, nullable = false)
+	
 	/**
 	 * 角色名称
 	 */
+	@Column(length = 64, nullable = false)
 	private String name;
+
 	@Column(length = 255, nullable = true)
-	
 	private String remark;
+	
 	private boolean removed = false;
 	/**
 	 * 系统id，暂时没使用

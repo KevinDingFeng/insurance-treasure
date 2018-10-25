@@ -16,6 +16,7 @@ public class JWTUtil {
 
 	public static final String ACCOUNT_KEY = "account";
 	public static final String ID_KEY = "id";
+	public static final String ERR_MSG = "err_msg";
 
 	/**
 	 * 生成 token 的方法，可以自定义放入 token 的信息
@@ -50,7 +51,7 @@ public class JWTUtil {
 				String userAccount = (String) (body.get(ACCOUNT_KEY));
 //				printMap(body);
 				if (userAccount == null || userAccount.isEmpty()) {
-					resp.put("ERR_MSG", "用户名为空");
+					resp.put(ERR_MSG, "用户名为空");
 					return resp;
 				}
 				resp.put(ACCOUNT_KEY, userAccount);
@@ -61,17 +62,17 @@ public class JWTUtil {
 				// don't trust the JWT!
 				// jwt 解析错误
 				e.printStackTrace();
-				resp.put("ERR_MSG", "token 解析错误，该请求不适合使用 jwt 解析");
+				resp.put(ERR_MSG, "token 解析错误，该请求不适合使用 jwt 解析");
 				return resp;
 			} catch (ExpiredJwtException e) {
 				//  handle exception
 				// jwt 已经过期，在设置jwt的时候如果设置了过期时间，这里会自动判断jwt是否已经过期，如果过期则会抛出这个异常，我们可以抓住这个异常并作相关处理。
 				e.printStackTrace();
-				resp.put("ERR_MSG", "token 已过期");
+				resp.put(ERR_MSG, "token 已过期");
 				return resp;
 			}
 		} else {
-			resp.put("ERR_MSG", "token 是空");
+			resp.put(ERR_MSG, "token 是空");
 			return resp;
 		}
 	}

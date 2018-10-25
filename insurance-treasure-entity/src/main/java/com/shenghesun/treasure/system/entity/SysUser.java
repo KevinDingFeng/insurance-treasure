@@ -113,6 +113,12 @@ public class SysUser extends BaseEntity {
 	@Column(nullable = true, length = 255)
 	private String openId;
 	
+	/**
+	 * 等级，用户可以看到同等级及以下等级的角色
+	 * 	一版情况，等级越高，看到的权限范围越大
+	 */
+	private int level;
+	
 	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@JoinTable(name = "sys_user_role", inverseJoinColumns = { @JoinColumn(name = "role_id") }, joinColumns = {
 			@JoinColumn(name = "user_id") })
