@@ -124,5 +124,15 @@ public class SysUser extends BaseEntity {
 			@JoinColumn(name = "user_id") })
 	private Set<SysRole> roles;
 	
+	/**
+	 * 用户生成的推荐邀请码,注册时每个用户都生成唯一注册码
+	 */
+	@Column(nullable = true, length = 5)
+	private String invitCode;
 	
+	/**
+	 * 用户被谁推荐,注册的时候有邀请码时更新该字段
+	 */
+	@Column(nullable = true, length = 5)
+	private String recommended;
 }

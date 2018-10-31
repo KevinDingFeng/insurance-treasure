@@ -1,5 +1,7 @@
 package com.shenghesun.treasure.system.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -30,6 +32,10 @@ public class SysUserService {
 	@CachePut(cacheNames = "sysUsers", key = "#entity.account")
 	public SysUser save(SysUser entity) {
 		return userDao.save(entity);
+	}
+	
+	public List<SysUser> findByInviteCode(String userId) {
+		return userDao.findByInviteCode(userId);
 	}
 	
 }
