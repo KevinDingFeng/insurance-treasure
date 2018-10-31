@@ -57,12 +57,12 @@ public class BaseEntity {
 	protected long version;
 	
 	@JsonFormat(timezone="GMT+8",pattern="yyyy-MM-dd HH:mm:ss")
-	@Column(updatable=false, nullable=false)
+	@Column(updatable=false)
 	protected Timestamp creation;
 	
 //	@Index(name="lastModified")
 	@JsonFormat(timezone="GMT+8",pattern="yyyy-MM-dd HH:mm:ss")
-	@Column(nullable=false)
+	@Column()
 	protected Timestamp lastModified;
 	
 }

@@ -28,8 +28,12 @@ public class BaseDictionary extends BaseEntity{
 	@Column(length = 10)
 	private String name;
 	
+	//该字段填写父类型,归属的业务类型
 	@Column(length = 10)
 	private String parentCode;
 	
+	//该字段用于一级和二级货物名称，也是参考code字段，一级该段为空，二级参照一级的code
+	@Column(length = 10)
+	private String parentId;
 	
 }

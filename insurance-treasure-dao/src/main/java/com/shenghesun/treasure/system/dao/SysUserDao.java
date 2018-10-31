@@ -18,4 +18,5 @@ public interface SysUserDao extends JpaRepository<SysUser, Long>, JpaSpecificati
 	@Query(value="select b.* from sys_user a,sys_user b where a.invit_code = b.recommended and a.id=?",nativeQuery=true)
 	List<SysUser> findByInviteCode(String userId);
 	
+	
 }

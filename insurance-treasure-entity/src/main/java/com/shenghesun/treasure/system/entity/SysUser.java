@@ -1,5 +1,6 @@
 package com.shenghesun.treasure.system.entity;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -10,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -135,4 +137,16 @@ public class SysUser extends BaseEntity {
 	 */
 	@Column(nullable = true, length = 5)
 	private String recommended;
+	
+	/**
+	 * 用户余额
+	 */
+	@Column(columnDefinition="DECIMAL(16,2)")
+	private Integer balance;
+	
+	/**
+	 * 用户余额明细
+	 */
+	@OneToMany(mappedBy = "sysUser",cascade=CascadeType.ALL,fetch = FetchType.EAGER)
+	private List<FundDetails> fundDetails;
 }

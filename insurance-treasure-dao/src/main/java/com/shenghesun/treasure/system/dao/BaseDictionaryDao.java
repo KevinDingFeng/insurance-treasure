@@ -14,4 +14,6 @@ public interface BaseDictionaryDao extends JpaRepository<BaseDictionary, Long>, 
 	List<BaseDictionary> findByType(String type);
 	
 	List<BaseDictionary> findByParentCode(String code);
+	
+	List<BaseDictionary> findByParentId(String parentId);
 }

@@ -20,4 +20,7 @@ public class BaseDictionaryService {
 	public List<BaseDictionary> findByParentCode(String parentCode) {
 		return baseDictionaryDao.findByParentCode(parentCode);
 	}
+	public List<BaseDictionary> findByParentId(String parentId) {
+		return baseDictionaryDao.findByParentId(parentId);
+	}
 }  
