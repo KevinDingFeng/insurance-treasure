@@ -66,4 +66,14 @@ public class ManageController {
 		
 		return JsonUtil.getSuccessJSONObject(account);
 	}
+	
+	/**
+	 * 该接口测试使用，尽量不要加入业务逻辑
+	 * @param req
+	 * @return
+	 */
+	@RequestMapping(value = "/balance", method = RequestMethod.GET)
+	public JSONObject updateBalance(HttpServletRequest req) {
+		return JsonUtil.getSuccessJSONObject();
+	}
 }

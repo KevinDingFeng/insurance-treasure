@@ -36,10 +36,10 @@ public class RegisterController {
 	public JSONObject register(HttpServletRequest request, SysUser user) {
 		try {
 			// 获取登录名对应的数据
-			SysUser findUser = sysUserService.findByAccount(user.getAccount());
+			SysUser findUser = sysUserService.findByCell(user.getCellphone());
 			if (findUser != null) {
 				System.out.println("注册用户名已经存在");
-				return JsonUtil.getFailJSONObject("用户名存在，请更换用户名");
+				return JsonUtil.getFailJSONObject("该用户已存在");
 			}
 			user = registerService.regist(user);
 			//保存用户

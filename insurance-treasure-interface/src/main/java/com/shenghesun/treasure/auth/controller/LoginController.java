@@ -1,5 +1,10 @@
 package com.shenghesun.treasure.auth.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,8 +13,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.shenghesun.treasure.auth.support.LoginService;
+import com.shenghesun.treasure.auth.support.LoginSuccessService;
+import com.shenghesun.treasure.system.company.CompanyMessage;
 import com.shenghesun.treasure.system.entity.SysUser;
 import com.shenghesun.treasure.system.service.SysUserService;
 import com.shenghesun.treasure.utils.JsonUtil;
@@ -25,7 +33,8 @@ public class LoginController {
 	private SysUserService sysUserService;
 	@Autowired
 	private LoginService loginService;
-
+	@Autowired
+	private LoginSuccessService loginSuccessService;
 	/**
 	 * 加密算法，接收登录名和明文的密码 如果登录名在数据库存在，则找到对应的盐值，完成对明文密码加密操作，把密文返回
 	 * 如果登录名在数据库不存在或明文密码为空，则返回错误信息 不对密码是否正确进行校验，只负责加密
@@ -41,8 +50,7 @@ public class LoginController {
 		// 获取登录名对应的数据
 		SysUser user = sysUserService.findByAccount(account);
 		if (user == null || user.getSalt() == null) {
-			System.out.println("用户名不存在或用户的盐值不存在");
-			return JsonUtil.getFailJSONObject("输入信息有误");
+			return JsonUtil.getFailJSONObject("用户不存在");
 		}
 		return JsonUtil.getSuccessJSONObject(PasswordUtil.encrypt(password, user.getSalt()));
 	}
@@ -69,7 +77,8 @@ public class LoginController {
 //			根据用户名和密码（密文）校验是否登录成功
 			if(this.login(user.getPassword(), password)) {
 				log.info("login " + account);
-				return JsonUtil.getSuccessJSONObject(loginService.login(user.getId(), account));
+				Map<String, Object> returnMap = loginSuccessService.setReturnMessage(user);
+				return JsonUtil.getSuccessJSONObject(JSON.toJSONString(returnMap));
 			}else {
 				return JsonUtil.getFailJSONObject("用户名密码错误"); 
 			}

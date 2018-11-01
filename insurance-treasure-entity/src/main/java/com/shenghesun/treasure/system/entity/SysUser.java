@@ -1,5 +1,6 @@
 package com.shenghesun.treasure.system.entity;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
@@ -14,8 +15,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.shenghesun.treasure.entity.base.BaseEntity;
+import com.shenghesun.treasure.system.company.CompanyMessage;
+import com.shenghesun.treasure.system.order.FundDetails;
+import com.shenghesun.treasure.system.order.OrderMessage;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -31,7 +38,9 @@ import lombok.ToString;
 @Data
 @ToString(callSuper = true, exclude = { "sysPool" })
 @EqualsAndHashCode(callSuper = true, exclude = { "sysPool" })
-public class SysUser extends BaseEntity {
+public class SysUser extends BaseEntity implements Serializable{
+
+	private static final long serialVersionUID = -1587698475114512822L;
 
 	/**
 	 * 登录名 用户名
@@ -72,8 +81,8 @@ public class SysUser extends BaseEntity {
 	/**
 	 * 名称
 	 */
-	@Column(nullable = false, length = 64)
-	private String name;
+/*	@Column(length = 64)
+	private String name;*/
 	/**
 	 * 密码，加密加盐后的结果
 	 */
@@ -121,7 +130,7 @@ public class SysUser extends BaseEntity {
 	 */
 	private int level;
 	
-	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE },fetch = FetchType.EAGER)
 	@JoinTable(name = "sys_user_role", inverseJoinColumns = { @JoinColumn(name = "role_id") }, joinColumns = {
 			@JoinColumn(name = "user_id") })
 	private Set<SysRole> roles;
@@ -138,15 +147,20 @@ public class SysUser extends BaseEntity {
 	@Column(nullable = true, length = 5)
 	private String recommended;
 	
-	/**
-	 * 用户余额
-	 */
-	@Column(columnDefinition="DECIMAL(16,2)")
-	private Integer balance;
+	
 	
 	/**
-	 * 用户余额明细
+	 * 用户所属公司
+	 */
+	@ManyToOne(fetch = FetchType.EAGER,cascade=CascadeType.MERGE)
+	@JoinColumn(name = "company_id",referencedColumnName="id")
+	@NotFound(action=NotFoundAction.IGNORE)
+	private CompanyMessage companyMessage;
+	
+	/**
+	 * 保单记录
 	 */
 	@OneToMany(mappedBy = "sysUser",cascade=CascadeType.ALL,fetch = FetchType.EAGER)
-	private List<FundDetails> fundDetails;
+	private Set<OrderMessage> orderMessage;
+	
 }

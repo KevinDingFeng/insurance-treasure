@@ -1,4 +1,4 @@
-package com.shenghesun.treasure.system.entity;
+package com.shenghesun.treasure.system.order;
 
 import java.io.Serializable;
 
@@ -14,6 +14,8 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 import com.shenghesun.treasure.entity.base.BaseEntity;
+import com.shenghesun.treasure.system.company.CompanyMessage;
+import com.shenghesun.treasure.system.entity.SysUser;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -22,8 +24,8 @@ import lombok.ToString;
 @Entity
 @Table
 @Data  
-@ToString(exclude = {"sysUser"},callSuper = true)
-@EqualsAndHashCode(exclude = {"sysUser"},callSuper = true)
+@ToString(exclude = {"companyMessage"},callSuper = true)
+@EqualsAndHashCode(exclude = {"companyMessage"},callSuper = true)
 public class FundDetails extends BaseEntity implements Serializable{
 
 	private static final long serialVersionUID = -7917411850934668617L;
@@ -37,7 +39,7 @@ public class FundDetails extends BaseEntity implements Serializable{
 	private String plusOrMinus;
 	
 	@ManyToOne(fetch = FetchType.EAGER,cascade=CascadeType.MERGE)
-	@JoinColumn(name = "user_id",referencedColumnName="id")
+	@JoinColumn(name = "company_id",referencedColumnName="id")
 	@NotFound(action=NotFoundAction.IGNORE)
-	private SysUser sysUser;
+	private CompanyMessage companyMessage;
 }

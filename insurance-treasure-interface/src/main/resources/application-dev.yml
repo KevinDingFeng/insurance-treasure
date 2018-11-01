@@ -4,9 +4,9 @@ spring:
     cache:
         type: simple
     datasource:
-        url: jdbc:mysql://127.0.0.1:3306/treasure_dev?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT&&useSSL=false
+        url: jdbc:mysql://192.168.3.7:4406/treasure_dev?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT&&useSSL=false
         username: root
-        password: 1234
+        password: Root123!
         driver-class-name: com.mysql.jdbc.Driver
         type: com.alibaba.druid.pool.DruidDataSource
 
@@ -18,10 +18,28 @@ spring:
     redis:
         host: 127.0.0.1
         port: 6379
-        timeout: 0
+        timeout: 5000
+        password: admanageradmanager
+        jedis:
+           pool.max-active: 8
+           pool.max-wait: -1
+           pool.max-idle: 8
+           pool.min-idle: 0
+    servlet:
+        multipart:
+           enabled: true
+           file-size-threshold: 0
+           max-file-size: 1Mb
+           max-request-size: 10Mb
 logging:
     level:
         root: INFO
         org.springframework.web: INFO
         org.hibernate: INFO
     file: /home/kevin/temp/log/log.log
+sms:
+    app:
+        key: LTAIBrbJGQt4pWoP
+        secret: jxFsdTMPBvMamzMrYGqp883wavHhbX
+    template:
+        code: SMS_147196678

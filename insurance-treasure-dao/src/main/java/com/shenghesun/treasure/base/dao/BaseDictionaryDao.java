@@ -1,4 +1,4 @@
-package com.shenghesun.treasure.system.dao;
+package com.shenghesun.treasure.base.dao;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ import com.shenghesun.treasure.system.dictionary.BaseDictionary;
 @Repository
 public interface BaseDictionaryDao extends JpaRepository<BaseDictionary, Long>, JpaSpecificationExecutor<BaseDictionary>{
 
-	List<BaseDictionary> findByType(String type);
+	List<BaseDictionary> findByTypeIn(List<String> list);
 	
 	List<BaseDictionary> findByParentCode(String code);
 	

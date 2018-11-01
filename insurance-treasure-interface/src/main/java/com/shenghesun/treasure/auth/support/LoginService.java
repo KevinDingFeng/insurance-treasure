@@ -31,6 +31,7 @@ public class LoginService {
 	@Autowired
 	private RedisUtil redisUtil;
 
+
 	/**
 	 * 为登录成功的用户做服务支持 获取登录对应的 token 获取登录用户的 角色和权限信息 将用户的 token 和 角色权限信息放入 redis 缓存 返回
 	 * token
