@@ -1,7 +1,6 @@
 package com.shenghesun.treasure.system.entity;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -17,11 +16,11 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
+import org.hibernate.validator.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.shenghesun.treasure.entity.base.BaseEntity;
 import com.shenghesun.treasure.system.company.CompanyMessage;
-import com.shenghesun.treasure.system.order.FundDetails;
 import com.shenghesun.treasure.system.order.OrderMessage;
 
 import lombok.Data;
@@ -45,6 +44,7 @@ public class SysUser extends BaseEntity implements Serializable{
 	/**
 	 * 登录名 用户名
 	 */
+	@NotBlank(message = "{user.account.notBlank}")
 	@Column(nullable = false, length = 64)
 	private String account;
 
@@ -61,6 +61,7 @@ public class SysUser extends BaseEntity implements Serializable{
 	/**
 	 * 联系方式
 	 */
+	@NotBlank(message = "{user.cellphone.notBlank}")
 	@Column(nullable = true, length = 32)
 	private String cellphone;
 	/**
