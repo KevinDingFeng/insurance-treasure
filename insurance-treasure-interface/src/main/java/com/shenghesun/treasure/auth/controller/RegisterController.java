@@ -1,8 +1,7 @@
 package com.shenghesun.treasure.auth.controller;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -11,9 +10,6 @@ import com.shenghesun.treasure.auth.support.RegisterService;
 import com.shenghesun.treasure.system.entity.SysUser;
 import com.shenghesun.treasure.system.service.SysUserService;
 import com.shenghesun.treasure.utils.JsonUtil;
-import com.shenghesun.treasure.utils.PasswordUtil;
-import com.shenghesun.treasure.utils.RandomCodeUtil;
-import com.shenghesun.treasure.utils.RandomUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,7 +29,7 @@ public class RegisterController {
 	 * @return
 	 */
 	@RequestMapping(value = "/register")
-	public JSONObject register(HttpServletRequest request, SysUser user) {
+	public JSONObject register(@Validated SysUser user) {
 		try {
 			// 获取登录名对应的数据
 			SysUser findUser = sysUserService.findByCell(user.getCellphone());
@@ -46,9 +42,8 @@ public class RegisterController {
 			sysUserService.save(user);
 			return JsonUtil.getSuccessJSONObject();
 		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("特殊错误");
-			return JsonUtil.getFailJSONObject("特殊错误");
+			log.error("注册失败");
+			return JsonUtil.getFailJSONObject();
 		}
 	}
 }

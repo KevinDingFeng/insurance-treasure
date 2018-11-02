@@ -48,9 +48,9 @@ public class PayController {
 				Integer price = order.getOrderAmount();
 				//如果余额大于保单金额,才进行支付扣款
 				if((company.getBalance()==null?0:company.getBalance())>order.getOrderAmount()) {
-					fundDetails.setPrice(price);
+					fundDetails.setOrderAmount(price);
 					fundDetails.setPlusOrMinus("-");
-					fundDetails.setOrderMessage(order);
+					//fundDetails.setOrderMessage(order);
 					company.setBalance(company.getBalance()==null?price:company.getBalance()-price);
 				}else {
 					return JsonUtil.getFailJSONObject("余额不足，请联系管理员充值");

@@ -1,25 +1,22 @@
 package com.shenghesun.treasure.test.controller;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.dozer.DozerBeanMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatement.UserSpecification;
-import com.alibaba.fastjson.JSON;
+import com.alibaba.druid.support.json.JSONUtils;
 import com.alibaba.fastjson.JSONObject;
-import com.shenghesun.treasure.base.service.BaseDictionaryService;
 import com.shenghesun.treasure.order.service.FundDetailsService;
-import com.shenghesun.treasure.system.dictionary.BaseDictionary;
-import com.shenghesun.treasure.system.entity.SysPermission;
 import com.shenghesun.treasure.system.entity.SysRole;
 import com.shenghesun.treasure.system.entity.SysUser;
+import com.shenghesun.treasure.system.model.FundShow;
 import com.shenghesun.treasure.system.order.FundDetails;
 import com.shenghesun.treasure.system.service.SysUserService;
 import com.shenghesun.treasure.test.service.TestCacheService;
@@ -37,8 +34,6 @@ public class TestController {
 	
 	@Autowired
 	private TestCacheService testCacheService;
-	@Autowired
-	private BaseDictionaryService baseDictionaryService;
 	@Autowired
 	private SysUserService sysUserService;
 	@Autowired
@@ -65,6 +60,18 @@ public class TestController {
 		return "OK";
 	}
 	
+	@RequestMapping(value = "/findFund", method = RequestMethod.GET)
+	public JSONObject removed() {
+		DozerBeanMapper mapper = new DozerBeanMapper();
+		List<FundDetails> list = fundDetailsService.findByCompanyId("4");
+		List<FundShow> fundShowList = null;
+		for(int i=0;i<list.size();i++) {
+			FundShow fundShow = mapper.map(list.get(i), FundShow.class);
+			fundShowList.add(fundShow);
+		}
+		return JsonUtil.getSuccessJSONObject(fundShowList);
+	}
+	
 	
 	@RequestMapping(value = "/base", method = RequestMethod.GET)
 	public JSONObject base(String account) {
@@ -73,12 +80,10 @@ public class TestController {
 		if (roles != null && roles.size() > 0) {
 			Iterator<SysRole> roleIts = roles.iterator();
 			JSONObject rolesObj = null;
-			JSONObject permsObj = null;
 			while (roleIts.hasNext()) {
 				if (rolesObj == null) {
 					rolesObj = new JSONObject();
 				}
-				SysRole role = roleIts.next();
 /*				rolesObj.put(role.getName(), role.getId());// 添加角色信息
 				Set<SysPermission> perms = role.getPermissions();
 				Iterator<SysPermission> permIts = perms.iterator();

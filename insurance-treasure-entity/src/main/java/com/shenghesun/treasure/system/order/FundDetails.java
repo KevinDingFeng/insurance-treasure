@@ -15,7 +15,6 @@ import org.hibernate.annotations.NotFoundAction;
 
 import com.shenghesun.treasure.entity.base.BaseEntity;
 import com.shenghesun.treasure.system.company.CompanyMessage;
-import com.shenghesun.treasure.system.entity.SysUser;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -32,21 +31,23 @@ public class FundDetails extends BaseEntity implements Serializable{
 
 	//资金数
 	@Column(columnDefinition="DECIMAL(16,2)")
-	private Integer price;
+	private Integer orderAmount;
 	
 	//资金状态，入账还是出账，这里用正负号表示
 	@Column
 	private String plusOrMinus;
 	
+	@Column
+	private String companyId;
 	//资金明细与公司关系
-	@ManyToOne(fetch = FetchType.EAGER,cascade=CascadeType.MERGE)
+/*	@ManyToOne(fetch = FetchType.EAGER,cascade=CascadeType.MERGE)
 	@JoinColumn(name = "company_id",referencedColumnName="id")
 	@NotFound(action=NotFoundAction.IGNORE)
-	private CompanyMessage companyMessage;
+	private CompanyMessage companyMessage;*/
 	
 	//资金明细与订单关系
-	@ManyToOne(fetch = FetchType.EAGER,cascade=CascadeType.MERGE)
+/*	@ManyToOne(fetch = FetchType.EAGER,cascade=CascadeType.MERGE)
 	@JoinColumn(name = "order_id",referencedColumnName="id")
 	@NotFound(action=NotFoundAction.IGNORE)
-	private OrderMessage orderMessage;
+	private OrderMessage orderMessage;*/
 }

@@ -1,23 +1,18 @@
 package com.shenghesun.treasure.auth.controller;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.shenghesun.treasure.auth.support.LoginService;
 import com.shenghesun.treasure.auth.support.LoginSuccessService;
-import com.shenghesun.treasure.system.company.CompanyMessage;
 import com.shenghesun.treasure.system.entity.SysUser;
 import com.shenghesun.treasure.system.service.SysUserService;
 import com.shenghesun.treasure.utils.JsonUtil;
@@ -32,8 +27,6 @@ public class LoginController {
 	@Autowired
 	private SysUserService sysUserService;
 	@Autowired
-	private LoginService loginService;
-	@Autowired
 	private LoginSuccessService loginSuccessService;
 	/**
 	 * 加密算法，接收登录名和明文的密码 如果登录名在数据库存在，则找到对应的盐值，完成对明文密码加密操作，把密文返回
@@ -45,8 +38,7 @@ public class LoginController {
 	 * @return
 	 */
 	@RequestMapping(value = "/encrypt", method = RequestMethod.GET)
-	public JSONObject encrypt(@RequestParam(value = "account") String account,
-			@RequestParam(value = "password") String password) {
+	public JSONObject encrypt(@Validated String account,@Validated String password) {
 		// 获取登录名对应的数据
 		SysUser user = sysUserService.findByAccount(account);
 		if (user == null || user.getSalt() == null) {
@@ -65,8 +57,8 @@ public class LoginController {
 	 * @return
 	 */
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public JSONObject login(HttpServletRequest request, @RequestParam(value = "account") String account,
-			@RequestParam(value = "password") String password) {
+	public JSONObject login(HttpServletRequest request, @Validated String account,
+			@Validated String password) {
 		try {
 			// 获取登录名对应的数据
 			SysUser user = sysUserService.findByAccount(account);

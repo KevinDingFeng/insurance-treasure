@@ -1,8 +1,5 @@
 package com.shenghesun.treasure.order.controller;
 
-import java.util.Iterator;
-import java.util.Set;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -16,7 +13,8 @@ import com.shenghesun.treasure.system.order.OrderMessage;
 import com.shenghesun.treasure.system.service.SysUserService;
 import com.shenghesun.treasure.utils.JsonUtil;
 
-@RestController
+@RestController()
+@RequestMapping("/order")
 public class OrderController {
 
 	@Autowired
@@ -28,7 +26,7 @@ public class OrderController {
 	 * 下单
 	 * @return
 	 */
-	@RequestMapping(value = "/order", method = RequestMethod.GET)
+	@RequestMapping(value = "/save", method = RequestMethod.GET)
 	public JSONObject saveOrder(OrderMessage orderMessage) {
 		try {
 			Long userid = orderMessage.getUserid();
@@ -53,9 +51,8 @@ public class OrderController {
 	 * @param id
 	 * @return
 	 */
-	@RequestMapping(value = "/showOrder", method = RequestMethod.GET)
+	@RequestMapping(value = "/show", method = RequestMethod.GET)
 	public JSONObject getOrder(Long id) {
-		Set<OrderMessage> set;
 		try {
 			SysUser user = sysUserService.findById(id);
 			return JsonUtil.getSuccessJSONObject(JSON.toJSONString(user));

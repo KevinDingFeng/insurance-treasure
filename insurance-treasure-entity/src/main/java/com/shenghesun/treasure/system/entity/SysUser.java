@@ -11,7 +11,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.NotFound;
@@ -22,7 +21,6 @@ import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.shenghesun.treasure.entity.base.BaseEntity;
 import com.shenghesun.treasure.system.company.CompanyMessage;
-import com.shenghesun.treasure.system.order.OrderMessage;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -172,7 +170,7 @@ public class SysUser extends BaseEntity implements Serializable{
 	/**
 	 * 保单记录
 	 */
-	@OneToMany(mappedBy = "sysUser",cascade=CascadeType.ALL,fetch = FetchType.EAGER)
-	private Set<OrderMessage> orderMessage;
+/*	@OneToMany(mappedBy = "sysUser",cascade=CascadeType.ALL,fetch = FetchType.EAGER)
+	private Set<OrderMessage> orderMessage;*/
 	
 }

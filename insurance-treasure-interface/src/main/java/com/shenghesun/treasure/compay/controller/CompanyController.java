@@ -4,11 +4,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.alibaba.fastjson.JSONObject;
 import com.shenghesun.treasure.company.CompanyMessageService;
@@ -25,10 +19,8 @@ import com.shenghesun.treasure.system.entity.SysUser;
 import com.shenghesun.treasure.system.service.SysUserService;
 import com.shenghesun.treasure.utils.JsonUtil;
 
-import lombok.extern.slf4j.Slf4j;
-
-@RestController
-@Slf4j
+@RestController()
+@RequestMapping(value="/company")
 public class CompanyController {
 	
 	@Autowired
@@ -41,6 +33,7 @@ public class CompanyController {
 	 */
 	@RequestMapping(value = "/complete", method = RequestMethod.GET)
 	public JSONObject completeCompanyMessage(CompanyMessage companyMessage,String cellphone) {
+		
 		SysUser user=null;
 		try {
 			if(cellphone!=null) {
@@ -53,7 +46,7 @@ public class CompanyController {
 			}
 			sysUserService.save(user);
 		} catch (Exception e) {
-			return JsonUtil.getFailJSONObject("特殊错误");
+			return JsonUtil.getFailJSONObject();
 		}
 		return JsonUtil.getSuccessJSONObject();
 	}
@@ -77,7 +70,7 @@ public class CompanyController {
 	        System.out.println(path);
 	        Files.write(path, bytes);
 	    } catch (IOException e) {
-	    	 return JsonUtil.getFailJSONObject("特殊错误");
+	    	 return JsonUtil.getFailJSONObject();
 	    }
 	    return JsonUtil.getSuccessJSONObject(filePath);
 	}

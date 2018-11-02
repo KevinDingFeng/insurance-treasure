@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.shenghesun.treasure.base.service.BaseDictionaryService;
-import com.shenghesun.treasure.system.company.CompanyMessage;
 import com.shenghesun.treasure.system.dictionary.BaseDictionary;
 import com.shenghesun.treasure.utils.JsonUtil;
 
-@RestController
+@RestController()
+@RequestMapping(value="/base")
 public class BaseDictionaryController {
 
 	@Autowired
@@ -51,7 +51,7 @@ public class BaseDictionaryController {
 		try {
 			dictionaryList = baseDictionaryService.findByParentCode(parentCode);
 		} catch (Exception e) {
-			return JsonUtil.getFailJSONObject("特殊错误");
+			return JsonUtil.getFailJSONObject();
 		}
 		return JsonUtil.getSuccessJSONObject(JSON.toJSONString(dictionaryList));
 	}
@@ -66,7 +66,7 @@ public class BaseDictionaryController {
 		try {
 			dictionaryList = baseDictionaryService.findByParentId(parentId);
 		} catch (Exception e) {
-			return JsonUtil.getFailJSONObject("特殊错误");
+			return JsonUtil.getFailJSONObject();
 		}
 		return JsonUtil.getSuccessJSONObject(JSON.toJSONString(dictionaryList));
 	}

@@ -127,6 +127,6 @@ public class OrderMessage extends BaseEntity implements Serializable{
 	/**
 	 * 用户余额明细
 	 */
-	@OneToMany(mappedBy = "orderMessage",cascade=CascadeType.ALL,fetch = FetchType.EAGER)
-	private List<FundDetails> fundDetails;
+/*	@OneToMany(mappedBy = "orderMessage",cascade=CascadeType.ALL,fetch = FetchType.EAGER)
+	private List<FundDetails> fundDetails;*/
 }

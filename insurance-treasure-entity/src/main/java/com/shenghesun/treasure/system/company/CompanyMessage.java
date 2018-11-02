@@ -1,7 +1,6 @@
 package com.shenghesun.treasure.system.company;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -14,7 +13,6 @@ import javax.persistence.Table;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.shenghesun.treasure.entity.base.BaseEntity;
 import com.shenghesun.treasure.system.entity.SysUser;
-import com.shenghesun.treasure.system.order.FundDetails;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -79,7 +77,7 @@ public class CompanyMessage extends BaseEntity implements Serializable{
 	/**
 	 * 用户余额明细
 	 */
-	@OneToMany(mappedBy = "companyMessage",cascade=CascadeType.ALL,fetch = FetchType.EAGER)
+	/*@OneToMany(mappedBy = "companyMessage",cascade=CascadeType.ALL,fetch = FetchType.EAGER)
 	private List<FundDetails> fundDetails;
-	
+	*/
 }

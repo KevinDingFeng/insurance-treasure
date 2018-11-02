@@ -19,4 +19,8 @@ public class OrderMessageService {
 	public OrderMessage save(OrderMessage orderMessage) {
 		return orderMessageDao.save(orderMessage);
 	}
+	
+	public OrderMessage findBy(OrderMessage orderMessage) {
+		return orderMessageDao.save(orderMessage);
+	}
 }

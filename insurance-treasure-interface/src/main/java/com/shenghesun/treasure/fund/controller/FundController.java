@@ -2,8 +2,8 @@ package com.shenghesun.treasure.fund.controller;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
+import org.apache.shiro.SecurityUtils;
+import org.dozer.DozerBeanMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -15,11 +15,13 @@ import com.shenghesun.treasure.company.CompanyMessageService;
 import com.shenghesun.treasure.order.service.FundDetailsService;
 import com.shenghesun.treasure.system.company.CompanyMessage;
 import com.shenghesun.treasure.system.entity.SysUser;
+import com.shenghesun.treasure.system.model.FundShow;
 import com.shenghesun.treasure.system.order.FundDetails;
 import com.shenghesun.treasure.system.service.SysUserService;
 import com.shenghesun.treasure.utils.JsonUtil;
 
-@RestController
+@RestController()
+@RequestMapping(value="/fund")
 public class FundController {
 	
 	@Autowired
@@ -32,8 +34,11 @@ public class FundController {
 	 * 查询资金明细
 	 * @return
 	 */
-	@RequestMapping(value = "/fundDetail", method = RequestMethod.GET)
+	@RequestMapping(value = "/detail", method = RequestMethod.GET)
 	public JSONObject completeCompanyMessage(Long id) {
+		@SuppressWarnings("unused")
+		org.apache.shiro.subject.Subject subject = SecurityUtils.getSubject();
+		
 		CompanyMessage company = null;
 		try {
 			SysUser user = sysUserService.findById(id);
@@ -54,12 +59,12 @@ public class FundController {
 	public JSONObject updateBalance(Long id,Integer price) {
 		FundDetails fundDetails = new FundDetails();
 		try {
-			fundDetails.setPrice(price);
+			fundDetails.setOrderAmount(price);
 			fundDetails.setPlusOrMinus("+");
 			CompanyMessage company = companyMessageService.findById(id);
 			if(company!=null) {
 				company.setBalance(company.getBalance()==null?price:company.getBalance()+price);
-				fundDetails.setCompanyMessage(company);
+				//fundDetails.setCompanyMessage(company);
 				fundDetailsService.save(fundDetails);
 			}else {
 				return JsonUtil.getFailJSONObject("公司不存在");

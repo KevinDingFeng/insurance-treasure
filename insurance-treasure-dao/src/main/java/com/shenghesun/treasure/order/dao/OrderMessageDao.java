@@ -8,5 +8,6 @@ import com.shenghesun.treasure.system.order.OrderMessage;
 
 @Repository
 public interface OrderMessageDao extends JpaRepository<OrderMessage, Long>, JpaSpecificationExecutor<OrderMessage> {
-
+	
+	OrderMessage findByUserid(Long id);
 }

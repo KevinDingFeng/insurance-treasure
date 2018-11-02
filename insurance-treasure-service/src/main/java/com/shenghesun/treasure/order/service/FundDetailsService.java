@@ -1,5 +1,7 @@
 package com.shenghesun.treasure.order.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,8 +15,9 @@ public class FundDetailsService {
 	private FundDetailsDao fundDetailsDao;
 
 	public void save(FundDetails fd) {
-		// TODO Auto-generated method stub
 		fundDetailsDao.save(fd);
 	}
-	
+	public List<FundDetails> findByCompanyId(String companyid){
+		return fundDetailsDao.findByCompanyId(companyid);
+	}
 }
