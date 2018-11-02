@@ -1,10 +1,10 @@
-package com.shenghesun.dao.cpic;
+package com.shenghesun.treasure.cpic.dao;
 
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
-import com.shenghesun.entity.cpic.Approvl;
+import com.shenghesun.treasure.system.cpic.Approvl;
 
 @Repository
 public interface ApprovlDao extends PagingAndSortingRepository<Approvl, Long>, JpaSpecificationExecutor<Approvl>{

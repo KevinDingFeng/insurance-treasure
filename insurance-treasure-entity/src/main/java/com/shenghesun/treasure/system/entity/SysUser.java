@@ -18,6 +18,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.validator.constraints.NotBlank;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.shenghesun.treasure.entity.base.BaseEntity;
 import com.shenghesun.treasure.system.company.CompanyMessage;
@@ -51,11 +52,13 @@ public class SysUser extends BaseEntity implements Serializable{
 	/**
 	 * 是否激活
 	 */
+	@JSONField(serialize = false)
 	private boolean active = true;
 
 	/**
 	 * 是否审核通过
 	 */
+	@JSONField(serialize = false)
 	private boolean audited = true;
 
 	/**
@@ -67,16 +70,19 @@ public class SysUser extends BaseEntity implements Serializable{
 	/**
 	 * 联系方式是否通过了校验
 	 */
+	@JSONField(serialize = false)
 	private boolean cellphoneVerified = false;
 
 	/**
 	 * 邮箱
 	 */
 	@Column(nullable = true, length = 255)
+	@JSONField(serialize = false)
 	private String email;
 	/**
 	 * 邮箱是否通过了校验
 	 */
+	@JSONField(serialize = false)
 	private boolean emailVerified = false;
 
 	/**
@@ -87,8 +93,8 @@ public class SysUser extends BaseEntity implements Serializable{
 	/**
 	 * 密码，加密加盐后的结果
 	 */
-	@JsonIgnore
 	@Column(nullable = false, length = 200)
+	@JSONField(serialize = false)
 	private String password;
 
 	@JsonIgnore
@@ -105,18 +111,20 @@ public class SysUser extends BaseEntity implements Serializable{
 	/**
 	 * 是否已删除
 	 */
+	@JSONField(serialize = false)
 	private boolean removed = false;
 	/**
 	 * 盐值
 	 */
-	@JsonIgnore
 	@Column(nullable = false, length = 20)
+	@JSONField(serialize = false)
 	private String salt;
 
 	/**
 	 * 系统标志
 	 */
 	@Column(nullable = true, length = 64)
+	@JSONField(serialize = false)
 	private String sysId;
 
 	/**
@@ -134,18 +142,21 @@ public class SysUser extends BaseEntity implements Serializable{
 	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE },fetch = FetchType.EAGER)
 	@JoinTable(name = "sys_user_role", inverseJoinColumns = { @JoinColumn(name = "role_id") }, joinColumns = {
 			@JoinColumn(name = "user_id") })
+	@JSONField(serialize = false)
 	private Set<SysRole> roles;
 	
 	/**
 	 * 用户生成的推荐邀请码,注册时每个用户都生成唯一注册码
 	 */
 	@Column(nullable = true, length = 5)
+	@JSONField(serialize = false)
 	private String invitCode;
 	
 	/**
 	 * 用户被谁推荐,注册的时候有邀请码时更新该字段
 	 */
 	@Column(nullable = true, length = 5)
+	@JSONField(serialize = false)
 	private String recommended;
 	
 	

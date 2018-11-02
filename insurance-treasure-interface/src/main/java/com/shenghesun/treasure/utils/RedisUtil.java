@@ -5,15 +5,20 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Component;
 
 @SuppressWarnings("unchecked")
 @Component
 public class RedisUtil {
 
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	
 	@SuppressWarnings("rawtypes")
 	@Autowired
 	private RedisTemplate redisTemplate;
@@ -58,7 +63,12 @@ public class RedisUtil {
 	 * @return
 	 */
 	public boolean exists(final String key) {
-		return redisTemplate.hasKey(key);
+		try {
+			return redisTemplate.hasKey(key);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 	/**
@@ -69,13 +79,32 @@ public class RedisUtil {
 	 */
 	public String get(final String key) {
 		Object result = null;
-//		redisTemplate.setValueSerializer(new StringRedisSerializer());
+		redisTemplate.setValueSerializer(new StringRedisSerializer());
 		ValueOperations<Serializable, Object> operations = redisTemplate.opsForValue();
-		result = operations.get(key);
+		try {
+			result = operations.get(key);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		if (result == null) {
 			return null;
 		}
 		return result.toString();
+	}
+	
+	public Object getObj(final String key) {
+		Object result = null;
+		redisTemplate.setValueSerializer(new StringRedisSerializer());
+		ValueOperations<Serializable, Object> operations = redisTemplate.opsForValue();
+		try {
+			result = operations.get(key);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		if (result == null) {
+			return null;
+		}
+		return result;
 	}
 
 	/**
@@ -136,5 +165,25 @@ public class RedisUtil {
 			e.printStackTrace();
 		}
 		return result;
+	}
+	
+	/**
+	 * 查找所有符合给定模式( pattern)的 key 。
+	 * @Title: keys 
+	 * @Description: TODO 
+	 * @param pattern
+	 * @return  Set<Object> 
+	 * @author yangzp
+	 * @date 2018年10月19日上午11:28:02
+	 **/ 
+	public Set<Object> keys(String pattern) {
+		Set<Object>  resultSet = null;
+		try {
+			resultSet = redisTemplate.keys(pattern);
+		}catch (Exception e) {
+			logger.error(e.getMessage());
+			return null;
+		}
+		return resultSet;
 	}
 }

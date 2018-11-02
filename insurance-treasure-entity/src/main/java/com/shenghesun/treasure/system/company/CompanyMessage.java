@@ -11,6 +11,7 @@ import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.shenghesun.treasure.entity.base.BaseEntity;
 import com.shenghesun.treasure.system.entity.SysUser;
 import com.shenghesun.treasure.system.order.FundDetails;
@@ -22,8 +23,8 @@ import lombok.ToString;
 @Entity
 @Table
 @Data
-@ToString(callSuper = true, exclude = { "sysUser","fundDetails" })
-@EqualsAndHashCode(callSuper = true, exclude = { "sysUser","fundDetails" })
+@ToString(callSuper = true, exclude = { "sysUser"})
+@EqualsAndHashCode(callSuper = true, exclude = { "sysUser"})
 public class CompanyMessage extends BaseEntity implements Serializable{
 
 	private static final long serialVersionUID = 368306344206713573L;
@@ -68,6 +69,7 @@ public class CompanyMessage extends BaseEntity implements Serializable{
 	 * 公司账户下子用户
 	 */
 	@OneToMany(mappedBy = "companyMessage",cascade=CascadeType.ALL,fetch = FetchType.EAGER)
+	@JSONField(serialize = false)
 	private Set<SysUser> sysUser;
 	/**
 	 * 公司账户余额

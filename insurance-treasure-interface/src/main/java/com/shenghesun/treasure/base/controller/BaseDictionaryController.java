@@ -47,7 +47,12 @@ public class BaseDictionaryController {
 	 */
 	@RequestMapping(value = "/first", method = RequestMethod.GET)
 	public JSONObject getFirst(String parentCode) {
-		List<BaseDictionary> dictionaryList = baseDictionaryService.findByParentCode(parentCode);
+		List<BaseDictionary> dictionaryList=null;
+		try {
+			dictionaryList = baseDictionaryService.findByParentCode(parentCode);
+		} catch (Exception e) {
+			return JsonUtil.getFailJSONObject("特殊错误");
+		}
 		return JsonUtil.getSuccessJSONObject(JSON.toJSONString(dictionaryList));
 	}
 	/**
@@ -57,7 +62,12 @@ public class BaseDictionaryController {
 	 */
 	@RequestMapping(value = "/second", method = RequestMethod.GET)
 	public JSONObject getSecond(String parentId) {
-		List<BaseDictionary> dictionaryList = baseDictionaryService.findByParentId(parentId);
+		List<BaseDictionary> dictionaryList=null;
+		try {
+			dictionaryList = baseDictionaryService.findByParentId(parentId);
+		} catch (Exception e) {
+			return JsonUtil.getFailJSONObject("特殊错误");
+		}
 		return JsonUtil.getSuccessJSONObject(JSON.toJSONString(dictionaryList));
 	}
 }

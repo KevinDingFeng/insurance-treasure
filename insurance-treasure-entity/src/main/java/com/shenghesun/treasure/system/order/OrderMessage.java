@@ -16,6 +16,8 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.shenghesun.treasure.entity.base.BaseEntity;
 import com.shenghesun.treasure.system.company.CompanyMessage;
 import com.shenghesun.treasure.system.entity.SysUser;
@@ -119,6 +121,12 @@ public class OrderMessage extends BaseEntity implements Serializable{
 	@ManyToOne(fetch = FetchType.EAGER,cascade=CascadeType.MERGE)
 	@JoinColumn(name = "user_id",referencedColumnName="id")
 	@NotFound(action=NotFoundAction.IGNORE)
+	@JSONField(serialize = false)
 	private SysUser sysUser;
-
+	
+	/**
+	 * 用户余额明细
+	 */
+	@OneToMany(mappedBy = "orderMessage",cascade=CascadeType.ALL,fetch = FetchType.EAGER)
+	private List<FundDetails> fundDetails;
 }

@@ -13,6 +13,7 @@ import javax.persistence.Table;
 
 import org.springframework.context.annotation.Lazy;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.shenghesun.treasure.entity.base.BaseEntity;
 
@@ -62,6 +63,7 @@ public class SysRole extends BaseEntity {
 	@ManyToMany(fetch = FetchType.EAGER,cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@JoinTable(name = "sys_role_permission", inverseJoinColumns = { @JoinColumn(name = "perm_id") }, joinColumns = {
 			@JoinColumn(name = "role_id") })
+	@JSONField(serialize = false)
 	private Set<SysPermission> permissions;
 	
 }

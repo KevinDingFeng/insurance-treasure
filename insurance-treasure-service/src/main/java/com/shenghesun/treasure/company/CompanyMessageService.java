@@ -12,6 +12,9 @@ public class CompanyMessageService {
 
 	@Autowired
 	CompanyMessageDao companyMessageDao;
+	public CompanyMessage findById(Long id) {
+		return companyMessageDao.findOne(id);
+	}
 	
 	public CompanyMessage save(CompanyMessage companyMessage) {
 		return companyMessageDao.save(companyMessage);

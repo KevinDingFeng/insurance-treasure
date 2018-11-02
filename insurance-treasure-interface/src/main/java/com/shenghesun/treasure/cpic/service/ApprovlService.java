@@ -1,10 +1,10 @@
-package com.shenghesun.service.cpic;
+package com.shenghesun.treasure.cpic.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.shenghesun.dao.cpic.ApprovlDao;
-import com.shenghesun.entity.cpic.Approvl;
+import com.shenghesun.treasure.cpic.dao.ApprovlDao;
+import com.shenghesun.treasure.system.cpic.Approvl;
 
 @Service
 public class ApprovlService {

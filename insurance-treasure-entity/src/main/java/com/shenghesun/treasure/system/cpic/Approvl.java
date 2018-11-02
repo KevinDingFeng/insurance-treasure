@@ -1,4 +1,4 @@
-package com.shenghesun.entity.cpic;
+package com.shenghesun.treasure.system.cpic;
 
 import java.io.Serializable;
 
@@ -22,7 +22,7 @@ import lombok.EqualsAndHashCode;
 @Table
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class Approvl extends BaseEntity implements Serializable {
+public class Approvl extends BaseEntity{
 	/**
 	 * 
 	 */

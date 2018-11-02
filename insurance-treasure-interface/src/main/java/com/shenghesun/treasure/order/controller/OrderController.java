@@ -1,5 +1,6 @@
 package com.shenghesun.treasure.order.controller;
 
+import java.util.Iterator;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,21 +29,39 @@ public class OrderController {
 	 * @return
 	 */
 	@RequestMapping(value = "/order", method = RequestMethod.GET)
-	public JSONObject completeCompanyMessage(OrderMessage orderMessage) {
-		SysUser user = sysUserService.findById(orderMessage.getUserid());
-		orderMessage.setSysUser(user);
-		orderMessageService.save(orderMessage);
-		return JsonUtil.getSuccessJSONObject();
+	public JSONObject saveOrder(OrderMessage orderMessage) {
+		try {
+			Long userid = orderMessage.getUserid();
+			SysUser user=null;
+			if(userid!=null) {
+				user = sysUserService.findById(userid);
+			}
+			if(user!=null) {
+				orderMessage.setSysUser(user);
+				orderMessageService.save(orderMessage);
+			}else {
+				return JsonUtil.getFailJSONObject("用户不存在");
+			}
+			return JsonUtil.getSuccessJSONObject();
+		} catch (Exception e) {
+			return JsonUtil.getFailJSONObject("特殊错误");
+		}
+		
 	}
 	/**
 	 * 我的保单
 	 * @param id
 	 * @return
 	 */
-	@RequestMapping(value = "/ShowOrder", method = RequestMethod.GET)
+	@RequestMapping(value = "/showOrder", method = RequestMethod.GET)
 	public JSONObject getOrder(Long id) {
-		SysUser findById = sysUserService.findById(id);
-		//Set<OrderMessage> set = findById.getOrderMessage();
-		return JsonUtil.getSuccessJSONObject(JSON.toJSONString(""));
+		Set<OrderMessage> set;
+		try {
+			SysUser user = sysUserService.findById(id);
+			return JsonUtil.getSuccessJSONObject(JSON.toJSONString(user));
+		} catch (Exception e) {
+			return JsonUtil.getFailJSONObject("特殊错误");
+		}
+	
 	}
 }
