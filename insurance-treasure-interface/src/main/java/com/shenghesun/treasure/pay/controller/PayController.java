@@ -1,5 +1,7 @@
 package com.shenghesun.treasure.pay.controller;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -7,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.shenghesun.treasure.auth.support.UserService;
 import com.shenghesun.treasure.company.CompanyMessageService;
 import com.shenghesun.treasure.order.service.FundDetailsService;
 import com.shenghesun.treasure.order.service.OrderMessageService;
@@ -28,21 +31,26 @@ public class PayController {
 	OrderMessageService orderMessageService;
 	@Autowired
 	FundDetailsService fundDetailsService;
+	@Autowired
+	UserService userService;
 	/**
 	 * 支付保单
 	 * @return
 	 */
 	@RequestMapping(value = "/pay", method = RequestMethod.GET)
-	public JSONObject pay(Long userId,Long orderId) {
+	public JSONObject pay(HttpServletRequest request,Long orderId) {
 		CompanyMessage company = null;
 		FundDetails fundDetails = new FundDetails();
 		try {
+			Long userId = userService.getUser(request);
 			//查找订单所属用户
 			SysUser user = sysUserService.findById(userId);
 			//根据订单id查找到订单信息
 			OrderMessage order = orderMessageService.findById(orderId);
-			Long companyId = user.getCompanyId();
-			company = companyService.findById(companyId);
+			if(user!=null) {
+				Long companyId = user.getCompanyId();
+				company = companyService.findById(companyId);
+			}
 			if(company!=null&&order!=null) {
 				//保单金额
 				Integer price = order.getOrderAmount();

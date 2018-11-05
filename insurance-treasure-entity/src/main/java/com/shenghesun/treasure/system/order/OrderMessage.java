@@ -21,6 +21,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.shenghesun.treasure.entity.base.BaseEntity;
 import com.shenghesun.treasure.system.company.CompanyMessage;
 import com.shenghesun.treasure.system.entity.SysUser;
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -81,6 +82,7 @@ public class OrderMessage extends BaseEntity implements Serializable{
 	@Column(length=100)
 	private String applicator;
 	//被保险人
+	@XStreamAlias("APPLYCARTTYPE")
 	@Column(length=100)
 	private String insured;
 	//开票抬头
@@ -95,6 +97,54 @@ public class OrderMessage extends BaseEntity implements Serializable{
 	//费率
 	@Column(length=100)
 	private String rate;
+	
+	//险类
+	private String classestype;
+	//投保人名称
+	private String applyname;
+	//被保人名称
+	private String insurantname;
+	//险种代码
+	private String classtype;
+	//运单号、发票号码
+	private String mark;
+	//包装及数量
+	private String quantity;
+	//货物名称
+	private String item;
+	//包装代码
+	private String packcode;
+	//货物类型
+	private String itemcode;
+	//运输方式
+	private String kind;
+	//运输工具名称
+	private String kindname;
+	//始发地
+	private String startport;
+	//目的地
+	private String endport;
+	//主险条款代码
+	private String mainitemcode;
+	//主险条款内容
+	private String itemcontent;
+	//币种代码
+	private String currencycode;
+	//发票金额
+	private String invamount;
+	//private String rate;
+	//保费
+	private String preminum;
+	//保费币种
+	private String fcurrencycode;
+	//起保日期
+	private String effectdate;
+	//航班日期
+	private String saildate;
+	//免赔条件
+	private String franchise;
+	//自定义查询码
+	private String userno;
 
 	/**
 	 * 保单总金额
@@ -115,18 +165,5 @@ public class OrderMessage extends BaseEntity implements Serializable{
 	 */
 	@Column
 	private Integer insuranceStatus = 0; 
-	/**
-	 * 保单归属用户
-	 */
-/*	@ManyToOne(fetch = FetchType.EAGER,cascade=CascadeType.MERGE)
-	@JoinColumn(name = "user_id",referencedColumnName="id")
-	@NotFound(action=NotFoundAction.IGNORE)
-	@JSONField(serialize = false)
-	private SysUser sysUser;
-	*/
-	/**
-	 * 用户余额明细
-	 */
-/*	@OneToMany(mappedBy = "orderMessage",cascade=CascadeType.ALL,fetch = FetchType.EAGER)
-	private List<FundDetails> fundDetails;*/
+
 }

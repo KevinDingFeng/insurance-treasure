@@ -11,6 +11,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import com.shenghesun.treasure.order.service.OrderMessageService;
 import com.shenghesun.treasure.system.cpic.webservice.Datas;
 import com.shenghesun.treasure.system.cpic.webservice.Freightcpic;
 import com.shenghesun.treasure.system.cpic.webservice.Header;
@@ -32,7 +33,8 @@ public class AsyncService {
 	
 	/*@Autowired
 	private PayService payService;*/
-	
+	@Autowired
+	private OrderMessageService orderMessageService;
 	@Autowired
 	private WebServiceClient webServiceClient;
 	
@@ -43,6 +45,7 @@ public class AsyncService {
     public void executeAsync() {
         //logger.info("start executeAsync");
         try{
+        	OrderMessage orderMessage = orderMessageService.findById(1L);
 //        	PayMessage payMessage = payService.findByOrderNo(orderNo);
     		
     		//修改保单状态
