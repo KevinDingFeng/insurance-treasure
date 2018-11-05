@@ -15,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.alibaba.fastjson.JSONObject;
 import com.shenghesun.treasure.company.CompanyMessageService;
 import com.shenghesun.treasure.system.company.CompanyMessage;
-import com.shenghesun.treasure.system.entity.SysUser;
 import com.shenghesun.treasure.system.service.SysUserService;
 import com.shenghesun.treasure.utils.JsonUtil;
 
@@ -24,27 +23,17 @@ import com.shenghesun.treasure.utils.JsonUtil;
 public class CompanyController {
 	
 	@Autowired
-	CompanyMessageService companyMessageService;
+	CompanyMessageService companyService;
 	@Autowired
 	SysUserService sysUserService;
 	/**
 	 * 完善公司信息
 	 * @return
 	 */
-	@RequestMapping(value = "/complete", method = RequestMethod.GET)
-	public JSONObject completeCompanyMessage(CompanyMessage companyMessage,String cellphone) {
-		
-		SysUser user=null;
+	@RequestMapping(value = "/complete", method = RequestMethod.POST)
+	public JSONObject completeCompanyMessage(CompanyMessage companyMessage) {
 		try {
-			if(cellphone!=null) {
-				user = sysUserService.findByCell(cellphone);
-			}
-			if(user!=null) {
-				user.setCompanyMessage(companyMessage);
-			}else {
-				return JsonUtil.getFailJSONObject("用户信息有误");
-			}
-			sysUserService.save(user);
+			companyService.save(companyMessage);
 		} catch (Exception e) {
 			return JsonUtil.getFailJSONObject();
 		}

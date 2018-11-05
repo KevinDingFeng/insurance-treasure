@@ -160,12 +160,15 @@ public class SysUser extends BaseEntity implements Serializable{
 	
 	
 	/**
-	 * 用户所属公司
+	 * 用户公司id
 	 */
-	@ManyToOne(fetch = FetchType.EAGER,cascade=CascadeType.MERGE)
+	@Column(nullable = true, length = 5)
+	@JSONField(serialize = false)
+	private Long companyId;
+/*	@ManyToOne(fetch = FetchType.EAGER,cascade=CascadeType.MERGE)
 	@JoinColumn(name = "company_id",referencedColumnName="id")
 	@NotFound(action=NotFoundAction.IGNORE)
-	private CompanyMessage companyMessage;
+	private CompanyMessage companyMessage;*/
 	
 	/**
 	 * 保单记录

@@ -2,19 +2,11 @@ package com.shenghesun.treasure.system.order;
 
 import java.io.Serializable;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
-
 import com.shenghesun.treasure.entity.base.BaseEntity;
-import com.shenghesun.treasure.system.company.CompanyMessage;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -23,8 +15,8 @@ import lombok.ToString;
 @Entity
 @Table
 @Data  
-@ToString(exclude = {"companyMessage"},callSuper = true)
-@EqualsAndHashCode(exclude = {"companyMessage"},callSuper = true)
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
 public class FundDetails extends BaseEntity implements Serializable{
 
 	private static final long serialVersionUID = -7917411850934668617L;
@@ -39,6 +31,9 @@ public class FundDetails extends BaseEntity implements Serializable{
 	
 	@Column
 	private String companyId;
+	
+	@Column
+	private String orderId;
 	//资金明细与公司关系
 /*	@ManyToOne(fetch = FetchType.EAGER,cascade=CascadeType.MERGE)
 	@JoinColumn(name = "company_id",referencedColumnName="id")

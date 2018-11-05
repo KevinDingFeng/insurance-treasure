@@ -1,27 +1,23 @@
 package com.shenghesun.treasure.fund.controller;
 
-import java.util.List;
-
-import org.apache.shiro.SecurityUtils;
-import org.dozer.DozerBeanMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.shenghesun.treasure.company.CompanyMessageService;
 import com.shenghesun.treasure.order.service.FundDetailsService;
 import com.shenghesun.treasure.system.company.CompanyMessage;
-import com.shenghesun.treasure.system.entity.SysUser;
-import com.shenghesun.treasure.system.model.FundShow;
 import com.shenghesun.treasure.system.order.FundDetails;
 import com.shenghesun.treasure.system.service.SysUserService;
 import com.shenghesun.treasure.utils.JsonUtil;
 
+import lombok.extern.slf4j.Slf4j;
+
 @RestController()
 @RequestMapping(value="/fund")
+@Slf4j
 public class FundController {
 	
 	@Autowired
@@ -36,17 +32,13 @@ public class FundController {
 	 */
 	@RequestMapping(value = "/detail", method = RequestMethod.GET)
 	public JSONObject completeCompanyMessage(Long id) {
-		@SuppressWarnings("unused")
-		org.apache.shiro.subject.Subject subject = SecurityUtils.getSubject();
 		
-		CompanyMessage company = null;
 		try {
-			SysUser user = sysUserService.findById(id);
-			company = user.getCompanyMessage();
-			return JsonUtil.getSuccessJSONObject(JSON.toJSONString(company));
 		} catch (Exception e) {
-			return JsonUtil.getFailJSONObject("特殊错误");
+			log.error("fund detail error");
+			return JsonUtil.getFailJSONObject();
 		}
+		return null;
 		
 	}
 	
@@ -60,7 +52,7 @@ public class FundController {
 		FundDetails fundDetails = new FundDetails();
 		try {
 			fundDetails.setOrderAmount(price);
-			fundDetails.setPlusOrMinus("+");
+			fundDetails.setPlusOrMinus("1");
 			CompanyMessage company = companyMessageService.findById(id);
 			if(company!=null) {
 				company.setBalance(company.getBalance()==null?price:company.getBalance()+price);
@@ -70,7 +62,8 @@ public class FundController {
 				return JsonUtil.getFailJSONObject("公司不存在");
 			}
 		} catch (Exception e) {
-			return JsonUtil.getFailJSONObject("特殊错误");
+			log.error("manager update balance error");
+			return JsonUtil.getFailJSONObject();
 		}
 		return JsonUtil.getSuccessJSONObject();
 	}

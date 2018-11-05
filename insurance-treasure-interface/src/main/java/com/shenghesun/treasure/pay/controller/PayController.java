@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.shenghesun.treasure.company.CompanyMessageService;
 import com.shenghesun.treasure.order.service.FundDetailsService;
 import com.shenghesun.treasure.order.service.OrderMessageService;
 import com.shenghesun.treasure.system.company.CompanyMessage;
@@ -21,6 +22,8 @@ public class PayController {
 	
 	@Autowired
 	SysUserService sysUserService;
+	@Autowired
+	CompanyMessageService companyService;
 	@Autowired
 	OrderMessageService orderMessageService;
 	@Autowired
@@ -38,18 +41,15 @@ public class PayController {
 			SysUser user = sysUserService.findById(userId);
 			//根据订单id查找到订单信息
 			OrderMessage order = orderMessageService.findById(orderId);
-			if(user!=null) {
-				company = user.getCompanyMessage();
-			}else {
-				return JsonUtil.getFailJSONObject("用户不存在");
-			}
+			Long companyId = user.getCompanyId();
+			company = companyService.findById(companyId);
 			if(company!=null&&order!=null) {
 				//保单金额
 				Integer price = order.getOrderAmount();
 				//如果余额大于保单金额,才进行支付扣款
 				if((company.getBalance()==null?0:company.getBalance())>order.getOrderAmount()) {
 					fundDetails.setOrderAmount(price);
-					fundDetails.setPlusOrMinus("-");
+					fundDetails.setPlusOrMinus("0");
 					//fundDetails.setOrderMessage(order);
 					company.setBalance(company.getBalance()==null?price:company.getBalance()-price);
 				}else {

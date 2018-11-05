@@ -118,12 +118,12 @@ public class OrderMessage extends BaseEntity implements Serializable{
 	/**
 	 * 保单归属用户
 	 */
-	@ManyToOne(fetch = FetchType.EAGER,cascade=CascadeType.MERGE)
+/*	@ManyToOne(fetch = FetchType.EAGER,cascade=CascadeType.MERGE)
 	@JoinColumn(name = "user_id",referencedColumnName="id")
 	@NotFound(action=NotFoundAction.IGNORE)
 	@JSONField(serialize = false)
 	private SysUser sysUser;
-	
+	*/
 	/**
 	 * 用户余额明细
 	 */

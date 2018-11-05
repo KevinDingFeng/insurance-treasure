@@ -64,16 +64,18 @@ public class CompanyMessage extends BaseEntity implements Serializable{
 	private String creditCard;
 	
 	/**
-	 * 公司账户下子用户
-	 */
-	@OneToMany(mappedBy = "companyMessage",cascade=CascadeType.ALL,fetch = FetchType.EAGER)
-	@JSONField(serialize = false)
-	private Set<SysUser> sysUser;
-	/**
 	 * 公司账户余额
 	 */
 	@Column(columnDefinition="DECIMAL(16,2)")
 	private Integer balance;
+	
+	/**
+	 * 公司账户下子用户
+	 */
+/*	@OneToMany(mappedBy = "companyMessage",cascade=CascadeType.ALL,fetch = FetchType.EAGER)
+	@JSONField(serialize = false)
+	private Set<SysUser> sysUser;*/
+
 	/**
 	 * 用户余额明细
 	 */

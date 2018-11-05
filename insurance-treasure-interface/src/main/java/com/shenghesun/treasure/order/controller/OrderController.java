@@ -29,17 +29,10 @@ public class OrderController {
 	@RequestMapping(value = "/save", method = RequestMethod.GET)
 	public JSONObject saveOrder(OrderMessage orderMessage) {
 		try {
-			Long userid = orderMessage.getUserid();
-			SysUser user=null;
-			if(userid!=null) {
-				user = sysUserService.findById(userid);
-			}
-			if(user!=null) {
-				orderMessage.setSysUser(user);
-				orderMessageService.save(orderMessage);
-			}else {
-				return JsonUtil.getFailJSONObject("用户不存在");
-			}
+			//完善下单信息
+			
+			//保存下单信息
+			orderMessageService.save(orderMessage);
 			return JsonUtil.getSuccessJSONObject();
 		} catch (Exception e) {
 			return JsonUtil.getFailJSONObject("特殊错误");
@@ -59,6 +52,5 @@ public class OrderController {
 		} catch (Exception e) {
 			return JsonUtil.getFailJSONObject("特殊错误");
 		}
-	
 	}
 }

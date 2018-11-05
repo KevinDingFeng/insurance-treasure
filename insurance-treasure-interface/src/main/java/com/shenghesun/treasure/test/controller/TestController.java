@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.alibaba.druid.support.json.JSONUtils;
 import com.alibaba.fastjson.JSONObject;
 import com.shenghesun.treasure.order.service.FundDetailsService;
 import com.shenghesun.treasure.system.entity.SysRole;
@@ -67,7 +66,7 @@ public class TestController {
 		List<FundShow> fundShowList = null;
 		for(int i=0;i<list.size();i++) {
 			FundShow fundShow = mapper.map(list.get(i), FundShow.class);
-			fundShowList.add(fundShow);
+			//fundShowList.add(fundShow);
 		}
 		return JsonUtil.getSuccessJSONObject(fundShowList);
 	}
