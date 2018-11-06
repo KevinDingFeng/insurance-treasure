@@ -11,6 +11,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.shenghesun.treasure.auth.support.UserService;
 import com.shenghesun.treasure.order.service.OrderMessageService;
+import com.shenghesun.treasure.order.support.OrderService;
 import com.shenghesun.treasure.system.entity.SysUser;
 import com.shenghesun.treasure.system.order.OrderMessage;
 import com.shenghesun.treasure.system.service.SysUserService;
@@ -23,6 +24,8 @@ public class OrderController {
 	@Autowired
 	OrderMessageService orderMessageService;
 	@Autowired
+	OrderService orderService;
+	@Autowired
 	SysUserService sysUserService;
 	@Autowired
 	UserService userService;
@@ -34,7 +37,7 @@ public class OrderController {
 	public JSONObject saveOrder(OrderMessage orderMessage) {
 		try {
 			//完善下单信息
-			
+			orderMessage = orderService.complete(orderMessage);
 			//保存下单信息
 			orderMessageService.save(orderMessage);
 			return JsonUtil.getSuccessJSONObject();

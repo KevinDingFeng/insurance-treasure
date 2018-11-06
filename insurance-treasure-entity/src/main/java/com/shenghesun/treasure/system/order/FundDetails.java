@@ -25,7 +25,7 @@ public class FundDetails extends BaseEntity implements Serializable{
 	@Column(columnDefinition="DECIMAL(16,2)")
 	private Integer orderAmount;
 	
-	//资金状态，入账还是出账，这里用正负号表示
+	//资金状态，入账还是出账，0代表出账 1代表入账
 	@Column
 	private String plusOrMinus;
 	

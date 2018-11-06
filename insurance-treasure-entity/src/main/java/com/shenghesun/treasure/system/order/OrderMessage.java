@@ -22,6 +22,7 @@ import com.shenghesun.treasure.entity.base.BaseEntity;
 import com.shenghesun.treasure.system.company.CompanyMessage;
 import com.shenghesun.treasure.system.entity.SysUser;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -31,125 +32,171 @@ import lombok.ToString;
 @Entity
 @Table
 @Data  
-@ToString(exclude = {"sysUser"},callSuper = true)
-@EqualsAndHashCode(exclude = {"sysUser"},callSuper = true)
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
+@XStreamAlias("DATA")
 public class OrderMessage extends BaseEntity implements Serializable{
 
 	private static final long serialVersionUID = -4353307437903537087L;
 
 	//投保用户id
+	@XStreamOmitField
 	@Column(length=50)
 	private Long userid;
 	//保单订单号
+	@XStreamOmitField
 	@Column(length=100)
 	private String orderNo;
 	
-	//以下信息来源页面
+	//资金状态，入账还是出账，0代表出账 1代表入账
+	@XStreamOmitField
+	@Column
+	private String plusOrMinus;
+	
+	/**
+	 * 页面收集字段
+	 */
 	//业务类型
 	@Column(length=100)
+	@XStreamOmitField
 	private String BusinessType;
-	//货物名称
-	@Column(length=100)
-	private String goodsName;
 	//货物价值
 	@Column(length=100)
+	@XStreamOmitField
 	private String goodsValue;
-	//币种
-	@Column(length=100)
-	private String currency;
 	//包装类型
 	@Column(length=100)
+	@XStreamOmitField
 	private String packageType;
-	//体积重量
-	@Column(length=100)
-	private String weight;
-	//运输方式
-	@Column(length=100)
-	private String transportMethod;
-	//起运地
-	@Column(length=100)
-	private String firstPlace;
-	//目的地
-	@Column(length=100)
-	private String destination;
-	//起运日期
-	@Column(length=100)
-	private String transportDate;
 	//车牌号或运单号
 	@Column(length=100)
+	@XStreamOmitField
 	private String licenseNumber;
-	//投保人
-	@Column(length=100)
-	private String applicator;
-	//被保险人
-	@XStreamAlias("APPLYCARTTYPE")
-	@Column(length=100)
-	private String insured;
 	//开票抬头
 	@Column(length=100)
+	@XStreamOmitField
 	private String invoiceTitle;
 	//保险公司
 	@Column(length=100)
+	@XStreamOmitField
 	private String insuranceCompany;
 	//保险条款
 	@Column(length=100)
+	@XStreamOmitField
 	private String insuranceClause;
+	
+	
+	/**
+	 * 太平洋保险接口字段
+	 */
+	//投保人名称
+	@Column(length=200)
+	@XStreamAlias("APPLYNAME")
+	private String applyname="Alice";
+	//被保人名称
+	@Column(length=200)
+	@XStreamAlias("INSURANTNAME")
+	private String insurantname="Alice";
 	//费率
-	@Column(length=100)
-	private String rate;
+	@Column(columnDefinition="DECIMAL(16,2)")
+	@XStreamAlias("RATE")
+	private Integer rate;
+	//始发地
+	@Column(length=60)
+	@XStreamAlias("STARTPORT")
+	private String startport="北京";
+	//目的地
+	@Column(length=60)
+	@XStreamAlias("ENDPORT")
+	private String endport="上海";
+	//运输方式
+	@Column(length=2)
+	@XStreamAlias("KIND")
+	private String kind="4";
+	//起运日期
+	@Column(length=10)
+	@XStreamAlias("SAILDATE")
+	private String saildate="2018-11-08";
+	//货物名称
+	@Column(length=500)
+	@XStreamAlias("ITEM")
+	private String item="大豆";
 	
 	//险类
-	private String classestype;
-	//投保人名称
-	private String applyname;
-	//被保人名称
-	private String insurantname;
+	@Column(length=1)
+	@XStreamAlias("CLASSESTYPE")
+	private String classestype="1";
+
 	//险种代码
-	private String classtype;
+	@Column(length=8)
+	@XStreamAlias("CLASSTYPE")
+	private String classtype="11040200";
 	//运单号、发票号码
-	private String mark;
+	@Column(length=500)
+	@XStreamAlias("MARK")
+	private String mark="9630151214002";
 	//包装及数量
-	private String quantity;
-	//货物名称
-	private String item;
+	@Column(length=500)
+	@XStreamAlias("QUANTITY")
+	private String quantity="1";
+
 	//包装代码
-	private String packcode;
+	@Column(length=2)
+	@XStreamAlias("PACKCODE")
+	private String packcode="01";
 	//货物类型
-	private String itemcode;
-	//运输方式
-	private String kind;
+	@Column(length=4)
+	@XStreamAlias("ITEMCODE")
+	private String itemcode="1106";
+
 	//运输工具名称
-	private String kindname;
-	//始发地
-	private String startport;
-	//目的地
-	private String endport;
+	@Column(length=30)
+	@XStreamAlias("KINDNAME")
+	private String kindname="卡车";
+
 	//主险条款代码
-	private String mainitemcode;
+	@Column(length=12)
+	@XStreamAlias("MAINITEMCODE")
+	private String mainitemcode="ZH";
 	//主险条款内容
-	private String itemcontent;
+	@Column
+	@XStreamAlias("ITEMCONTENT")
+	private String itemcontent="国内水路、陆路货物运输保险条款综合险";
 	//币种代码
-	private String currencycode;
+	@Column(length=2)
+	@XStreamAlias("CURRENCYCODE")
+	private String currencycode="01";
 	//发票金额
-	private String invamount;
-	//private String rate;
+	@Column(columnDefinition="DECIMAL(16,2)")
+	@XStreamAlias("INVAMOUNT")
+	private Integer invamount=100;
 	//保费
-	private String preminum;
+	@Column(columnDefinition="DECIMAL(16,2)")
+	@XStreamAlias("PREMIUM")
+	private Integer preminum=1000;
 	//保费币种
-	private String fcurrencycode;
+	@Column(length=50)
+	@XStreamAlias("FCURRENCYCODE")
+	private String fcurrencycode="01";
 	//起保日期
-	private String effectdate;
-	//航班日期
-	private String saildate;
+	@Column(length=10)
+	@XStreamAlias("EFFECTDATE")
+	private String effectdate="2018-11-08";
+
 	//免赔条件
-	private String franchise;
+	@Column(length=500)
+	@XStreamAlias("FRANCHISE")
+	private String franchise="other terms  conditions are equalent to the updated Open Policy.";
 	//自定义查询码
-	private String userno;
+	@Column(length=50)
+	@XStreamAlias("USERNO")
+	private String userno="58965412563";
 
 	/**
 	 * 保单总金额
 	 */
 	@Column(columnDefinition="DECIMAL(16,2)")
+	@XStreamOmitField
 	private Integer orderAmount;
 
 	/**
@@ -157,6 +204,7 @@ public class OrderMessage extends BaseEntity implements Serializable{
 	 * 默认为 0
 	 */
 	@Column
+	@XStreamOmitField
 	private Integer payStatus = 0; 
 	
 	/**
@@ -164,6 +212,7 @@ public class OrderMessage extends BaseEntity implements Serializable{
 	 * 默认为 0
 	 */
 	@Column
+	@XStreamOmitField
 	private Integer insuranceStatus = 0; 
 
 }

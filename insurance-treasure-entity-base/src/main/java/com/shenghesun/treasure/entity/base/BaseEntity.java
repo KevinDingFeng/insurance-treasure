@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.shenghesun.treasure.entity.base.listener.BaseEntityListener;
 
@@ -54,15 +55,18 @@ public class BaseEntity {
 	protected Long id;
 	
 	@Version
-	protected long version;
+	@JSONField(serialize = false)
+	protected long version=0l;
 	
 	@JsonFormat(timezone="GMT+8",pattern="yyyy-MM-dd HH:mm:ss")
 	@Column(updatable=false)
+	@JSONField(serialize = false)
 	protected Timestamp creation;
 	
 //	@Index(name="lastModified")
 	@JsonFormat(timezone="GMT+8",pattern="yyyy-MM-dd HH:mm:ss")
 	@Column()
+	@JSONField(serialize = false)
 	protected Timestamp lastModified;
 	
 }

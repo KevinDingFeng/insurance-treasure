@@ -10,24 +10,32 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-//页面基础信息数据字典
+//运输方式字典
 @Entity
 @Table
 @Data  
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class BaseDictionary extends BaseEntity{
+public class BaseTransport extends BaseEntity{
 
-	//字典类型，根据前台输入该字段的不同，查询不同内容的数据字典
+
+	//运输方式名称
 	@Column(length = 10)
-	private String type;
+	private String tname;
 	
+	//运输方式代码
 	@Column(length = 10)
-	private String code;
+	private String tcode;
 	
-	@Column(length = 50)
-	private String name;
+	//上级运输代码
+	@Column(length = 10)
+	private String tparentCode;
 	
+	//业务类型代码
+	@Column(length = 10)
+	private String businessCode;
+	
+	//国内国际
 	@Column(length = 10)
 	private String country;
 }

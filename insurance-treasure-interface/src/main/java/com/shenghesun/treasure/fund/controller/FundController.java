@@ -1,14 +1,20 @@
 package com.shenghesun.treasure.fund.controller;
 
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
+import com.shenghesun.treasure.auth.support.UserService;
 import com.shenghesun.treasure.company.CompanyMessageService;
 import com.shenghesun.treasure.order.service.FundDetailsService;
 import com.shenghesun.treasure.system.company.CompanyMessage;
+import com.shenghesun.treasure.system.entity.SysUser;
 import com.shenghesun.treasure.system.order.FundDetails;
 import com.shenghesun.treasure.system.service.SysUserService;
 import com.shenghesun.treasure.utils.JsonUtil;
@@ -23,6 +29,8 @@ public class FundController {
 	@Autowired
 	SysUserService sysUserService;
 	@Autowired
+	UserService userService;
+	@Autowired
 	CompanyMessageService companyMessageService;
 	@Autowired
 	FundDetailsService fundDetailsService;
@@ -31,11 +39,23 @@ public class FundController {
 	 * @return
 	 */
 	@RequestMapping(value = "/detail", method = RequestMethod.GET)
-	public JSONObject completeCompanyMessage(Long id) {
-		
+	public JSONObject completeCompanyMessage(HttpServletRequest request) {
 		try {
+			Long id = userService.getUser(request);
+			SysUser user = sysUserService.findById(id);
+			Long companyId =null;
+			if(user!=null) {
+				companyId = user.getCompanyId();
+			}else {
+				return JsonUtil.getFailJSONObject();
+			}
+			if(companyId!=null) {
+				//List<FundDetails> fundDetails = fundDetailsService.findByCompanyId(companyId);
+			}
+			
+			
 		} catch (Exception e) {
-			log.error("fund detail error");
+			log.error("fund_detail error");
 			return JsonUtil.getFailJSONObject();
 		}
 		return null;

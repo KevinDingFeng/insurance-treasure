@@ -42,19 +42,44 @@ public class AsyncService {
 //	private SmsCodeService smsCodeService;
 	
 	@Async("asyncServiceExecutor")
-    public void executeAsync() {
-        //logger.info("start executeAsync");
+    public void executeAsync(OrderMessage orderMessage) {
+        logger.info("start executeAsync");
         try{
-        	OrderMessage orderMessage = orderMessageService.findById(1L);
-//        	PayMessage payMessage = payService.findByOrderNo(orderNo);
+        	//OrderMessage orderMessage = orderMessageService.findById(1L);
+        	if(orderMessage != null) {
+    			OrderMessage pmTemp = new OrderMessage();
+    			BeanUtils.copyProperties(orderMessage, pmTemp);
+    			pmTemp.setId(null);
+    			pmTemp.setCreation(null);
+    			pmTemp.setLastModified(null);
+    			pmTemp.setVersion(0l);
+    				boolean flag = true;
+    				String xml = orderMessage2Xml(pmTemp);
+    				System.out.println(xml);
+        			if(StringUtils.isNotEmpty(xml)) {
+        				//货运险承保接口
+        				flag = webServiceClient.approvl(xml,orderMessage);
+        				System.out.println(flag);
+        				if(!flag) {
+        					flag = false;
+        				}
+        			}
+    				if(flag) {
+    					
+    				}else {
+    					
+    				}
+    			
+    		}
+//        	orderMessage orderMessage = payService.findByOrderNo(orderNo);
     		
     		//修改保单状态
     		//测试用，正式删除
-//    		payMessage.setOrderNo(StringGenerateUtils.generateId());
+//    		orderMessage.setOrderNo(StringGenerateUtils.generateId());
     		
-    	/*	if(payMessage != null) {
-    			PayMessage pmTemp = new PayMessage();
-    			BeanUtils.copyProperties(payMessage, pmTemp);
+    	/*	if(orderMessage != null) {
+    			orderMessage pmTemp = new orderMessage();
+    			BeanUtils.copyProperties(orderMessage, pmTemp);
     			pmTemp.setId(null);
     			pmTemp.setCreation(null);
     			pmTemp.setLastModified(null);
@@ -63,10 +88,10 @@ public class AsyncService {
     			if(!CollectionUtils.isEmpty(markList)) {
     				boolean flag = true;
     				for(Mark mark : markList) {
-    					String xml = payMessage2Xml(pmTemp,mark.getMark());
+    					String xml = orderMessage2Xml(pmTemp,mark.getMark());
             			if(StringUtils.isNotEmpty(xml)) {
             				//货运险承保接口
-            				flag = webServiceClient.approvl(xml,payMessage);
+            				flag = webServiceClient.approvl(xml,orderMessage);
             				if(!flag) {
             					flag = false;
             				}
@@ -89,26 +114,26 @@ public class AsyncService {
 	
 	/**
 	 * 货运险承保接口应答报文转xml
-	 * @Title: payMessage2Xml 
+	 * @Title: orderMessage2Xml 
 	 * @Description: TODO 
-	 * @param payMessage
+	 * @param orderMessage
 	 * @return  String 
 	 * @author yangzp
 	 * @date 2018年10月10日下午5:36:20
 	 **/ 
-	private String payMessage2Xml(OrderMessage payMessage, String markNo) {
+	private String orderMessage2Xml(OrderMessage orderMessage) {
 		Freightcpic freightcpic = new Freightcpic();
 		
 		Header header = new Header();
 		header.setApplyid(StringGenerateUtils.generateId());
-		//header.setClassestype(payMessage.getClassestype());
+		header.setClassestype(orderMessage.getClassestype());
 		freightcpic.setHeader(header);
 		
 		Datas datas = new Datas();
-//		if("2".equals(payMessage.getClassestype())) {
-//			payMessage.setFlightareacode("12040200");
+//		if("2".equals(orderMessage.getClassestype())) {
+//			orderMessage.setFlightareacode("12040200");
 //		}
-		datas.setPayMessage(payMessage);
+		datas.setOrderMessage(orderMessage);
 		
 		freightcpic.setDatas(datas);
 		

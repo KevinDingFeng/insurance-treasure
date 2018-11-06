@@ -10,17 +10,19 @@ import com.shenghesun.treasure.system.dictionary.BaseDictionary;
 
 @Service
 public class BaseDictionaryService {
-
-	@Autowired
-	BaseDictionaryDao baseDictionaryDao;
 	
-	public List<BaseDictionary> findByType(List<String> type) {
-		return baseDictionaryDao.findByTypeIn(type);
+	@Autowired
+	private BaseDictionaryDao baseDictionaryDao;
+	
+	public List<BaseDictionary> find(){
+		return baseDictionaryDao.findAll();
 	}
-	public List<BaseDictionary> findByParentCode(String parentCode) {
-		return baseDictionaryDao.findByParentCode(parentCode);
+	
+	public List<BaseDictionary> findByType(String type){
+		return baseDictionaryDao.findByType(type);
 	}
-	public List<BaseDictionary> findByParentId(String parentId) {
-		return baseDictionaryDao.findByParentId(parentId);
+	
+	public List<BaseDictionary> findByCountryAndType(String country,String type){
+		return baseDictionaryDao.findByCountryAndType(country, type);
 	}
-}  
+}

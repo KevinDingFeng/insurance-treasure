@@ -12,5 +12,5 @@ public class Datas {
 //	private Order order;
 	
 	@XStreamAlias("DATA")
-	private OrderMessage payMessage;
+	private OrderMessage orderMessage;
 }

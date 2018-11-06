@@ -10,24 +10,27 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-//页面基础信息数据字典
 @Entity
 @Table
 @Data  
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class BaseDictionary extends BaseEntity{
+public class BaseBusiness extends BaseEntity{
 
-	//字典类型，根据前台输入该字段的不同，查询不同内容的数据字典
+	/**
+	 * 业务类型名称
+	 */
 	@Column(length = 10)
-	private String type;
-	
+	private String name;
+	/**
+	 * 业务类型代码
+	 */
 	@Column(length = 10)
 	private String code;
+	/**
+	 * 费率
+	 */
+	@Column(columnDefinition="DECIMAL(16,3)")
+	private Integer rate;
 	
-	@Column(length = 50)
-	private String name;
-	
-	@Column(length = 10)
-	private String country;
 }

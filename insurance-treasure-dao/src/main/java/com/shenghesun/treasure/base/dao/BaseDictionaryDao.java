@@ -10,10 +10,8 @@ import com.shenghesun.treasure.system.dictionary.BaseDictionary;
 
 @Repository
 public interface BaseDictionaryDao extends JpaRepository<BaseDictionary, Long>, JpaSpecificationExecutor<BaseDictionary>{
-
-	List<BaseDictionary> findByTypeIn(List<String> list);
 	
-	List<BaseDictionary> findByParentCode(String code);
+	List<BaseDictionary> findByCountryAndType(String country,String type);
 	
-	List<BaseDictionary> findByParentId(String parentId);
+	List<BaseDictionary> findByType(String type);
 }
