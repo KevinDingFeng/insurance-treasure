@@ -30,10 +30,10 @@ public class FundDetails extends BaseEntity implements Serializable{
 	private String plusOrMinus;
 	
 	@Column
-	private String companyId;
+	private Long companyId;
 	
 	@Column
-	private String orderId;
+	private Long userId;
 	//资金明细与公司关系
 /*	@ManyToOne(fetch = FetchType.EAGER,cascade=CascadeType.MERGE)
 	@JoinColumn(name = "company_id",referencedColumnName="id")

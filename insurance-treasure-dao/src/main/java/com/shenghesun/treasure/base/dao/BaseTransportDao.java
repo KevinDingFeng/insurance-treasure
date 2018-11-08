@@ -11,7 +11,10 @@ import com.shenghesun.treasure.system.dictionary.BaseTransport;
 @Repository
 public interface BaseTransportDao extends JpaRepository<BaseTransport, Long>, JpaSpecificationExecutor<BaseTransport>{
 
-	List<BaseTransport> findByBusinessCodeAndCountry(String code,String country);
+	List<BaseTransport> findByBusinessCodeAndParentCode(String business,String parentCode);
+	/*List<BaseTransport> findByBusinessCodeAndCountry(String code,String country);
 	
 	List<BaseTransport> findByBusinessCodeAndTparentCode(String code,String parentCode);
+	
+	List<BaseTransport> findByCountryAndTparentCode(String country,String code);*/
 }

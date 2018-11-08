@@ -11,8 +11,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
-import org.springframework.context.annotation.Lazy;
-
 import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.shenghesun.treasure.entity.base.BaseEntity;
@@ -33,6 +31,7 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true, exclude = { "users" })
 public class SysRole extends BaseEntity {
 
+	private static final long serialVersionUID = -350044008120204151L;
 
 	/**
 	 * 等级，和用户中的等级相关，用户可以看到同等级及以下等级的角色

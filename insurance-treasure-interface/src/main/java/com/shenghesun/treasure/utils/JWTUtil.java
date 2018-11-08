@@ -16,6 +16,7 @@ public class JWTUtil {
 
 	public static final String ACCOUNT_KEY = "account";
 	public static final String ID_KEY = "id";
+	public static final String COMPANY_KEY = "companyId";
 	public static final String ERR_MSG = "err_msg";
 
 	/**
@@ -26,11 +27,12 @@ public class JWTUtil {
 	 * @param generateTime 用户登录时间戳
 	 * @return
 	 */
-	public static String create(String userId, String userAccount, Long generateTime) {
+	public static String create(String userId, String userAccount,String companyId, Long generateTime) {
 		Map<String, Object> map = new HashMap<>();
 		// 可以把任何安全的数据放到map里面
 		map.put(ACCOUNT_KEY, userAccount);
 		map.put(ID_KEY, userId);
+		map.put(COMPANY_KEY, companyId);
 		String jwt = Jwts.builder().setClaims(map)
 				.setExpiration(new Date(generateTime + CustomConfig.EXPIRATION_TIME_MILLISECOND))
 				.signWith(SignatureAlgorithm.HS512, CustomConfig.SECRET).compact();
@@ -56,6 +58,7 @@ public class JWTUtil {
 				}
 				resp.put(ACCOUNT_KEY, userAccount);
 				resp.put(ID_KEY, body.get(ID_KEY));
+				resp.put(COMPANY_KEY, body.get(COMPANY_KEY));
 				return resp;
 			} catch (SignatureException | MalformedJwtException e) {
 				//  handle exception

@@ -1,5 +1,6 @@
 package com.shenghesun.treasure.entity.base;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
 import javax.persistence.Column;
@@ -16,7 +17,9 @@ import com.shenghesun.treasure.entity.base.listener.BaseEntityListener;
 
 @MappedSuperclass
 @EntityListeners(value = {BaseEntityListener.class})
-public class BaseEntity {
+public class BaseEntity implements Serializable{
+
+	private static final long serialVersionUID = -5799611251273449184L;
 
 	public Long getId() {
 		return id;
@@ -60,7 +63,6 @@ public class BaseEntity {
 	
 	@JsonFormat(timezone="GMT+8",pattern="yyyy-MM-dd HH:mm:ss")
 	@Column(updatable=false)
-	@JSONField(serialize = false)
 	protected Timestamp creation;
 	
 //	@Index(name="lastModified")

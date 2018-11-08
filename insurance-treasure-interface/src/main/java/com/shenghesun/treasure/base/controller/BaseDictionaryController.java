@@ -11,14 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.shenghesun.treasure.base.service.BaseBusinessService;
 import com.shenghesun.treasure.base.service.BaseCityService;
-import com.shenghesun.treasure.base.service.BaseDictionaryService;
 import com.shenghesun.treasure.base.service.BaseGoodsService;
 import com.shenghesun.treasure.base.service.BaseTransportService;
-import com.shenghesun.treasure.system.dictionary.BaseBusiness;
 import com.shenghesun.treasure.system.dictionary.BaseCity;
-import com.shenghesun.treasure.system.dictionary.BaseDictionary;
 import com.shenghesun.treasure.system.dictionary.BaseGoods;
 import com.shenghesun.treasure.system.dictionary.BaseTransport;
 import com.shenghesun.treasure.utils.JsonUtil;
@@ -35,10 +31,6 @@ public class BaseDictionaryController {
 	@Autowired
 	BaseTransportService baseTransportService;
 	@Autowired
-	BaseDictionaryService baseDictionaryService;
-	@Autowired
-	BaseBusinessService baseBusinessService;
-	@Autowired
 	BaseCityService baseCityService;
 	/**
 	 * 页面加载获取全部基础数据字典
@@ -48,17 +40,14 @@ public class BaseDictionaryController {
 		Map<String, Object> map=new HashMap<>();
 		try {
 			//业务类型
-			List<BaseBusiness> businessList = baseBusinessService.find();
-			//币种
-			List<BaseDictionary> currencyList = baseDictionaryService.findByCountryAndType(country, "1");
-			//包装类型
-			List<BaseDictionary> packList = baseDictionaryService.findByType("2");
+			List<BaseGoods> businessList = baseGoodsService.findByParentCode("-1");
 			//城市
 			List<BaseCity> cityList = baseCityService.find();
+			//一级运输方式
+			List<BaseTransport> transList = baseTransportService.findByBusinessCodeAndParentCode(country,"-1");
 			map.put("business", businessList);
-			map.put("currency", currencyList);
-			map.put("pack", packList);
 			map.put("city", cityList);
+			map.put("trans", transList);
 		} catch (Exception e) {
 			log.error("base_all error");
 			e.printStackTrace();
@@ -66,53 +55,38 @@ public class BaseDictionaryController {
 		return JsonUtil.getSuccessJSONObject(JSON.toJSONString(map));
 	}
 	/**
-	 * 根据业务类型获取一级运输方式和一级货物名称
+	 * 获取货物名称
 	 */
-	@RequestMapping(value = "/transportAndGoods", method = RequestMethod.GET)
+	@RequestMapping(value = "/goods", method = RequestMethod.GET)
 	public JSONObject getTransport(String code,String country) {
-		Map<String, Object> map=new HashMap<>();
+		List<BaseGoods> goodsList=null;
 		try {
-			List<BaseTransport> transportList = baseTransportService.findByBusinessCodeAndCountry(code, country);
-			List<BaseGoods> goodsList = baseGoodsService.findByParentCode(code);
-			map.put("transportList", transportList);
-			map.put("goodsList", goodsList);
+			goodsList = baseGoodsService.findByParentCode(code);
 		} catch (Exception e) {
-			log.error("base_transport_goods error");
+			log.error("base_firstGoods error");
 			e.printStackTrace();
 		}
-		return JsonUtil.getSuccessJSONObject(JSON.toJSONString(map));
+		return JsonUtil.getSuccessJSONObject(JSON.toJSONString(goodsList));
 	}
 	/**
 	 * 根据一级货物名称获取二级
 	 * @param type
 	 * @return
 	 */
-	@RequestMapping(value = "/secondGoods", method = RequestMethod.GET)
-	public JSONObject getFirst(String code,String id) {
-		List<BaseGoods> dictionaryList=null;
-		try {
-			dictionaryList = baseGoodsService.findByParentCodeAndParentId(code, id);
-		} catch (Exception e) {
-			return JsonUtil.getFailJSONObject();
-		}
-		return JsonUtil.getSuccessJSONObject(JSON.toJSONString(dictionaryList));
-	}
-	
+
 	/**
-	 * 根据一级运输方式获取二级运输
+	 * 获取运输方式
 	 */
-	@RequestMapping(value = "/secondTransport", method = RequestMethod.GET)
-	public JSONObject getSecTransport(String code,String parentCode) {
+	@RequestMapping(value = "/transport", method = RequestMethod.GET)
+	public JSONObject getSecTransport(String code,String business) {
 		List<BaseTransport> transportList=null;
 		try {
-			transportList = baseTransportService.findByBusinessCode(code,parentCode);
+			transportList = baseTransportService.findByBusinessCodeAndParentCode(business,code);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error("base_secondTransport error");
+			return JsonUtil.getFailJSONObject();
 		}
 		return JsonUtil.getSuccessJSONObject(JSON.toJSONString(transportList));
 	}
-
-
 
 }

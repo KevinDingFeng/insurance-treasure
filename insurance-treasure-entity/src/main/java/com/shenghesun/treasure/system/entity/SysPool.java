@@ -22,6 +22,8 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 public class SysPool extends BaseEntity {
 
+	private static final long serialVersionUID = -2039066932462965340L;
+
 	/**
 	 * 是否为模拟数据
 	 */

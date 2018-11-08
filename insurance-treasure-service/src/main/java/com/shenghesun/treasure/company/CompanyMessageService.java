@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 
 import com.shenghesun.treasure.company.dao.CompanyMessageDao;
 import com.shenghesun.treasure.system.company.CompanyMessage;
-import com.shenghesun.treasure.system.entity.SysUser;
 
 @Service
 public class CompanyMessageService {

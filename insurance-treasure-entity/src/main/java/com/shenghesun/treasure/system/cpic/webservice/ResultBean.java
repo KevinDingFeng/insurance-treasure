@@ -13,7 +13,7 @@ public class ResultBean {
 	private String policyNo;
 
 	
-	
+/*	
 	public static void main(String[] args) {
 		String xml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>" + 
 				"  <RESULT>\r\n" + 
@@ -31,8 +31,8 @@ public class ResultBean {
 				"	<!--电子保单内容-->\r\n" + 
 				"	<FILE_EPOLICY></FILE_EPOLICY>\r\n" + 
 				"  </RESULT>\r\n";
-	/*	ResultBean result = XStreamUtil.xmlToBean(xml, ResultBean.class);
+		ResultBean result = XStreamUtil.xmlToBean(xml, ResultBean.class);
 		System.out.println(result);
-		System.out.println();*/
-	}
+		System.out.println();
+	}*/
 }

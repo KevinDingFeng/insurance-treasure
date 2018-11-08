@@ -5,8 +5,6 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.shenghesun.treasure.system.dao.SysUserDao;
@@ -19,7 +17,7 @@ public class SysUserService {
 	@Autowired
 	private SysUserDao userDao;
 
-	@Cacheable(cacheNames = "sysUsers", key = "#account")
+	//@Cacheable(cacheNames = "sysUsers", key = "#account")
 	public SysUser findByAccount(String account) {
 		return userDao.findByAccount(account);
 	}
@@ -36,7 +34,7 @@ public class SysUserService {
 		return userDao.findByOpenId(openId);
 	}
 
-	@CachePut(cacheNames = "sysUsers", key = "#entity.cellphone")
+	//@CachePut(cacheNames = "sysUsers", key = "#entity.cellphone")
 	public SysUser save(SysUser entity) {
 		return userDao.save(entity);
 	}

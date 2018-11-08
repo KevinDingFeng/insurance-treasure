@@ -1,8 +1,8 @@
 package com.shenghesun.treasure.test.controller;
 
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.dozer.DozerBeanMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,15 +11,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.shenghesun.treasure.order.service.FundDetailsService;
-import com.shenghesun.treasure.system.entity.SysRole;
-import com.shenghesun.treasure.system.entity.SysUser;
+import com.shenghesun.treasure.cpic.service.AsyncService;
+import com.shenghesun.treasure.system.code.GoodsCode;
 import com.shenghesun.treasure.system.model.FundShow;
-import com.shenghesun.treasure.system.order.FundDetails;
-import com.shenghesun.treasure.system.service.SysUserService;
+import com.shenghesun.treasure.system.order.OrderMessage;
 import com.shenghesun.treasure.test.service.TestCacheService;
 import com.shenghesun.treasure.utils.JsonUtil;
+import com.shenghesun.treasure.utils.RedisUtil;
 
 /**
  * 测试入口 测试 cache 的使用
@@ -28,15 +28,15 @@ import com.shenghesun.treasure.utils.JsonUtil;
  *
  */
 @RestController
-@RequestMapping(value = "/test")
+@RequestMapping(value = "/api")
 public class TestController {
 	
 	@Autowired
 	private TestCacheService testCacheService;
 	@Autowired
-	private SysUserService sysUserService;
+	private AsyncService asyncService;
 	@Autowired
-	private FundDetailsService fundDetailsService;
+	private RedisUtil redisUtil;
 
 	@RequestMapping(value = "/find", method = RequestMethod.GET)
 	public String find(@RequestParam(value = "key") String key) {
@@ -59,57 +59,26 @@ public class TestController {
 		return "OK";
 	}
 	
-	@RequestMapping(value = "/findFund", method = RequestMethod.GET)
-	public JSONObject removed() {
-		DozerBeanMapper mapper = new DozerBeanMapper();
-		List<FundDetails> list = fundDetailsService.findByCompanyId("4");
-		List<FundShow> fundShowList = null;
-		for(int i=0;i<list.size();i++) {
-			FundShow fundShow = mapper.map(list.get(i), FundShow.class);
-			//fundShowList.add(fundShow);
-		}
-		return JsonUtil.getSuccessJSONObject(fundShowList);
+	@RequestMapping(value = "/insurance", method = RequestMethod.GET)
+	public String insu(OrderMessage orderMessage) {		
+		asyncService.executeAsync(orderMessage);
+		return "OK";
 	}
 	
-	
-	@RequestMapping(value = "/base", method = RequestMethod.GET)
-	public JSONObject base(String account) {
-		SysUser user = sysUserService.findByAccount(account);
-		Set<SysRole> roles = user.getRoles();
-		if (roles != null && roles.size() > 0) {
-			Iterator<SysRole> roleIts = roles.iterator();
-			JSONObject rolesObj = null;
-			while (roleIts.hasNext()) {
-				if (rolesObj == null) {
-					rolesObj = new JSONObject();
-				}
-/*				rolesObj.put(role.getName(), role.getId());// 添加角色信息
-				Set<SysPermission> perms = role.getPermissions();
-				Iterator<SysPermission> permIts = perms.iterator();
-				while (permIts.hasNext()) {
-					if (permsObj == null) {
-						permsObj = new JSONObject();
-					}
-					SysPermission sysPermission = permIts.next();
-					permsObj.put(sysPermission.getPerm(), sysPermission.getId());// 添加权限信息
-				}*/
-			}
-		
-		//List<BaseDictionary> findById = baseDictionaryService.findByParentCode("21");
-		//管理员更新资金详情
-	/*	SysUser user = sysUserService.findById(2l);
-		//user.setBalance(180);
-		FundDetails fd = new FundDetails();
-		fd.setPrice(180);
-		fd.setPlusOrMinus("+");
-		//fd.setSysUser(user);
-		fundDetailsService.save(fd);*/
-		//查看资金明细
-		//List<FundDetails> fundDetails = user.getFundDetails();
-		//String string = fundDetails.toString();
-		
+	@RequestMapping(value = "/redis", method = RequestMethod.GET)
+	public String redis(String code) {		
+		/*if(redisUtil.exists(code)){
+			String string = redisUtil.get(code);
+			System.out.println(string);
+			//TransCode tc = JSON.parseObject(string, TransCode.class);
+		}*/
+		GoodsCode goods = null;
+		if(redisUtil.exists(code)){
+			String string = redisUtil.get(code);
+			goods = JSON.parseObject(string, GoodsCode.class);
 		}
-		return JsonUtil.getSuccessJSONObject();
+		return "OK";
 	}
+
 	
 }

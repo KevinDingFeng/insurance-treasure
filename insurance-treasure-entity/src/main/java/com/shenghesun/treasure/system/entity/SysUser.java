@@ -13,14 +13,11 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.validator.constraints.NotBlank;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.shenghesun.treasure.entity.base.BaseEntity;
-import com.shenghesun.treasure.system.company.CompanyMessage;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -43,7 +40,7 @@ public class SysUser extends BaseEntity implements Serializable{
 	/**
 	 * 登录名 用户名
 	 */
-	@NotBlank(message = "{user.account.notBlank}")
+	
 	@Column(nullable = false, length = 64)
 	private String account;
 

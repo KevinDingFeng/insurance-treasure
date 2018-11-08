@@ -10,8 +10,8 @@ public class TokenUtil {
 	 * @param account
 	 * @return
 	 */
-	public static String create(Long userId, String account) {
-		return JWTUtil.create(userId + "", account, System.currentTimeMillis());
+	public static String create(Long userId, String account,Long companyId) {
+		return JWTUtil.create(userId + "", account,companyId + "", System.currentTimeMillis());
 	}
 	
 	/**
@@ -50,5 +50,15 @@ public class TokenUtil {
 	public static String getLoginUserAccount(Map<String, Object> map) {
 		return (String)map.get(JWTUtil.ACCOUNT_KEY);
 	}
+	/**
+	 * 解析token中登陆用户的companyId
+	 */
+	public static Long getLoginCompanyId(String token) {
+		Map<String, Object> map = decode(token);
+		return getLoginCompanyId(map);
+	}
 	
+	public static Long getLoginCompanyId(Map<String, Object> map) {
+		return Long.parseLong((String)map.get(JWTUtil.COMPANY_KEY));
+	}
 }

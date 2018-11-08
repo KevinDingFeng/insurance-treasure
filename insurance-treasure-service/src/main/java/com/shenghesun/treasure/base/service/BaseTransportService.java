@@ -12,6 +12,11 @@ import com.shenghesun.treasure.system.dictionary.BaseTransport;
 public class BaseTransportService {
 	@Autowired
 	private BaseTransportDao transportDao;
+	
+	public List<BaseTransport> findByBusinessCodeAndParentCode(String business,String parentCode){
+		return transportDao.findByBusinessCodeAndParentCode(business, parentCode);
+	}
+	/*
 
 	public List<BaseTransport> findByBusinessCodeAndCountry(String code,String country){
 		return transportDao.findByBusinessCodeAndCountry(code,country);
@@ -20,5 +25,7 @@ public class BaseTransportService {
 	public List<BaseTransport> findByBusinessCode(String code,String parentCode){
 		return transportDao.findByBusinessCodeAndTparentCode(code,parentCode);
 	}
-	
+	public List<BaseTransport> findByCountryAndTparentCode(String country,String code){
+		return transportDao.findByCountryAndTparentCode(country,code);
+	}*/
 }

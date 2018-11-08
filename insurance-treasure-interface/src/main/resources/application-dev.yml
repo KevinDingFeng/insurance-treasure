@@ -45,7 +45,7 @@ sms:
         code: SMS_147196678
 cpic:
     web:
-        wsdl.url: http://182.150.60.64/freight/zrxservices/FreightCommonService?wsdl
+        wsdl.url: http://182.150.60.49/freight/zrxservices/FreightCommonService?wsdl
     userName: EBTEST
     password: Ecargo1234
     classescode: 11040200

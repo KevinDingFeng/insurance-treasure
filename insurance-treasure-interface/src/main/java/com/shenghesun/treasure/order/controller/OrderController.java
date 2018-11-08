@@ -9,13 +9,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.shenghesun.treasure.auth.support.UserService;
 import com.shenghesun.treasure.order.service.OrderMessageService;
 import com.shenghesun.treasure.order.support.OrderService;
 import com.shenghesun.treasure.system.entity.SysUser;
 import com.shenghesun.treasure.system.order.OrderMessage;
 import com.shenghesun.treasure.system.service.SysUserService;
+import com.shenghesun.treasure.utils.HttpHeaderUtil;
 import com.shenghesun.treasure.utils.JsonUtil;
+import com.shenghesun.treasure.utils.TokenUtil;
 
 @RestController()
 @RequestMapping("/order")
@@ -27,16 +28,18 @@ public class OrderController {
 	OrderService orderService;
 	@Autowired
 	SysUserService sysUserService;
-	@Autowired
-	UserService userService;
 	/**
 	 * 下单
 	 * @return
 	 */
-	@RequestMapping(value = "/save", method = RequestMethod.GET)
-	public JSONObject saveOrder(OrderMessage orderMessage) {
+	@RequestMapping(value = "/save", method = RequestMethod.POST)
+	public JSONObject saveOrder(HttpServletRequest request,OrderMessage orderMessage) {
 		try {
+			//获取用户信息
+			String token = HttpHeaderUtil.getToken((HttpServletRequest) request);
+			Long userId = TokenUtil.getLoginUserId(token);
 			//完善下单信息
+			orderMessage.setUserid(userId);
 			orderMessage = orderService.complete(orderMessage);
 			//保存下单信息
 			orderMessageService.save(orderMessage);
@@ -53,8 +56,9 @@ public class OrderController {
 	 */
 	@RequestMapping(value = "/show", method = RequestMethod.GET)
 	public JSONObject getOrder(HttpServletRequest request) {
+		String token = HttpHeaderUtil.getToken((HttpServletRequest) request);
 		try {
-			Long id = userService.getUser(request);
+			Long id = TokenUtil.getLoginUserId(token);
 			SysUser user = sysUserService.findById(id);
 			return JsonUtil.getSuccessJSONObject(JSON.toJSONString(user));
 		} catch (Exception e) {

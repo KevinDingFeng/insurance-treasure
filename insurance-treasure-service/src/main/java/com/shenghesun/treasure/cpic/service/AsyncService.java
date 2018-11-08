@@ -1,7 +1,5 @@
 package com.shenghesun.treasure.cpic.service;
 
-import java.util.List;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,7 +7,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import com.shenghesun.treasure.order.service.OrderMessageService;
 import com.shenghesun.treasure.system.cpic.webservice.Datas;
@@ -71,40 +68,6 @@ public class AsyncService {
     				}
     			
     		}
-//        	orderMessage orderMessage = payService.findByOrderNo(orderNo);
-    		
-    		//修改保单状态
-    		//测试用，正式删除
-//    		orderMessage.setOrderNo(StringGenerateUtils.generateId());
-    		
-    	/*	if(orderMessage != null) {
-    			orderMessage pmTemp = new orderMessage();
-    			BeanUtils.copyProperties(orderMessage, pmTemp);
-    			pmTemp.setId(null);
-    			pmTemp.setCreation(null);
-    			pmTemp.setLastModified(null);
-    			pmTemp.setVersion(null);
-    			List<Mark> markList = pmTemp.getMark();
-    			if(!CollectionUtils.isEmpty(markList)) {
-    				boolean flag = true;
-    				for(Mark mark : markList) {
-    					String xml = orderMessage2Xml(pmTemp,mark.getMark());
-            			if(StringUtils.isNotEmpty(xml)) {
-            				//货运险承保接口
-            				flag = webServiceClient.approvl(xml,orderMessage);
-            				if(!flag) {
-            					flag = false;
-            				}
-            			}
-    				}
-    				if(flag) {
-    					
-    				}else {
-    					
-    				}
-    			}
-    			
-    		}*/
         }catch(Exception e){
             e.printStackTrace();
             logger.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());

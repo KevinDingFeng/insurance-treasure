@@ -11,11 +11,5 @@ import com.shenghesun.treasure.system.dictionary.BaseGoods;
 @Repository
 public interface BaseGoodsDao extends JpaRepository<BaseGoods, Long>, JpaSpecificationExecutor<BaseGoods>{
 
-	List<BaseGoods> findByTypeIn(List<String> list);
-	
 	List<BaseGoods> findByParentCode(String code);
-	
-	List<BaseGoods> findByParentId(String parentId);
-	
-	List<BaseGoods> findByParentCodeAndParentId(String code,String id);
 }

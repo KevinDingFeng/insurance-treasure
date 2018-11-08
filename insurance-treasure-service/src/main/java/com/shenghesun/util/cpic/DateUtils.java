@@ -13,10 +13,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
-
 public class DateUtils {
-	private static final Logger log = Logger.getLogger(DateUtils.class);
 	/** 格式到日期(yyyy-MM-dd) */
 	public static final String DATE_DAYONLY = "yyyy-MM-dd";
 	/** 格式到秒(yyyy-MM-dd HH:mm:ss) */

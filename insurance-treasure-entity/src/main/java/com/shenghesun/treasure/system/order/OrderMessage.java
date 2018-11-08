@@ -1,26 +1,12 @@
 package com.shenghesun.treasure.system.order;
 
 import java.io.Serializable;
-import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
-
-import com.alibaba.fastjson.annotation.JSONField;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.shenghesun.treasure.entity.base.BaseEntity;
-import com.shenghesun.treasure.system.company.CompanyMessage;
-import com.shenghesun.treasure.system.entity.SysUser;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
@@ -43,16 +29,24 @@ public class OrderMessage extends BaseEntity implements Serializable{
 	@XStreamOmitField
 	@Column(length=50)
 	private Long userid;
+	//投保用户公司id
+	@XStreamOmitField
+	@Column(length=50)
+	private Long companyId;
 	//保单订单号
 	@XStreamOmitField
 	@Column(length=100)
-	private String orderNo;
+	private String orderNo="7896545213jjj";
 	
 	//资金状态，入账还是出账，0代表出账 1代表入账
 	@XStreamOmitField
 	@Column
 	private String plusOrMinus;
 	
+	//城市类型，国际还是国内
+	@XStreamOmitField
+	@Column
+	private String city;
 	/**
 	 * 页面收集字段
 	 */
@@ -84,8 +78,14 @@ public class OrderMessage extends BaseEntity implements Serializable{
 	@Column(length=100)
 	@XStreamOmitField
 	private String insuranceClause;
-	
-	
+	//运输方式代码
+	@Column(length=10)
+	@XStreamOmitField
+	private String transCode;
+	//货物代码
+	@Column(length=10)
+	@XStreamOmitField
+	private String goodsCode;
 	/**
 	 * 太平洋保险接口字段
 	 */
@@ -169,11 +169,11 @@ public class OrderMessage extends BaseEntity implements Serializable{
 	//发票金额
 	@Column(columnDefinition="DECIMAL(16,2)")
 	@XStreamAlias("INVAMOUNT")
-	private Integer invamount=100;
+	private Integer invamount=10;
 	//保费
 	@Column(columnDefinition="DECIMAL(16,2)")
 	@XStreamAlias("PREMIUM")
-	private Integer preminum=1000;
+	private Integer preminum=10;
 	//保费币种
 	@Column(length=50)
 	@XStreamAlias("FCURRENCYCODE")
@@ -196,8 +196,8 @@ public class OrderMessage extends BaseEntity implements Serializable{
 	 * 保单总金额
 	 */
 	@Column(columnDefinition="DECIMAL(16,2)")
-	@XStreamOmitField
-	private Integer orderAmount;
+	@XStreamAlias("AMOUNT")
+	private Integer orderAmount=1000;
 
 	/**
 	 * 保单支付状态 0：下单成功；1：支付成功

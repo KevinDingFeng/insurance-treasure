@@ -27,7 +27,7 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true, exclude = { "roles" })
 public class SysPermission extends BaseEntity {
 	
-
+	private static final long serialVersionUID = 8688107447913887605L;
 	/**
 	 * 权限的具体值，用于功能权限判断
 	 */

@@ -1,6 +1,7 @@
 package com.shenghesun.treasure.config;
 
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
@@ -12,47 +13,49 @@ import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Configuration
 @EnableCaching
 public class RedisConfig {
 	@Value("${spring.redis.host}")
-    private String host;
-    @Value("${spring.redis.port}")
-    private int port;
-    @Value("${spring.redis.timeout}")
-    private int timeout;
-    @Bean
-    public KeyGenerator wiselyKeyGenerator(){
-        return new KeyGenerator() {
-            @Override
-            public Object generate(Object target, Method method, Object... params) {
-                StringBuilder sb = new StringBuilder();
-                sb.append(target.getClass().getName());
-                sb.append(method.getName());
-                for (Object obj : params) {
-                    sb.append(obj.toString());
-                }
-                return sb.toString();
-            }
-        };
-    }
-    @Bean
-    public JedisConnectionFactory redisConnectionFactory() {
-        JedisConnectionFactory factory = new JedisConnectionFactory();
-        factory.setHostName(host);
-        factory.setPort(port);
-        factory.setTimeout(timeout); //设置连接超时时间
-        return factory;
-    }
-    @Bean
-    public CacheManager cacheManager(RedisTemplate<Object, Object> redisTemplate) {
-        RedisCacheManager cacheManager = new RedisCacheManager(redisTemplate);
-        cacheManager.setDefaultExpiration(1800);
-        return cacheManager;
-    }
-
+	private String host;
+	@Value("${spring.redis.port}")
+	private int port;
+	@Value("${spring.redis.timeout}")
+	private int timeout;
+	@Bean
+	public KeyGenerator wiselyKeyGenerator(){
+		return new KeyGenerator() {
+			@Override
+			public Object generate(Object target, Method method, Object... params) {
+				StringBuilder sb = new StringBuilder();
+				sb.append(target.getClass().getName());
+				sb.append(method.getName());
+				for (Object obj : params) {
+					sb.append(obj.toString());
+				}
+				return sb.toString();
+			}
+		};
+	}
+	@Bean
+	public JedisConnectionFactory redisConnectionFactory() {
+		JedisConnectionFactory factory = new JedisConnectionFactory();
+		factory.setHostName(host);
+		factory.setPort(port);
+		factory.setTimeout(timeout); //设置连接超时时间
+		return factory;
+	}
+	@Bean
+	public CacheManager cacheManager(RedisTemplate<Object, Object> redisTemplate) {
+		RedisCacheManager cacheManager = new RedisCacheManager(redisTemplate);
+		cacheManager.setDefaultExpiration(1800);
+		return cacheManager;
+	}
+	/*
     @Bean
     public RedisTemplate<Object, Object> redisTemplate(RedisConnectionFactory factory) {
         RedisTemplate<Object, Object> template = new RedisTemplate<Object, Object>();
@@ -60,6 +63,20 @@ public class RedisConfig {
         template.setKeySerializer(new StringRedisSerializer());
         template.setValueSerializer(new CustomRedisObjectSerializer());
         return template;
-    }
+    }*/
 
+	@Bean
+	public RedisTemplate<Object, Object> redisTemplate(RedisConnectionFactory factory) {
+		RedisTemplate<Object, Object> template = new RedisTemplate<Object, Object>();
+		template.setConnectionFactory(factory);
+		ObjectMapper om = new ObjectMapper();
+		om.setDateFormat(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss"));
+		GenericJackson2JsonRedisSerializer genericJackson2JsonRedisSerializer = new GenericJackson2JsonRedisSerializer(
+				om);
+		template.setDefaultSerializer(genericJackson2JsonRedisSerializer);
+	/*	template.setConnectionFactory(factory);
+		template.setKeySerializer(new StringRedisSerializer());
+		template.setValueSerializer(new CustomRedisObjectSerializer());*/
+		return template;
+	}
 }
