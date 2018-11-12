@@ -14,10 +14,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.shenghesun.treasure.base.service.BaseCityService;
 import com.shenghesun.treasure.base.service.BaseGoodsService;
 import com.shenghesun.treasure.base.service.BaseTransportService;
+import com.shenghesun.treasure.system.code.TransCode;
 import com.shenghesun.treasure.system.dictionary.BaseCity;
 import com.shenghesun.treasure.system.dictionary.BaseGoods;
 import com.shenghesun.treasure.system.dictionary.BaseTransport;
 import com.shenghesun.treasure.utils.JsonUtil;
+import com.shenghesun.treasure.utils.RedisUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,6 +34,8 @@ public class BaseDictionaryController {
 	BaseTransportService baseTransportService;
 	@Autowired
 	BaseCityService baseCityService;
+	@Autowired
+	private RedisUtil redisUtil;
 	/**
 	 * 页面加载获取全部基础数据字典
 	 */
@@ -78,7 +82,7 @@ public class BaseDictionaryController {
 	 * 获取运输方式
 	 */
 	@RequestMapping(value = "/transport", method = RequestMethod.GET)
-	public JSONObject getSecTransport(String code,String business) {
+	public JSONObject getransport(String code,String business) {
 		List<BaseTransport> transportList=null;
 		try {
 			transportList = baseTransportService.findByBusinessCodeAndParentCode(business,code);
@@ -88,5 +92,34 @@ public class BaseDictionaryController {
 		}
 		return JsonUtil.getSuccessJSONObject(JSON.toJSONString(transportList));
 	}
-
+	/**
+	 * 根据运输方式代码获取保险条款
+	 */
+	@RequestMapping(value = "/getItem", method = RequestMethod.GET)
+	public JSONObject getInsurance(String business,String transport) {
+		try {
+			Map<String,Object> map = new HashMap<String,Object>();
+			TransCode transCode = null;
+			String itemName = null;
+			String rate = null;
+			if(redisUtil.exists(transport)){
+				String string = redisUtil.get(transport);
+				transCode = JSON.parseObject(string, TransCode.class);
+			}
+			if(redisUtil.exists(business+"rate")){
+				rate = redisUtil.get(business+"rate");
+				System.out.println(rate);
+			}
+			if(transCode!=null) {
+				itemName = transCode.getItemName();
+			}
+			map.put("itemName", itemName);
+			map.put("rate", rate);
+			return JsonUtil.getSuccessJSONObject(JSON.toJSONString(map));
+		} catch (Exception e) {
+			log.error("base_secondTransport error");
+			return JsonUtil.getFailJSONObject();
+		}
+		
+	}
 }

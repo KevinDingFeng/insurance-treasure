@@ -1,5 +1,7 @@
 package com.shenghesun.treasure.order.support;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -7,7 +9,10 @@ import com.alibaba.fastjson.JSON;
 import com.shenghesun.treasure.system.code.GoodsCode;
 import com.shenghesun.treasure.system.code.TransCode;
 import com.shenghesun.treasure.system.order.OrderMessage;
+import com.shenghesun.treasure.utils.HttpHeaderUtil;
+import com.shenghesun.treasure.utils.RandomUtil;
 import com.shenghesun.treasure.utils.RedisUtil;
+import com.shenghesun.treasure.utils.TokenUtil;
 
 @Service
 public class OrderService {
@@ -19,12 +24,43 @@ public class OrderService {
 	 * @param orderMessage
 	 * @return
 	 */
-	public OrderMessage complete(OrderMessage orderMessage) {
+	public OrderMessage complete(HttpServletRequest request,OrderMessage orderMessage) {
+		//获取用户信息
+		String token = HttpHeaderUtil.getToken((HttpServletRequest) request);
+		Long userId = TokenUtil.getLoginUserId(token);
+		Long companyId = TokenUtil.getLoginCompanyId(token);
+		//完善下单信息
+		orderMessage.setUserId(userId);
+		orderMessage.setCompanyId(companyId);
+		orderMessage.setPlusOrMinus("0");
+		//设置订单号
+		String orderNo = System.currentTimeMillis() + RandomUtil.randomString(2);
+		orderMessage.setOrderNo(orderNo);
 		//设置运输相关信息
 		orderMessage = this.setTansport(orderMessage);
 		//设置货物名称相关信息
 		orderMessage = this.setGoods(orderMessage);
-		
+		//设置起保日期
+		orderMessage.setEffectDate(orderMessage.getSaildate());
+		//获取保险进出口类型
+		String city = orderMessage.getCity();
+		if(city.equals("0")) {
+			//设置国内保险金额和保费
+			orderMessage.setOrderAmount(orderMessage.getGoodsValue());
+			//设置发票金额
+			orderMessage.setInvamount(orderMessage.getOrderAmount());
+			//设置保费
+			float preminum = orderMessage.getOrderAmount()*Float.parseFloat(orderMessage.getRate());
+			orderMessage.setPreminum((int)Math.ceil(preminum));
+		}else {
+			//设置国内保险金额和保费
+			orderMessage.setOrderAmount((orderMessage.getGoodsValue())*(1+orderMessage.getIncrate()));
+			//设置发票金额
+			orderMessage.setInvamount(orderMessage.getOrderAmount());
+			//设置保费
+			float preminum = orderMessage.getOrderAmount()*Float.parseFloat(orderMessage.getRate());
+			orderMessage.setPreminum((int)Math.ceil(preminum));
+		}
 		return orderMessage;
 	}
 	/**
@@ -40,12 +76,12 @@ public class OrderService {
 			transCode = JSON.parseObject(string, TransCode.class);
 		}
 		if(transCode!=null) {
-			orderMessage.setClasstype(transCode.getClassType());
-			orderMessage.setClassestype(transCode.getClassType());
+			orderMessage.setClassType(transCode.getClassType());
+			orderMessage.setClassesType(transCode.getClassType());
 			orderMessage.setKind(transCode.getKind());
-			orderMessage.setKindname(transCode.getKindName());
-			orderMessage.setItemcontent(transCode.getItemContent());
-			orderMessage.setItemcode(transCode.getItemCode());
+			orderMessage.setKindName(transCode.getKindName());
+			orderMessage.setItemContent(transCode.getItemContent());
+			orderMessage.setMainItemCode(transCode.getItemCode());
 		}
 		return orderMessage;
 	}
@@ -62,7 +98,7 @@ public class OrderService {
 			goods = JSON.parseObject(string, GoodsCode.class);
 		}
 		if(goods!=null) {
-			orderMessage.setItemcode(goods.getItemCode());
+			orderMessage.setItemCode(goods.getItemCode());
 			orderMessage.setItem(goods.getItemName());
 		}
 		return orderMessage;

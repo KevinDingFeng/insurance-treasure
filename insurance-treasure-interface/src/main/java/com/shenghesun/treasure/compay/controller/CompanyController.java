@@ -27,7 +27,7 @@ import com.shenghesun.treasure.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController()
-@RequestMapping(value="/company")
+@RequestMapping(value="/api/company")
 @Slf4j
 public class CompanyController {
 	

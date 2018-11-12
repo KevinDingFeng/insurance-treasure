@@ -28,21 +28,22 @@ public class OrderMessage extends BaseEntity implements Serializable{
 	//投保用户id
 	@XStreamOmitField
 	@Column(length=50)
-	private Long userid;
+	private Long userId;
 	//投保用户公司id
 	@XStreamOmitField
 	@Column(length=50)
 	private Long companyId;
 	//保单订单号
-	@XStreamOmitField
-	@Column(length=100)
-	private String orderNo="7896545213jjj";
-	
+	//自定义查询码
+	@Column(length=50)
+	@XStreamAlias("USERNO")
+	private String orderNo;
+
 	//资金状态，入账还是出账，0代表出账 1代表入账
 	@XStreamOmitField
 	@Column
 	private String plusOrMinus;
-	
+
 	//城市类型，国际还是国内
 	@XStreamOmitField
 	@Column
@@ -53,19 +54,35 @@ public class OrderMessage extends BaseEntity implements Serializable{
 	//业务类型
 	@Column(length=100)
 	@XStreamOmitField
-	private String BusinessType;
-	//货物价值
+	private String businessType;
+	//一级货物名称
 	@Column(length=100)
 	@XStreamOmitField
-	private String goodsValue;
+	private String firstGoodsName;
+	//二级货物名称
+	@Column(length=100)
+	@XStreamOmitField
+	private String secondGoodsName;
+	//货物价值
+	@Column(columnDefinition="DECIMAL(16,2)")
+	@XStreamOmitField
+	private Integer goodsValue;
+	//币种名称
+	@Column(length=10)
+	@XStreamOmitField
+	private String currencyName;
 	//包装类型
 	@Column(length=100)
 	@XStreamOmitField
 	private String packageType;
-	//车牌号或运单号
+	//一级运输方式
 	@Column(length=100)
 	@XStreamOmitField
-	private String licenseNumber;
+	private String firstTransName;
+	//二级运输方式
+	@Column(length=100)
+	@XStreamOmitField
+	private String secondTransName;
 	//开票抬头
 	@Column(length=100)
 	@XStreamOmitField
@@ -74,10 +91,6 @@ public class OrderMessage extends BaseEntity implements Serializable{
 	@Column(length=100)
 	@XStreamOmitField
 	private String insuranceCompany;
-	//保险条款
-	@Column(length=100)
-	@XStreamOmitField
-	private String insuranceClause;
 	//运输方式代码
 	@Column(length=10)
 	@XStreamOmitField
@@ -92,49 +105,46 @@ public class OrderMessage extends BaseEntity implements Serializable{
 	//投保人名称
 	@Column(length=200)
 	@XStreamAlias("APPLYNAME")
-	private String applyname="Alice";
+	private String applyName;
 	//被保人名称
 	@Column(length=200)
 	@XStreamAlias("INSURANTNAME")
-	private String insurantname="Alice";
+	private String insurantName;
 	//费率
 	@Column(columnDefinition="DECIMAL(16,2)")
 	@XStreamAlias("RATE")
-	private Integer rate;
+	private String rate;
 	//始发地
 	@Column(length=60)
 	@XStreamAlias("STARTPORT")
-	private String startport="北京";
+	private String startPort;
+	//中转地
+	@Column(length=60)
+	@XStreamAlias("TRANSPORT1")
+	private String transPort;
+	
 	//目的地
 	@Column(length=60)
 	@XStreamAlias("ENDPORT")
-	private String endport="上海";
+	private String endPort;
 	//运输方式
 	@Column(length=2)
 	@XStreamAlias("KIND")
-	private String kind="4";
+	private String kind;
 	//起运日期
 	@Column(length=10)
 	@XStreamAlias("SAILDATE")
-	private String saildate="2018-11-08";
+	private String saildate;
 	//货物名称
 	@Column(length=500)
 	@XStreamAlias("ITEM")
-	private String item="大豆";
-	
-	//险类
-	@Column(length=1)
-	@XStreamAlias("CLASSESTYPE")
-	private String classestype="1";
+	private String item;
 
-	//险种代码
-	@Column(length=8)
-	@XStreamAlias("CLASSTYPE")
-	private String classtype="11040200";
+
 	//运单号、发票号码
 	@Column(length=500)
 	@XStreamAlias("MARK")
-	private String mark="9630151214002";
+	private String mark;
 	//包装及数量
 	@Column(length=500)
 	@XStreamAlias("QUANTITY")
@@ -143,61 +153,70 @@ public class OrderMessage extends BaseEntity implements Serializable{
 	//包装代码
 	@Column(length=2)
 	@XStreamAlias("PACKCODE")
-	private String packcode="01";
+	private String packCode;
 	//货物类型
 	@Column(length=4)
 	@XStreamAlias("ITEMCODE")
-	private String itemcode="1106";
+	private String itemCode;
 
 	//运输工具名称
 	@Column(length=30)
 	@XStreamAlias("KINDNAME")
-	private String kindname="卡车";
+	private String kindName;
 
 	//主险条款代码
 	@Column(length=12)
 	@XStreamAlias("MAINITEMCODE")
-	private String mainitemcode="ZH";
+	private String mainItemCode;
 	//主险条款内容
 	@Column
 	@XStreamAlias("ITEMCONTENT")
-	private String itemcontent="国内水路、陆路货物运输保险条款综合险";
+	private String itemContent;
 	//币种代码
 	@Column(length=2)
 	@XStreamAlias("CURRENCYCODE")
-	private String currencycode="01";
-	//发票金额
-	@Column(columnDefinition="DECIMAL(16,2)")
-	@XStreamAlias("INVAMOUNT")
-	private Integer invamount=10;
+	private String currencyCode;
+
 	//保费
 	@Column(columnDefinition="DECIMAL(16,2)")
 	@XStreamAlias("PREMIUM")
 	private Integer preminum=10;
+	//加成比例
+	@Column(columnDefinition="DECIMAL(16,2)")
+	@XStreamAlias("INCRATE")
+	private Integer incrate;
 	//保费币种
 	@Column(length=50)
 	@XStreamAlias("FCURRENCYCODE")
-	private String fcurrencycode="01";
+	private String fcurrencyCode="01";
 	//起保日期
 	@Column(length=10)
 	@XStreamAlias("EFFECTDATE")
-	private String effectdate="2018-11-08";
+	private String effectDate;
 
 	//免赔条件
 	@Column(length=500)
 	@XStreamAlias("FRANCHISE")
 	private String franchise="other terms  conditions are equalent to the updated Open Policy.";
-	//自定义查询码
-	@Column(length=50)
-	@XStreamAlias("USERNO")
-	private String userno="58965412563";
-
 	/**
 	 * 保单总金额
 	 */
 	@Column(columnDefinition="DECIMAL(16,2)")
 	@XStreamAlias("AMOUNT")
-	private Integer orderAmount=1000;
+	private Integer orderAmount;
+	//发票金额
+	@Column(columnDefinition="DECIMAL(16,2)")
+	@XStreamAlias("INVAMOUNT")
+	private Integer invamount;
+	//险类
+	@Column(length=8)
+	@XStreamAlias("CLASSESTYPE")
+	private String classesType;
+
+	//险种代码
+	@Column(length=8)
+	@XStreamAlias("CLASSTYPE")
+	private String classType;
 
 	/**
 	 * 保单支付状态 0：下单成功；1：支付成功
@@ -206,7 +225,7 @@ public class OrderMessage extends BaseEntity implements Serializable{
 	@Column
 	@XStreamOmitField
 	private Integer payStatus = 0; 
-	
+
 	/**
 	 * 保单保险状态 0：下保成功；1：保单生效成功
 	 * 默认为 0

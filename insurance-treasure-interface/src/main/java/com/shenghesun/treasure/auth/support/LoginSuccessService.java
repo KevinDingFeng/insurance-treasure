@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.shenghesun.treasure.company.CompanyMessageService;
 import com.shenghesun.treasure.system.company.CompanyMessage;
@@ -32,7 +33,7 @@ public class LoginSuccessService {
 			CompanyMessage company = companyService.findById(companyId);
 			Integer balance = company==null?0:company.getBalance();
 			returnMap.put("balance", balance);
-			returnMap.put("company", "1");
+			returnMap.put("company", companyId);
 		}else {
 			returnMap.put("balance", 0);
 			returnMap.put("company", "0");

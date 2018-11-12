@@ -37,7 +37,7 @@ public class LoginController {
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping(value = "/encrypt", method = RequestMethod.GET)
+	@RequestMapping(value = "/encrypt", method = RequestMethod.POST)
 	public JSONObject encrypt(@Validated String account,@Validated String password) {
 		// 获取登录名对应的数据
 		SysUser user = sysUserService.findByAccount(account);
@@ -66,6 +66,7 @@ public class LoginController {
 				System.out.println("用户名不存在或用户的盐值不存在");
 				return JsonUtil.getFailJSONObject("输入信息有误");
 			}
+			password = PasswordUtil.encrypt(password, user.getSalt());
 //			根据用户名和密码（密文）校验是否登录成功
 			if(this.login(user.getPassword(), password)) {
 				log.info("login " + account);
@@ -91,4 +92,5 @@ public class LoginController {
 	private boolean login(String passwordSource, String password) {
 		return passwordSource != null && passwordSource.equals(password);
 	}
+
 }

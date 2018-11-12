@@ -17,9 +17,9 @@ import com.shenghesun.treasure.entity.base.listener.BaseEntityListener;
 
 @MappedSuperclass
 @EntityListeners(value = {BaseEntityListener.class})
-public class BaseEntity implements Serializable{
+public class BaseEntity{
 
-	private static final long serialVersionUID = -5799611251273449184L;
+	//private static final long serialVersionUID = -5799611251273449184L;
 
 	public Long getId() {
 		return id;

@@ -89,7 +89,7 @@ public class AsyncService {
 		
 		Header header = new Header();
 		header.setApplyid(StringGenerateUtils.generateId());
-		header.setClassestype(orderMessage.getClassestype());
+		header.setClassestype(orderMessage.getClassesType());
 		freightcpic.setHeader(header);
 		
 		Datas datas = new Datas();

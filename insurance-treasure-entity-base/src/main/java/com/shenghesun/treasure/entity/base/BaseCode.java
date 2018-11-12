@@ -55,6 +55,7 @@ public class BaseCode {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@JSONField(serialize = false)
 	protected Long id;
 	
 	@Version
@@ -70,6 +71,7 @@ public class BaseCode {
 
 	//父级code
 	@Column(length = 10)
+	@JSONField(serialize = false)
 	private String parentCode;
 	
 }

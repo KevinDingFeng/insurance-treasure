@@ -57,6 +57,17 @@ public class TransRedisService implements ApplicationRunner{
 			long end = System.currentTimeMillis(); 
 			logger.info("redis缓存货物名称代码表结束===运行时间:"+(end - start)+"毫秒");
 		}
+		//向redis中存储费率对照表
+		redisUtil.set("B01rate", 0.02);
+		redisUtil.set("B02rate", 0.03);
+		redisUtil.set("B03rate", 0.05);
+		redisUtil.set("B04rate", 0.04);
+		redisUtil.set("B05rate", 0.04);
+		redisUtil.set("B06rate", 0.05);
+		redisUtil.set("B07rate", 0.04);
+		redisUtil.set("B08rate", 0.06);
+		redisUtil.set("B09rate", 0.03);
+		redisUtil.set("B10rate", 0.05);
 	}
 
 }

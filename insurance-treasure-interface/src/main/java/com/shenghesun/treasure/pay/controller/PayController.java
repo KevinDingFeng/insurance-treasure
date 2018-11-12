@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.shenghesun.treasure.company.CompanyMessageService;
+import com.shenghesun.treasure.cpic.service.AsyncService;
 import com.shenghesun.treasure.order.service.FundDetailsService;
 import com.shenghesun.treasure.order.service.OrderMessageService;
 import com.shenghesun.treasure.system.company.CompanyMessage;
@@ -24,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @Slf4j
+@RequestMapping("/api")
 public class PayController {
 	
 	@Autowired
@@ -34,12 +36,14 @@ public class PayController {
 	OrderMessageService orderMessageService;
 	@Autowired
 	FundDetailsService fundDetailsService;
+	@Autowired
+	private AsyncService asyncService;
 	/**
 	 * 支付保单
 	 * @return
 	 */
 	@RequestMapping(value = "/pay", method = RequestMethod.GET)
-	public JSONObject pay(HttpServletRequest request,Long orderId) {
+	public JSONObject pay(HttpServletRequest request,String orderNo) {
 		CompanyMessage company = null;
 		try {
 			//获取用户id
@@ -48,7 +52,7 @@ public class PayController {
 			//查找订单所属用户
 			SysUser user = sysUserService.findById(userId);
 			//根据订单id查找到订单信息
-			OrderMessage order = orderMessageService.findById(orderId);
+			OrderMessage order = orderMessageService.findByOrderNo(orderNo);
 			if(user!=null) {
 				Long companyId = user.getCompanyId();
 				company = companyService.findById(companyId);
@@ -57,17 +61,19 @@ public class PayController {
 				//保单金额
 				Integer price = order.getOrderAmount();
 				//如果余额大于保单金额,才进行支付扣款
-				if((company.getBalance()==null?0:company.getBalance())>order.getOrderAmount()) {
-					company.setBalance(company.getBalance()==null?price:company.getBalance()-price);
+				if(company.getBalance()>order.getOrderAmount()) {
+					company.setBalance(company.getBalance()-price);
 					//修改订单状态
 					order.setPayStatus(1);
+					orderMessageService.save(order);
+					asyncService.executeAsync(order);
 				}else {
 					return JsonUtil.getFailJSONObject("余额不足，请联系管理员充值");
 				}
 			}else {
 				return JsonUtil.getFailJSONObject("公司不存在或订单不存在");
 			}
-			return JsonUtil.getSuccessJSONObject(JSON.toJSONString(company));
+			return JsonUtil.getSuccessJSONObject();
 		} catch (Exception e) {
 			log.error("pay error");
 			return JsonUtil.getFailJSONObject();

@@ -1,10 +1,15 @@
 package com.shenghesun.treasure.fund.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,7 +30,7 @@ import com.shenghesun.treasure.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController()
-@RequestMapping(value="/fund")
+@RequestMapping(value="/api/fund")
 @Slf4j
 public class FundController {
 	
@@ -42,19 +47,25 @@ public class FundController {
 	 * @return
 	 */
 	@RequestMapping(value = "/detail", method = RequestMethod.GET)
-	public JSONObject completeCompanyMessage(HttpServletRequest request) {
-		List<FundShow> list=null;
+	public JSONObject completeCompanyMessage(HttpServletRequest request,Integer page,Integer size) {
 		try {
+			Map<String,Object> map = new HashMap<String,Object>();
 			//获取请求用户公司信息
 			String token = HttpHeaderUtil.getToken((HttpServletRequest) request);
 			Long companyId = TokenUtil.getLoginCompanyId(token);
+			Integer totalElements = fundShowService.findCount(companyId);
+			Integer totalPages = (int) Math.ceil(totalElements/size);
 			//根据公司查询资金明细
-			list = fundShowService.findByCompanyId(companyId);
+			List<FundShow> fundList = fundShowService.findByCompanyId(companyId,page,size);
+			map.put("totalElements", totalElements);
+			map.put("totalPages", totalPages);
+			map.put("fundList", fundList);
+			return JsonUtil.getSuccessJSONObject(JSON.toJSONString(map));
 		} catch (Exception e) {
 			log.error("fund_detail error");
 			return JsonUtil.getFailJSONObject();
 		}
-		return JsonUtil.getSuccessJSONObject(JSON.toJSONString(list));
+		
 		
 	}
 	
@@ -63,7 +74,7 @@ public class FundController {
 	 * @param req
 	 * @return
 	 */
-	@RequestMapping(value = "/balance", method = RequestMethod.GET)
+	@RequestMapping(value = "/balance", method = RequestMethod.POST)
 	public JSONObject updateBalance(HttpServletRequest request,FundDetails fundDetails) {
 		try {
 			String token = HttpHeaderUtil.getToken((HttpServletRequest) request);

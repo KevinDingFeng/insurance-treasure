@@ -17,7 +17,7 @@ import lombok.ToString;
 @Data  
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class TransCode extends BaseEntity implements Serializable,Comparable<TransCode>{
+public class TransCode extends BaseEntity implements Serializable{
 	
 	private static final long serialVersionUID = -8540943432301920679L;
 
@@ -53,11 +53,10 @@ public class TransCode extends BaseEntity implements Serializable,Comparable<Tra
 	 */
 	@Column
 	private String itemContent;
+	/**
+	 * 投保 条款名称
+	 */
+	@Column
+	private String itemName;
 
-	@Override
-	public int compareTo(TransCode o) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-	
 }
