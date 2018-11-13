@@ -71,7 +71,7 @@ public class LoginController {
 			if(this.login(user.getPassword(), password)) {
 				log.info("login " + account);
 				Map<String, Object> returnMap = loginSuccessService.setReturnMessage(user);
-				return JsonUtil.getSuccessJSONObject(JSON.toJSONString(returnMap));
+				return JsonUtil.getSuccessJSONObject(returnMap);
 			}else {
 				return JsonUtil.getFailJSONObject("用户名密码错误"); 
 			}
