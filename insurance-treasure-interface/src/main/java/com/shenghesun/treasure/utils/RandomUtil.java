@@ -63,6 +63,6 @@ public class RandomUtil {
 //		for(int i = 0 ; i < 10 ; i ++) {
 //			System.out.println(randomString());
 //		}
-		System.out.println(randomString(20));
+		System.out.println(randomNum());
 	}
 }

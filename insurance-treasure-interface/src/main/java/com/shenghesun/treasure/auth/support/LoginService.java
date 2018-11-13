@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.druid.util.StringUtils;
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.shenghesun.treasure.config.CustomConfig;
 import com.shenghesun.treasure.system.entity.SysPermission;
@@ -45,7 +44,7 @@ public class LoginService {
 		String token = TokenUtil.create(userId, account,companyId);
 		// 缓存用户的权限和角色
 		JSONObject rolesAndPermsJson = this.getJSONRolesAndPerms(account);
-		redisUtil.set(CustomConfig.REDIS_TOKEN_PREFIX + token, rolesAndPermsJson, CustomConfig.EXPIRE_TIME_SECOND);// 存入缓存
+		redisUtil.set(CustomConfig.REDIS_TOKEN_PREFIX + token, rolesAndPermsJson.toJSONString(), CustomConfig.EXPIRE_TIME_SECOND);// 存入缓存
 		return token;
 	}
 

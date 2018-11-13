@@ -1,6 +1,5 @@
 package com.shenghesun.treasure.entity.base;
 
-import java.io.Serializable;
 import java.sql.Timestamp;
 
 import javax.persistence.Column;

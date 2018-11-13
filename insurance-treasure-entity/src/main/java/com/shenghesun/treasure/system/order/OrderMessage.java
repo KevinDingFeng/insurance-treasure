@@ -209,12 +209,12 @@ public class OrderMessage extends BaseEntity implements Serializable{
 	@XStreamAlias("INVAMOUNT")
 	private Integer invamount;
 	//险类
-	@Column(length=8)
+	@Column(length=1)
 	@XStreamAlias("CLASSESTYPE")
 	private String classesType;
 
 	//险种代码
-	@Column(length=1)
+	@Column(length=8)
 	@XStreamAlias("CLASSTYPE")
 	private String classType;
 

@@ -1,5 +1,8 @@
 package com.shenghesun.treasure.cpic.service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,10 +42,10 @@ public class AsyncService {
 //	private SmsCodeService smsCodeService;
 	
 	@Async("asyncServiceExecutor")
-    public void executeAsync(OrderMessage orderMessage) {
+    public Map<String,Object> executeAsync(OrderMessage orderMessage) {
+		Map<String,Object> map = new HashMap<String,Object>();
         logger.info("start executeAsync");
         try{
-        	//OrderMessage orderMessage = orderMessageService.findById(1L);
         	if(orderMessage != null) {
     			OrderMessage pmTemp = new OrderMessage();
     			BeanUtils.copyProperties(orderMessage, pmTemp);
@@ -55,14 +58,14 @@ public class AsyncService {
     				System.out.println(xml);
         			if(StringUtils.isNotEmpty(xml)) {
         				//货运险承保接口
-        				flag = webServiceClient.approvl(xml,orderMessage);
+        				map = webServiceClient.approvl(xml,orderMessage);
         				System.out.println(flag);
         				if(!flag) {
         					flag = false;
         				}
         			}
+        			
     				if(flag) {
-    					
     				}else {
     					
     				}
@@ -73,6 +76,7 @@ public class AsyncService {
             logger.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
         }
         //logger.info("end executeAsync");
+		return map;
     }
 	
 	/**
@@ -102,4 +106,7 @@ public class AsyncService {
 		
 		return XStreamUtil.beanToXmlWithTag(freightcpic);
 	}
+	
+	
+	
 }

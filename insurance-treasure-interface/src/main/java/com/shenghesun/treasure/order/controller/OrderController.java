@@ -1,6 +1,6 @@
 package com.shenghesun.treasure.order.controller;
 
-import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -18,7 +18,6 @@ import com.shenghesun.treasure.cpic.service.AsyncService;
 import com.shenghesun.treasure.order.service.OrderMessageService;
 import com.shenghesun.treasure.order.support.OrderService;
 import com.shenghesun.treasure.system.company.CompanyMessage;
-import com.shenghesun.treasure.system.entity.SysUser;
 import com.shenghesun.treasure.system.order.OrderMessage;
 import com.shenghesun.treasure.system.service.SysUserService;
 import com.shenghesun.treasure.utils.HttpHeaderUtil;
@@ -48,11 +47,11 @@ public class OrderController {
 	 * @return
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public JSONObject saveOrder(HttpServletRequest request,OrderMessage orderMessage) {
+	public JSONObject saveOrder(HttpServletRequest request,OrderMessage order) {
 		try {
-			orderMessage = orderService.complete(request,orderMessage);
+			Map<String,Object> orderMessage = orderService.complete(request,order);
 			//保存下单信息
-			orderMessageService.save(orderMessage);
+			orderMessageService.save((OrderMessage)orderMessage.get("order"));
 			return JsonUtil.getSuccessJSONObject();
 		} catch (Exception e) {
 			return JsonUtil.getFailJSONObject("特殊错误");
@@ -84,20 +83,24 @@ public class OrderController {
 	 */
 	@RequestMapping(value = "/order", method = RequestMethod.POST)
 	public JSONObject order(HttpServletRequest request,OrderMessage order) {
-		
-		CompanyMessage company = null;
 		try {
-			//获取用户id
+			//获取公司信息
 			String token = HttpHeaderUtil.getToken((HttpServletRequest) request);
-			Long userId = TokenUtil.getLoginUserId(token);
 			Long companyId = TokenUtil.getLoginCompanyId(token);
-			//查找订单所属用户
-			SysUser user = sysUserService.findById(userId);
-			order = orderService.complete(request,order);
+			CompanyMessage company = companyService.findById(companyId);
+			//完善订单信息
+			Map<String,Object> orderMap = orderService.complete(request,order);
+			order = (OrderMessage) orderMap.get("order");
+			//判断完善信息过程中是否出现运输代码查找错误和货物代码错误
+			if(orderMap.get("trans_error")!=null) {
+				return JsonUtil.getFailJSONObject(orderMap.get("trans_error"));
+			}
+			if(orderMap.get("goods_error")!=null) {
+				return JsonUtil.getFailJSONObject(orderMap.get("goods_error"));
+			}
 			//保存下单信息
 			orderMessageService.save(order);
-				company = companyService.findById(companyId);
-			
+			Map<String, Object> map =null;
 			if(company!=null&&order!=null) {
 				//保单金额
 				Integer price = order.getOrderAmount();
@@ -105,7 +108,7 @@ public class OrderController {
 				if(company.getBalance()>order.getOrderAmount()) {
 					company.setBalance(company.getBalance()-price);
 					orderMessageService.save(order);
-					asyncService.executeAsync(order);
+					map = asyncService.executeAsync(order);
 					//修改订单状态
 					order.setPayStatus(1);
 				}else {
@@ -114,12 +117,10 @@ public class OrderController {
 			}else {
 				return JsonUtil.getFailJSONObject("公司不存在或订单不存在");
 			}
-			return JsonUtil.getSuccessJSONObject();
+			return JsonUtil.getSuccessJSONObject(map);
 		} catch (Exception e) {
 			log.error("pay error");
 			return JsonUtil.getFailJSONObject();
 		}
-		
-		
 	}
 }

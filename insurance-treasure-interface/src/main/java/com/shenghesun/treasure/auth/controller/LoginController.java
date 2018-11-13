@@ -13,10 +13,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.shenghesun.treasure.auth.support.LoginSuccessService;
+import com.shenghesun.treasure.config.CustomConfig;
 import com.shenghesun.treasure.system.entity.SysUser;
 import com.shenghesun.treasure.system.service.SysUserService;
 import com.shenghesun.treasure.utils.JsonUtil;
 import com.shenghesun.treasure.utils.PasswordUtil;
+import com.shenghesun.treasure.utils.RandomUtil;
+import com.shenghesun.treasure.utils.RedisUtil;
+import com.shenghesun.treasure.utils.SmsCodeService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,6 +32,10 @@ public class LoginController {
 	private SysUserService sysUserService;
 	@Autowired
 	private LoginSuccessService loginSuccessService;
+	@Autowired
+	private SmsCodeService SmsCodeService;
+	@Autowired
+	private RedisUtil redisUtil;
 	/**
 	 * 加密算法，接收登录名和明文的密码 如果登录名在数据库存在，则找到对应的盐值，完成对明文密码加密操作，把密文返回
 	 * 如果登录名在数据库不存在或明文密码为空，则返回错误信息 不对密码是否正确进行校验，只负责加密
@@ -58,8 +66,13 @@ public class LoginController {
 	 */
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public JSONObject login(HttpServletRequest request, @Validated String account,
-			@Validated String password) {
+			@Validated String password,String code) {
 		try {
+			//判断验证码是否正确
+			String smsCode = redisUtil.get(account);
+			if(smsCode==null || smsCode!=code) {
+				return JsonUtil.getFailJSONObject("验证码错误"); 
+			}
 			// 获取登录名对应的数据
 			SysUser user = sysUserService.findByAccount(account);
 			if (user == null || user.getSalt() == null) {
@@ -92,5 +105,15 @@ public class LoginController {
 	private boolean login(String passwordSource, String password) {
 		return passwordSource != null && passwordSource.equals(password);
 	}
-
+	
+	/**
+	 * 发送手机验证码
+	 */
+	@RequestMapping(value = "/sms", method = RequestMethod.GET)
+	public JSONObject sendMessage(String account) {
+		String code = RandomUtil.randomNum();
+		SmsCodeService.sendSmsCode(account, code);
+		redisUtil.set(account, code, CustomConfig.SMSCODE_TIME_SECOND);
+		return JsonUtil.getSuccessJSONObject(code);
+	}
 }

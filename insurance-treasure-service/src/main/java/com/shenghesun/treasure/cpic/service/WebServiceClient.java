@@ -1,6 +1,8 @@
 package com.shenghesun.treasure.cpic.service;
 
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import javax.xml.rpc.ServiceException;
 
@@ -87,9 +89,9 @@ public class WebServiceClient {
 	 * 表明executeAsync方法进入的线程池是asyncServiceExecutor方法创建的
 	 **/ 
 	//@Async("asyncServiceExecutor")
-	public boolean approvl(String xml, OrderMessage payMessage) {
+	public Map<String,Object> approvl(String xml, OrderMessage payMessage) {
 		ApprovalRequest request = new ApprovalRequest();
-
+		Map<String,Object> map = new HashMap<String,Object>();
 		//用户信息
 		LoginUser userInfo = new LoginUser();
 		userInfo.setUserName(userName);
@@ -104,14 +106,14 @@ public class WebServiceClient {
 			request.setUserInfo(userInfo);
 			request.setProductInfo(productInfo);
 			//报文信息
-			//			String policyInfo = new String(FileUtil.getBytesFromFile(new File("E:\\Users\\c_cailiang\\Desktop\\10月份开发\\海豚经纪国内旅客行李保险方案\\freight-11.xml")));
-			//			policyInfo=	new String(policyInfo.getBytes());
-			//			String[] strArray=policyInfo.split("\r\n");
-			//			StringBuffer buff=new StringBuffer();
-			//			for(int i=0;i<strArray.length;i++){
-			//				buff.append(strArray[i]);
-			//			}
-			//			policyInfo=buff.toString();
+//						String policyInfo = new String(FileUtil.getBytesFromFile(new File("E:\\Users\\c_cailiang\\Desktop\\10月份开发\\海豚经纪国内旅客行李保险方案\\freight-11.xml")));
+//						policyInfo=	new String(policyInfo.getBytes());
+//						String[] strArray=policyInfo.split("\r\n");
+//						StringBuffer buff=new StringBuffer();
+//						for(int i=0;i<strArray.length;i++){
+//							buff.append(strArray[i]);
+//						}
+//						policyInfo=buff.toString();
 			request.setPolicyInfo(xml);
 			//默认
 			request.setCheckCode("hyxnew");
@@ -124,11 +126,16 @@ public class WebServiceClient {
 				log.error("错误类型:" + sysMessage.getErrorType() + "\n");
 				log.error("错误代码:" + sysMessage.getErrorCode() + "\n");
 				log.error("错误信息:" + sysMessage.getErrorMsg() + "\n");
+				map.put("errorType", sysMessage.getErrorType());
+				map.put("errorCode", sysMessage.getErrorCode());
+				map.put("errorMsg", sysMessage.getErrorMsg());
 			}				
 			//log.info("返回报文: \r" + reposne.getPolicyInfo()+ "\n");
 
 			String result = reposne.getPolicyInfo();
 			Approvl approvl =  xml2Approvl(result,payMessage);
+			map.put("approvl", approvl);
+			
 			if(approvl != null) {
 
 				Approvl approvlDB = approvlService.findByApplyId(approvl.getApplyId());
@@ -151,16 +158,19 @@ public class WebServiceClient {
 //				String smsStatus = null;
 				if(StringUtils.isNotEmpty(status)) {
 					if("10".equals(status)) {
-						return true;
+						map.put("flag", true);
+						return map;
 					}else if("19".equals(status)) {
-						return false;
+						map.put("flag", false);
+						return map;
 					}
 				}
 			}
-			return false;
+			map.put("flag", false);
+			return map;
 		} catch (Exception e) {
 			log.error(e.getMessage());
-			return false;
+			return map;
 		} 
 	}
 
