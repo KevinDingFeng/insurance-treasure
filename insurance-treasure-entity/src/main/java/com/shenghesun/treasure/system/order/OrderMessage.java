@@ -214,7 +214,7 @@ public class OrderMessage extends BaseEntity implements Serializable{
 	private String classesType;
 
 	//险种代码
-	@Column(length=8)
+	@Column(length=1)
 	@XStreamAlias("CLASSTYPE")
 	private String classType;
 

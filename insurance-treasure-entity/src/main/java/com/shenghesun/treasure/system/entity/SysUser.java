@@ -162,15 +162,7 @@ public class SysUser extends BaseEntity implements Serializable{
 	@Column(nullable = true, length = 5)
 	@JSONField(serialize = false)
 	private Long companyId;
-/*	@ManyToOne(fetch = FetchType.EAGER,cascade=CascadeType.MERGE)
-	@JoinColumn(name = "company_id",referencedColumnName="id")
-	@NotFound(action=NotFoundAction.IGNORE)
-	private CompanyMessage companyMessage;*/
 	
-	/**
-	 * 保单记录
-	 */
-/*	@OneToMany(mappedBy = "sysUser",cascade=CascadeType.ALL,fetch = FetchType.EAGER)
-	private Set<OrderMessage> orderMessage;*/
+
 	
 }

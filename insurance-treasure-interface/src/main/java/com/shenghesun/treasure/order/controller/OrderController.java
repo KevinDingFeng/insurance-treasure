@@ -104,10 +104,10 @@ public class OrderController {
 				//如果余额大于保单金额,才进行支付扣款
 				if(company.getBalance()>order.getOrderAmount()) {
 					company.setBalance(company.getBalance()-price);
-					//修改订单状态
-					order.setPayStatus(1);
 					orderMessageService.save(order);
 					asyncService.executeAsync(order);
+					//修改订单状态
+					order.setPayStatus(1);
 				}else {
 					return JsonUtil.getFailJSONObject("余额不足，请联系管理员充值");
 				}

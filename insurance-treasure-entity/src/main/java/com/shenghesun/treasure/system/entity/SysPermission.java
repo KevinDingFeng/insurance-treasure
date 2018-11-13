@@ -1,5 +1,6 @@
 package com.shenghesun.treasure.system.entity;
 
+import java.io.Serializable;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -25,7 +26,7 @@ import lombok.ToString;
 @Data
 @ToString(callSuper = true, exclude = { "roles" })
 @EqualsAndHashCode(callSuper = true, exclude = { "roles" })
-public class SysPermission extends BaseEntity {
+public class SysPermission extends BaseEntity implements Serializable{
 	
 	private static final long serialVersionUID = 8688107447913887605L;
 	/**

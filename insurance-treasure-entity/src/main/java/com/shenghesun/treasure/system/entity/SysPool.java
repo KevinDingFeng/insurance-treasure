@@ -1,5 +1,7 @@
 package com.shenghesun.treasure.system.entity;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -20,7 +22,7 @@ import lombok.ToString;
 @Data
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class SysPool extends BaseEntity {
+public class SysPool extends BaseEntity implements Serializable{
 
 	private static final long serialVersionUID = -2039066932462965340L;
 

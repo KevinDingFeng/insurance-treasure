@@ -49,6 +49,8 @@ public class OrderService {
 			orderMessage.setOrderAmount(orderMessage.getGoodsValue());
 			//设置发票金额
 			orderMessage.setInvamount(orderMessage.getOrderAmount());
+			//设置类型
+			orderMessage.setClassType("1");
 			//设置保费
 			float preminum = orderMessage.getOrderAmount()*Float.parseFloat(orderMessage.getRate());
 			orderMessage.setPreminum((int)Math.ceil(preminum));
@@ -57,6 +59,8 @@ public class OrderService {
 			orderMessage.setOrderAmount((orderMessage.getGoodsValue())*(1+orderMessage.getIncrate()));
 			//设置发票金额
 			orderMessage.setInvamount(orderMessage.getOrderAmount());
+			//设置类型
+			orderMessage.setClassType("0");
 			//设置保费
 			float preminum = orderMessage.getOrderAmount()*Float.parseFloat(orderMessage.getRate());
 			orderMessage.setPreminum((int)Math.ceil(preminum));
@@ -76,7 +80,6 @@ public class OrderService {
 			transCode = JSON.parseObject(string, TransCode.class);
 		}
 		if(transCode!=null) {
-			orderMessage.setClassType(transCode.getClassType());
 			orderMessage.setClassesType(transCode.getClassType());
 			orderMessage.setKind(transCode.getKind());
 			orderMessage.setKindName(transCode.getKindName());
