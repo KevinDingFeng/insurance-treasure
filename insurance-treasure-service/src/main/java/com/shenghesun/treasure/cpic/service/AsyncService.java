@@ -34,15 +34,8 @@ import lombok.extern.slf4j.Slf4j;
 public class AsyncService {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-	/*@Autowired
-	private PayService payService;*/
-	@Autowired
-	private OrderMessageService orderMessageService;
 	@Autowired
 	private WebServiceClient webServiceClient;
-	
-//	@Autowired
-//	private SmsCodeService smsCodeService;
 	
 	@Async("asyncServiceExecutor")
     public Map<String,Object> executeAsync(OrderMessage orderMessage) {

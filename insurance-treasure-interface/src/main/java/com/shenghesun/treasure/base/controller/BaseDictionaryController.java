@@ -1,8 +1,11 @@
 package com.shenghesun.treasure.base.controller;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -118,6 +121,31 @@ public class BaseDictionaryController {
 			return JsonUtil.getSuccessJSONObject(map);
 		} catch (Exception e) {
 			log.error("base_secondTransport error");
+			return JsonUtil.getFailJSONObject();
+		}
+		
+	}
+	/**
+	 * 城市信息模糊查询
+	 */
+	@RequestMapping(value = "/getCity", method = RequestMethod.GET)
+	public JSONObject getCity(String city) {
+		try {
+			Set<Object> keys = null;
+			Set<String> values = new HashSet<>();
+			if(redisUtil.keys("wuliu-*"+city+"*")!=null){
+				keys = redisUtil.keys("wuliu-*"+city+"*");
+			}
+			Iterator<Object> it = keys.iterator();
+			while(it.hasNext()) {
+				String next = (String) it.next();
+				String string = redisUtil.get(next);
+				string=string.substring(1, string.length()-1);
+				values.add(string);
+			}
+			return JsonUtil.getSuccessJSONObject(values);
+		} catch (Exception e) {
+			log.error("base_city error");
 			return JsonUtil.getFailJSONObject();
 		}
 		

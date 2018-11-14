@@ -6,6 +6,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import org.hibernate.validator.constraints.NotBlank;
+
 import com.shenghesun.treasure.entity.base.BaseEntity;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
@@ -45,6 +47,7 @@ public class OrderMessage extends BaseEntity implements Serializable{
 	private String plusOrMinus;
 
 	//城市类型，国际还是国内
+	@NotBlank(message = "{order.city.notBlank}")
 	@XStreamOmitField
 	@Column
 	private String city;

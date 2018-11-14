@@ -7,11 +7,11 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.shenghesun.treasure.company.CompanyMessageService;
 import com.shenghesun.treasure.cpic.service.AsyncService;
@@ -82,7 +82,7 @@ public class OrderController {
 	 * @return
 	 */
 	@RequestMapping(value = "/order", method = RequestMethod.POST)
-	public JSONObject order(HttpServletRequest request,OrderMessage order) {
+	public JSONObject order(HttpServletRequest request,@Validated OrderMessage order) {
 		try {
 			//获取公司信息
 			String token = HttpHeaderUtil.getToken((HttpServletRequest) request);

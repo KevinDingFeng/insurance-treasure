@@ -19,11 +19,8 @@ import com.shenghesun.treasure.utils.RedisUtil;
 import com.shenghesun.treasure.utils.SmsCodeService;
 import com.shenghesun.treasure.utils.TokenUtil;
 
-import lombok.extern.slf4j.Slf4j;
-
 @RestController
 @RequestMapping("/api/user")
-@Slf4j
 public class UserController {
 
 	@Autowired
@@ -59,6 +56,7 @@ public class UserController {
 			SysUser user = sysUserService.findById(userId);
 			user.setAccount(account);
 			user.setCellphone(account);
+			sysUserService.save(user);
 		} catch (Exception e) {
 			return JsonUtil.getFailJSONObject();
 		}
