@@ -180,7 +180,7 @@ public class OrderMessage extends BaseEntity implements Serializable{
 	//保费
 	@Column(columnDefinition="DECIMAL(16,2)")
 	@XStreamAlias("PREMIUM")
-	private Integer preminum=10;
+	private String preminum;
 	//加成比例
 	@Column(columnDefinition="DECIMAL(16,2)")
 	@XStreamAlias("INCRATE")
@@ -232,6 +232,6 @@ public class OrderMessage extends BaseEntity implements Serializable{
 	 */
 	@Column
 	@XStreamOmitField
-	private Integer insuranceStatus = 0; 
+	private Integer insuranceStatus; 
 
 }

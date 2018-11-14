@@ -60,7 +60,7 @@ public class FundController {
 			map.put("totalElements", totalElements);
 			map.put("totalPages", totalPages);
 			map.put("fundList", fundList);
-			return JsonUtil.getSuccessJSONObject(JSON.toJSONString(map));
+			return JsonUtil.getSuccessJSONObject(map);
 		} catch (Exception e) {
 			log.error("fund_detail error");
 			return JsonUtil.getFailJSONObject();

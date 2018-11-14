@@ -31,7 +31,7 @@ public class LoginSuccessService {
 		//返回公司是否存在，存在时1  不存在是0
 		if(companyId!=null) {
 			CompanyMessage company = companyService.findById(companyId);
-			Integer balance = company==null?0:company.getBalance();
+			Double balance = company==null?0:company.getBalance();
 			returnMap.put("balance", balance);
 			returnMap.put("company", companyId);
 		}else {

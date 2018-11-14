@@ -56,7 +56,7 @@ public class BaseDictionaryController {
 			log.error("base_all error");
 			e.printStackTrace();
 		}
-		return JsonUtil.getSuccessJSONObject(JSON.toJSONString(map));
+		return JsonUtil.getSuccessJSONObject(map);
 	}
 	/**
 	 * 获取货物名称
@@ -70,7 +70,7 @@ public class BaseDictionaryController {
 			log.error("base_firstGoods error");
 			e.printStackTrace();
 		}
-		return JsonUtil.getSuccessJSONObject(JSON.toJSONString(goodsList));
+		return JsonUtil.getSuccessJSONObject(goodsList);
 	}
 	/**
 	 * 根据一级货物名称获取二级
@@ -90,7 +90,7 @@ public class BaseDictionaryController {
 			log.error("base_secondTransport error");
 			return JsonUtil.getFailJSONObject();
 		}
-		return JsonUtil.getSuccessJSONObject(JSON.toJSONString(transportList));
+		return JsonUtil.getSuccessJSONObject(transportList);
 	}
 	/**
 	 * 根据运输方式代码获取保险条款
@@ -115,7 +115,7 @@ public class BaseDictionaryController {
 			}
 			map.put("itemName", itemName);
 			map.put("rate", rate);
-			return JsonUtil.getSuccessJSONObject(JSON.toJSONString(map));
+			return JsonUtil.getSuccessJSONObject(map);
 		} catch (Exception e) {
 			log.error("base_secondTransport error");
 			return JsonUtil.getFailJSONObject();

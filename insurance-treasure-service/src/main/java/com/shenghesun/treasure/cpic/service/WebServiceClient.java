@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.shenghesun.treasure.order.service.OrderMessageService;
 import com.shenghesun.treasure.system.cpic.Approvl;
 import com.shenghesun.treasure.system.order.OrderMessage;
 import com.shenghesun.util.cpic.XmlUtils;
@@ -66,6 +67,8 @@ public class WebServiceClient {
 
 	@Autowired
 	private ApprovlService approvlService;
+	@Autowired
+	private OrderMessageService orderMessageService;
 	
 
 	public IZrxCommonService getBinding() throws ServiceException {
@@ -89,7 +92,7 @@ public class WebServiceClient {
 	 * 表明executeAsync方法进入的线程池是asyncServiceExecutor方法创建的
 	 **/ 
 	//@Async("asyncServiceExecutor")
-	public Map<String,Object> approvl(String xml, OrderMessage payMessage) {
+	public Map<String,Object> approvl(String xml, OrderMessage orderMessage) {
 		ApprovalRequest request = new ApprovalRequest();
 		Map<String,Object> map = new HashMap<String,Object>();
 		//用户信息
@@ -105,15 +108,6 @@ public class WebServiceClient {
 			//用户信息
 			request.setUserInfo(userInfo);
 			request.setProductInfo(productInfo);
-			//报文信息
-//						String policyInfo = new String(FileUtil.getBytesFromFile(new File("E:\\Users\\c_cailiang\\Desktop\\10月份开发\\海豚经纪国内旅客行李保险方案\\freight-11.xml")));
-//						policyInfo=	new String(policyInfo.getBytes());
-//						String[] strArray=policyInfo.split("\r\n");
-//						StringBuffer buff=new StringBuffer();
-//						for(int i=0;i<strArray.length;i++){
-//							buff.append(strArray[i]);
-//						}
-//						policyInfo=buff.toString();
 			request.setPolicyInfo(xml);
 			//默认
 			request.setCheckCode("hyxnew");
@@ -133,7 +127,7 @@ public class WebServiceClient {
 			//log.info("返回报文: \r" + reposne.getPolicyInfo()+ "\n");
 
 			String result = reposne.getPolicyInfo();
-			Approvl approvl =  xml2Approvl(result,payMessage);
+			Approvl approvl =  xml2Approvl(result,orderMessage);
 			map.put("approvl", approvl);
 			
 			if(approvl != null) {
@@ -158,9 +152,13 @@ public class WebServiceClient {
 //				String smsStatus = null;
 				if(StringUtils.isNotEmpty(status)) {
 					if("10".equals(status)) {
+						orderMessage.setInsuranceStatus(Integer.parseInt(status));
+						orderMessageService.save(orderMessage);
 						map.put("flag", true);
 						return map;
 					}else if("19".equals(status)) {
+						orderMessage.setInsuranceStatus(Integer.parseInt(status));
+						orderMessageService.save(orderMessage);
 						map.put("flag", false);
 						return map;
 					}

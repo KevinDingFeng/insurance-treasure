@@ -35,7 +35,6 @@ public class RegisterController {
 			// 获取登录名对应的数据
 			SysUser findUser = sysUserService.findByCell(user.getCellphone());
 			if (findUser != null) {
-				System.out.println("注册用户名已经存在");
 				return JsonUtil.getFailJSONObject("该用户已存在");
 			}
 			user = registerService.regist(user);

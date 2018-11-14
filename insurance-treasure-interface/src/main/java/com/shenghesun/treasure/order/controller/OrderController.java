@@ -70,7 +70,7 @@ public class OrderController {
 			Long id = TokenUtil.getLoginUserId(token);
 			PageRequest pageRequest = new PageRequest(page, size);
 			Page<OrderMessage> orderList = orderMessageService.findByUserId(id,pageRequest);
-			return JsonUtil.getSuccessJSONObject(JSON.toJSONString(orderList));
+			return JsonUtil.getSuccessJSONObject(orderList);
 		} catch (Exception e) {
 			return JsonUtil.getFailJSONObject("特殊错误");
 		}
@@ -102,11 +102,11 @@ public class OrderController {
 			orderMessageService.save(order);
 			Map<String, Object> map =null;
 			if(company!=null&&order!=null) {
-				//保单金额
-				Integer price = order.getOrderAmount();
+				//保费
+				Double preminum = Double.parseDouble(order.getPreminum());
 				//如果余额大于保单金额,才进行支付扣款
-				if(company.getBalance()>order.getOrderAmount()) {
-					company.setBalance(company.getBalance()-price);
+				if(company.getBalance()>=preminum) {
+					company.setBalance(company.getBalance()-preminum);
 					orderMessageService.save(order);
 					map = asyncService.executeAsync(order);
 					//修改订单状态

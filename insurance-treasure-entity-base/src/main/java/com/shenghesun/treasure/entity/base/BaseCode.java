@@ -8,6 +8,7 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @MappedSuperclass
 public class BaseCode {
@@ -55,11 +56,11 @@ public class BaseCode {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@JSONField(serialize = false)
+	@JsonIgnore
 	protected Long id;
 	
 	@Version
-	@JSONField(serialize = false)
+	@JsonIgnore
 	protected long version=0l;
 
 	
@@ -71,7 +72,7 @@ public class BaseCode {
 
 	//父级code
 	@Column(length = 10)
-	@JSONField(serialize = false)
+	@JsonIgnore
 	private String parentCode;
 	
 }

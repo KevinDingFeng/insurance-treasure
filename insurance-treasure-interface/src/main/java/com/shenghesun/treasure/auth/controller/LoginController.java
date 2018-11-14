@@ -33,13 +33,11 @@ public class LoginController {
 	@Autowired
 	private LoginSuccessService loginSuccessService;
 	@Autowired
-	private SmsCodeService SmsCodeService;
-	@Autowired
 	private RedisUtil redisUtil;
 	/**
 	 * 加密算法，接收登录名和明文的密码 如果登录名在数据库存在，则找到对应的盐值，完成对明文密码加密操作，把密文返回
 	 * 如果登录名在数据库不存在或明文密码为空，则返回错误信息 不对密码是否正确进行校验，只负责加密
-	 * 
+	 * 弃用
 	 * @param name
 	 * @param password
 	 * @param model
@@ -69,10 +67,10 @@ public class LoginController {
 			@Validated String password,String code) {
 		try {
 			//判断验证码是否正确
-			String smsCode = redisUtil.get(account);
+			/*String smsCode = redisUtil.get(account);
 			if(smsCode==null || smsCode!=code) {
 				return JsonUtil.getFailJSONObject("验证码错误"); 
-			}
+			}*/
 			// 获取登录名对应的数据
 			SysUser user = sysUserService.findByAccount(account);
 			if (user == null || user.getSalt() == null) {
@@ -94,7 +92,24 @@ public class LoginController {
 			return JsonUtil.getFailJSONObject("特殊错误");
 		}
 	}
-	
+	/**
+	 * 获取对外接口token
+	 * @return
+	 */
+	@RequestMapping(value = "/getToken", method = RequestMethod.GET)
+	public JSONObject getToken() {
+		try {
+			String account = "00000000000";
+			String password = "123456";
+			// 获取登录名对应的数据
+			SysUser user = sysUserService.findByAccount(account);
+			password = PasswordUtil.encrypt(password, user.getSalt());
+			Map<String, Object> returnMap = loginSuccessService.setReturnMessage(user);
+			return JsonUtil.getSuccessJSONObject(returnMap.get("token"));
+		} catch (Exception e) {
+			return JsonUtil.getFailJSONObject();
+		}
+	}
 	/**
 	 * 判断是否可以登录逻辑，库存密码存在且与输入的现有密码相等，即登录成功
 	 * 
@@ -104,16 +119,5 @@ public class LoginController {
 	 */
 	private boolean login(String passwordSource, String password) {
 		return passwordSource != null && passwordSource.equals(password);
-	}
-	
-	/**
-	 * 发送手机验证码
-	 */
-	@RequestMapping(value = "/sms", method = RequestMethod.GET)
-	public JSONObject sendMessage(String account) {
-		String code = RandomUtil.randomNum();
-		SmsCodeService.sendSmsCode(account, code);
-		redisUtil.set(account, code, CustomConfig.SMSCODE_TIME_SECOND);
-		return JsonUtil.getSuccessJSONObject(code);
 	}
 }

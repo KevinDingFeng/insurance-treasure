@@ -19,6 +19,8 @@ import com.shenghesun.treasure.system.order.OrderMessage;
 import com.shenghesun.util.cpic.StringGenerateUtils;
 import com.shenghesun.util.cpic.XStreamUtil;
 
+import lombok.extern.slf4j.Slf4j;
+
 
 /**
   * 异步方法
@@ -28,6 +30,7 @@ import com.shenghesun.util.cpic.XStreamUtil;
   * @date: 2018年10月10日 下午7:04:32  
   */
 @Service
+@Slf4j
 public class AsyncService {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
@@ -59,17 +62,17 @@ public class AsyncService {
         			if(StringUtils.isNotEmpty(xml)) {
         				//货运险承保接口
         				map = webServiceClient.approvl(xml,orderMessage);
+        				flag = (boolean) map.get("flag");
         				System.out.println(flag);
         				if(!flag) {
         					flag = false;
         				}
         			}
-        			
     				if(flag) {
+    					log.info("订单号为:"+orderMessage.getOrderNo()+"的订单投保成功");
     				}else {
-    					
+    					log.info("订单号为:"+orderMessage.getOrderNo()+"的订单投保失败");
     				}
-    			
     		}
         }catch(Exception e){
             e.printStackTrace();

@@ -61,6 +61,6 @@ public class CompanyMessage extends BaseEntity implements Serializable{
 	 * 公司账户余额
 	 */
 	@Column(columnDefinition="DECIMAL(16,2)")
-	private Integer balance=0;
+	private Double balance=0d;
 	
 }

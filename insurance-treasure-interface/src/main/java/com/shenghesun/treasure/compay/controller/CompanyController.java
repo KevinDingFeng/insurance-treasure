@@ -82,4 +82,22 @@ public class CompanyController {
 	    }
 	    return JsonUtil.getSuccessJSONObject(filePath);
 	}
+	/**
+	 * 查看公司信息
+	 */
+	@RequestMapping(value = "/find", method = RequestMethod.GET)
+	public JSONObject findCompany(HttpServletRequest request) {
+		CompanyMessage company = null;
+		try {
+			//获取请求用户信息
+			String token = HttpHeaderUtil.getToken((HttpServletRequest) request);
+			Long companyId = TokenUtil.getLoginCompanyId(token);
+			//查看公司信息
+			company = companyService.findById(companyId);
+		} catch (Exception e) {
+			log.error("company_find error");
+			return JsonUtil.getFailJSONObject();
+		}
+		return JsonUtil.getSuccessJSONObject(company);
+	}
 }
