@@ -12,6 +12,8 @@ import com.shenghesun.treasure.system.dictionary.BaseTransport;
 public interface BaseTransportDao extends JpaRepository<BaseTransport, Long>, JpaSpecificationExecutor<BaseTransport>{
 
 	List<BaseTransport> findByBusinessCodeAndParentCode(String business,String parentCode);
+	
+	List<BaseTransport> findByBusinessCodeAndParentCodeAndCity(String business,String parentCode,String city);
 	/*List<BaseTransport> findByBusinessCodeAndCountry(String code,String country);
 	
 	List<BaseTransport> findByBusinessCodeAndTparentCode(String code,String parentCode);

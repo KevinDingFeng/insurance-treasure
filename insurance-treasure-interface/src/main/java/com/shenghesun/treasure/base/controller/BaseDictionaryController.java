@@ -76,15 +76,25 @@ public class BaseDictionaryController {
 		return JsonUtil.getSuccessJSONObject(goodsList);
 	}
 	/**
-	 * 根据一级货物名称获取二级
+	 * 根据业务类型获取运输方式
 	 * @param type
 	 * @return
 	 */
-
+	@RequestMapping(value = "/transport", method = RequestMethod.GET)
+	public JSONObject getTransport1(String code,String country,String business) {
+		List<BaseTransport> transportList=null;
+		try {
+			transportList = baseTransportService.findByBusinessAndParentCodeAndCountry(business,code,country);
+		} catch (Exception e) {
+			log.error("base_firstGoods error");
+			e.printStackTrace();
+		}
+		return JsonUtil.getSuccessJSONObject(transportList);
+	}
 	/**
 	 * 获取运输方式
 	 */
-	@RequestMapping(value = "/transport", method = RequestMethod.GET)
+/*	@RequestMapping(value = "/transport", method = RequestMethod.GET)
 	public JSONObject getransport(String code,String business) {
 		List<BaseTransport> transportList=null;
 		try {
@@ -94,7 +104,7 @@ public class BaseDictionaryController {
 			return JsonUtil.getFailJSONObject();
 		}
 		return JsonUtil.getSuccessJSONObject(transportList);
-	}
+	}*/
 	/**
 	 * 根据运输方式代码获取保险条款
 	 */

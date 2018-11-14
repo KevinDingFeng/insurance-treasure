@@ -19,4 +19,6 @@ import lombok.ToString;
 public class BaseTransport extends BaseCode{
 	@Column(length = 10)
 	private String businessCode;
+	@Column(length = 1)
+	private String city;
 }
