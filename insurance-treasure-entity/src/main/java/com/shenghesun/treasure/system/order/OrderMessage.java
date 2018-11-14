@@ -71,10 +71,12 @@ public class OrderMessage extends BaseEntity implements Serializable{
 	@XStreamOmitField
 	private Integer goodsValue;
 	//币种名称
+	@NotBlank(message = "{order.currencyName.notBlank}")
 	@Column(length=10)
 	@XStreamOmitField
 	private String currencyName;
 	//包装类型
+	@NotBlank(message = "{order.packageType.notBlank}")
 	@Column(length=100)
 	@XStreamOmitField
 	private String packageType;
@@ -95,10 +97,12 @@ public class OrderMessage extends BaseEntity implements Serializable{
 	@XStreamOmitField
 	private String insuranceCompany;
 	//运输方式代码
+	@NotBlank(message = "{order.transCode.notBlank}")
 	@Column(length=10)
 	@XStreamOmitField
 	private String transCode;
 	//货物代码
+	@NotBlank(message = "{order.goodsCode.notBlank}")
 	@Column(length=10)
 	@XStreamOmitField
 	private String goodsCode;
@@ -106,18 +110,22 @@ public class OrderMessage extends BaseEntity implements Serializable{
 	 * 太平洋保险接口字段
 	 */
 	//投保人名称
+	@NotBlank(message = "{order.applyName.notBlank}")
 	@Column(length=200)
 	@XStreamAlias("APPLYNAME")
 	private String applyName;
 	//被保人名称
+	@NotBlank(message = "{order.insurantName.notBlank}")
 	@Column(length=200)
 	@XStreamAlias("INSURANTNAME")
 	private String insurantName;
 	//费率
+	@NotBlank(message = "{order.rate.notBlank}")
 	@Column(columnDefinition="DECIMAL(16,2)")
 	@XStreamAlias("RATE")
 	private String rate;
 	//始发地
+	@NotBlank(message = "{order.startPort.notBlank}")
 	@Column(length=60)
 	@XStreamAlias("STARTPORT")
 	private String startPort;
@@ -127,6 +135,7 @@ public class OrderMessage extends BaseEntity implements Serializable{
 	private String transPort;
 	
 	//目的地
+	@NotBlank(message = "{order.endPort.notBlank}")
 	@Column(length=60)
 	@XStreamAlias("ENDPORT")
 	private String endPort;
@@ -135,6 +144,7 @@ public class OrderMessage extends BaseEntity implements Serializable{
 	@XStreamAlias("KIND")
 	private String kind;
 	//起运日期
+	@NotBlank(message = "{order.saildate.notBlank}")
 	@Column(length=10)
 	@XStreamAlias("SAILDATE")
 	private String saildate;
@@ -145,6 +155,7 @@ public class OrderMessage extends BaseEntity implements Serializable{
 
 
 	//运单号、发票号码
+	@NotBlank(message = "{order.mark.notBlank}")
 	@Column(length=500)
 	@XStreamAlias("MARK")
 	private String mark;
@@ -154,6 +165,7 @@ public class OrderMessage extends BaseEntity implements Serializable{
 	private String quantity="1";
 
 	//包装代码
+	@NotBlank(message = "{order.packCode.notBlank}")
 	@Column(length=2)
 	@XStreamAlias("PACKCODE")
 	private String packCode;
@@ -176,11 +188,13 @@ public class OrderMessage extends BaseEntity implements Serializable{
 	@XStreamAlias("ITEMCONTENT")
 	private String itemContent;
 	//币种代码
+	@NotBlank(message = "{order.currencyCode.notBlank}")
 	@Column(length=2)
 	@XStreamAlias("CURRENCYCODE")
 	private String currencyCode;
 
 	//保费
+	@NotBlank(message = "{order.preminum.notBlank}")
 	@Column(columnDefinition="DECIMAL(16,2)")
 	@XStreamAlias("PREMIUM")
 	private String preminum;

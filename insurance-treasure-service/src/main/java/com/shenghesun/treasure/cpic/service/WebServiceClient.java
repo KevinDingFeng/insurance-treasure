@@ -120,9 +120,6 @@ public class WebServiceClient {
 				log.error("错误类型:" + sysMessage.getErrorType() + "\n");
 				log.error("错误代码:" + sysMessage.getErrorCode() + "\n");
 				log.error("错误信息:" + sysMessage.getErrorMsg() + "\n");
-				map.put("errorType", sysMessage.getErrorType());
-				map.put("errorCode", sysMessage.getErrorCode());
-				map.put("errorMsg", sysMessage.getErrorMsg());
 			}				
 			//log.info("返回报文: \r" + reposne.getPolicyInfo()+ "\n");
 
