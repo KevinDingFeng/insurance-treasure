@@ -87,26 +87,35 @@ public class LoginController {
 				return JsonUtil.getFailJSONObject("用户名密码错误"); 
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("特殊错误");
-			return JsonUtil.getFailJSONObject("特殊错误");
+			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
+			return JsonUtil.getFailJSONObject();
 		}
 	}
 	/**
 	 * 获取对外接口token
 	 * @return
 	 */
-	@RequestMapping(value = "/getToken", method = RequestMethod.GET)
-	public JSONObject getToken() {
+	@RequestMapping(value = "/getToken", method = RequestMethod.POST)
+	public JSONObject getToken(HttpServletRequest request, @Validated String account,
+			@Validated String password) {
 		try {
-			String account = "00000000000";
-			String password = "123456";
 			// 获取登录名对应的数据
 			SysUser user = sysUserService.findByAccount(account);
+			if (user == null || user.getSalt() == null) {
+				System.out.println("用户名不存在或用户的盐值不存在");
+				return JsonUtil.getFailJSONObject("输入信息有误");
+			}
 			password = PasswordUtil.encrypt(password, user.getSalt());
-			Map<String, Object> returnMap = loginSuccessService.setReturnMessage(user);
-			return JsonUtil.getSuccessJSONObject(returnMap.get("token"));
+//			根据用户名和密码（密文）校验是否登录成功
+			if(this.login(user.getPassword(), password)) {
+				log.info("login " + account);
+				Map<String, Object> returnMap = loginSuccessService.setReturnMessage(user);
+				return JsonUtil.getSuccessJSONObject(returnMap);
+			}else {
+				return JsonUtil.getFailJSONObject("用户名密码错误"); 
+			}
 		} catch (Exception e) {
+			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
 			return JsonUtil.getFailJSONObject();
 		}
 	}

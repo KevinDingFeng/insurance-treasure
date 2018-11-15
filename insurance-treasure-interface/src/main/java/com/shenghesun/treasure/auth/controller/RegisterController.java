@@ -42,7 +42,7 @@ public class RegisterController {
 			sysUserService.save(user);
 			return JsonUtil.getSuccessJSONObject();
 		} catch (Exception e) {
-			log.error("register error");
+			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
 			return JsonUtil.getFailJSONObject();
 		}
 	}

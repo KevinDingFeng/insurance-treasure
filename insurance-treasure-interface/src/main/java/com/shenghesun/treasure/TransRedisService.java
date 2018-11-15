@@ -64,7 +64,7 @@ public class TransRedisService implements ApplicationRunner{
 		//添加费率信息
 		setRate();
 		//添加城市信息
-		List<BaseCity> cityList = baseCityService.find();
+/*		List<BaseCity> cityList = baseCityService.find();
 		if(!CollectionUtils.isEmpty(cityList)) {
 			logger.info("redis缓存城市信息:"+cityList.size());
 			long start = System.currentTimeMillis();
@@ -75,7 +75,7 @@ public class TransRedisService implements ApplicationRunner{
 			}
 			long end = System.currentTimeMillis(); 
 			logger.info("redis缓存城市信息:"+(end - start)+"毫秒");
-		}
+		}*/
 	}
 	/**
 	 * 向redis中添加费率信息

@@ -52,7 +52,7 @@ public class CompanyController {
 			user.setCompanyId(company.getId());
 			sysUserService.save(user);
 		} catch (Exception e) {
-			log.error("company_complete error");
+			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
 			return JsonUtil.getFailJSONObject();
 		}
 		return JsonUtil.getSuccessJSONObject();
@@ -77,8 +77,8 @@ public class CompanyController {
 	        System.out.println(path);
 	        Files.write(path, bytes);
 	    } catch (IOException e) {
-	    	log.error("complete_upload error "+e.getMessage());
-	    	 return JsonUtil.getFailJSONObject();
+	    	log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
+			return JsonUtil.getFailJSONObject();
 	    }
 	    return JsonUtil.getSuccessJSONObject(filePath);
 	}
@@ -95,7 +95,7 @@ public class CompanyController {
 			//查看公司信息
 			company = companyService.findById(companyId);
 		} catch (Exception e) {
-			log.error("company_find error");
+			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
 			return JsonUtil.getFailJSONObject();
 		}
 		return JsonUtil.getSuccessJSONObject(company);

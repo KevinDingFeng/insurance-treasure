@@ -1,11 +1,8 @@
 package com.shenghesun.treasure.base.controller;
 
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -56,8 +53,8 @@ public class BaseDictionaryController {
 			map.put("city", cityList);
 			map.put("trans", transList);
 		} catch (Exception e) {
-			log.error("base_all error");
-			e.printStackTrace();
+			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
+			return JsonUtil.getFailJSONObject();
 		}
 		return JsonUtil.getSuccessJSONObject(map);
 	}
@@ -70,8 +67,8 @@ public class BaseDictionaryController {
 		try {
 			goodsList = baseGoodsService.findByParentCode(code);
 		} catch (Exception e) {
-			log.error("base_firstGoods error");
-			e.printStackTrace();
+			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
+			return JsonUtil.getFailJSONObject();
 		}
 		return JsonUtil.getSuccessJSONObject(goodsList);
 	}
@@ -86,25 +83,11 @@ public class BaseDictionaryController {
 		try {
 			transportList = baseTransportService.findByBusinessAndParentCodeAndCountry(business,code,country);
 		} catch (Exception e) {
-			log.error("base_firstGoods error");
-			e.printStackTrace();
-		}
-		return JsonUtil.getSuccessJSONObject(transportList);
-	}
-	/**
-	 * 获取运输方式
-	 */
-/*	@RequestMapping(value = "/transport", method = RequestMethod.GET)
-	public JSONObject getransport(String code,String business) {
-		List<BaseTransport> transportList=null;
-		try {
-			transportList = baseTransportService.findByBusinessCodeAndParentCode(business,code);
-		} catch (Exception e) {
-			log.error("base_secondTransport error");
+			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
 			return JsonUtil.getFailJSONObject();
 		}
 		return JsonUtil.getSuccessJSONObject(transportList);
-	}*/
+	}
 	/**
 	 * 根据运输方式代码获取保险条款
 	 */
@@ -130,7 +113,7 @@ public class BaseDictionaryController {
 			map.put("rate", rate);
 			return JsonUtil.getSuccessJSONObject(map);
 		} catch (Exception e) {
-			log.error("base_secondTransport error");
+			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
 			return JsonUtil.getFailJSONObject();
 		}
 		
@@ -138,7 +121,7 @@ public class BaseDictionaryController {
 	/**
 	 * 城市信息模糊查询
 	 */
-	@RequestMapping(value = "/getCity", method = RequestMethod.GET)
+/*	@RequestMapping(value = "/getCity", method = RequestMethod.GET)
 	public JSONObject getCity(String city) {
 		try {
 			Set<Object> keys = null;
@@ -158,6 +141,5 @@ public class BaseDictionaryController {
 			log.error("base_city error");
 			return JsonUtil.getFailJSONObject();
 		}
-		
-	}
+	}*/
 }

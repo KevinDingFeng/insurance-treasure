@@ -58,7 +58,7 @@ public class FundController {
 			map.put("fundList", fundList);
 			return JsonUtil.getSuccessJSONObject(map);
 		} catch (Exception e) {
-			log.error("fund_detail error");
+			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
 			return JsonUtil.getFailJSONObject();
 		}
 		
@@ -86,7 +86,7 @@ public class FundController {
 				return JsonUtil.getFailJSONObject("公司不存在");
 			}
 		} catch (Exception e) {
-			log.error("manager update balance error");
+			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
 			return JsonUtil.getFailJSONObject();
 		}
 		return JsonUtil.getSuccessJSONObject();

@@ -54,18 +54,10 @@ public class OrderService {
 			//设置发票金额
 			orderMessage.setInvamount(orderMessage.getOrderAmount());
 			orderMessage.setClassesType("1");
-			//设置保费
-			//float preminum = orderMessage.getOrderAmount()*Float.parseFloat(orderMessage.getRate());
-			//orderMessage.setPreminum((int)Math.ceil(preminum));
 		}else {
-			//设置国内保险金额和保费
-			//orderMessage.setOrderAmount((orderMessage.getGoodsValue())*(1+orderMessage.getIncrate()));
 			//设置发票金额
 			orderMessage.setInvamount(orderMessage.getOrderAmount());
 			orderMessage.setClassesType("2");
-			//设置保费
-			//float preminum = orderMessage.getOrderAmount()*Float.parseFloat(orderMessage.getRate());
-			//orderMessage.setPreminum((int)Math.ceil(preminum));
 		}
 		map.put("order", orderMessage);
 		return map;
@@ -85,7 +77,6 @@ public class OrderService {
 			map.put("trans_error", ": 运输代码不存在");
 		}
 		if(transCode!=null) {
-			
 			orderMessage.setClassType(transCode.getClassType());
 			orderMessage.setKind(transCode.getKind());
 			orderMessage.setKindName(transCode.getKindName());

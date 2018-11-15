@@ -54,7 +54,8 @@ public class OrderController {
 			orderMessageService.save((OrderMessage)orderMessage.get("order"));
 			return JsonUtil.getSuccessJSONObject();
 		} catch (Exception e) {
-			return JsonUtil.getFailJSONObject("特殊错误");
+			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
+			return JsonUtil.getFailJSONObject();
 		}
 		
 	}
@@ -72,7 +73,8 @@ public class OrderController {
 			Page<OrderMessage> orderList = orderMessageService.findByUserId(id,pageRequest);
 			return JsonUtil.getSuccessJSONObject(orderList);
 		} catch (Exception e) {
-			return JsonUtil.getFailJSONObject("特殊错误");
+			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
+			return JsonUtil.getFailJSONObject();
 		}
 	}
 	/**
@@ -87,15 +89,19 @@ public class OrderController {
 			//获取公司信息
 			String token = HttpHeaderUtil.getToken((HttpServletRequest) request);
 			Long companyId = TokenUtil.getLoginCompanyId(token);
+			Long userId = TokenUtil.getLoginUserId(token);
 			CompanyMessage company = companyService.findById(companyId);
+			log.info("投保用户ID："+userId+"投保公司ID: "+companyId);
 			//完善订单信息
 			Map<String,Object> orderMap = orderService.complete(request,order);
 			order = (OrderMessage) orderMap.get("order");
 			//判断完善信息过程中是否出现运输代码查找错误和货物代码错误
 			if(orderMap.get("trans_error")!=null) {
+				log.error("运输代码不存在");
 				return JsonUtil.getFailJSONObject(orderMap.get("trans_error"));
 			}
 			if(orderMap.get("goods_error")!=null) {
+				log.error("货物代码不存在");
 				return JsonUtil.getFailJSONObject(orderMap.get("goods_error"));
 			}
 			//保存下单信息
@@ -119,7 +125,7 @@ public class OrderController {
 			}
 			return JsonUtil.getSuccessJSONObject(map);
 		} catch (Exception e) {
-			log.error("pay error");
+			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
 			return JsonUtil.getFailJSONObject();
 		}
 	}

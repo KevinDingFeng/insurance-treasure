@@ -50,7 +50,8 @@ public class CheckTokenFilter implements Filter{
 					return;
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				this.setReturnResponse((HttpServletResponse) response, "invalid token");
+				return;
 			}
 			String userInfoId = redisUtil.get(CustomConfig.REDIS_TOKEN_PREFIX + token);
 			//TODO 如果有必要，可以再加更严谨的校验方式，比如解析 token 获取到的数据和数据库进行匹配

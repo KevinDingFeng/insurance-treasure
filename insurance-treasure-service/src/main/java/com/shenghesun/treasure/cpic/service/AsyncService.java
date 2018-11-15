@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import com.shenghesun.treasure.order.service.OrderMessageService;
 import com.shenghesun.treasure.system.cpic.webservice.Datas;
 import com.shenghesun.treasure.system.cpic.webservice.Freightcpic;
 import com.shenghesun.treasure.system.cpic.webservice.Header;
@@ -32,15 +31,14 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 public class AsyncService {
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+
 	@Autowired
 	private WebServiceClient webServiceClient;
 	
 	@Async("asyncServiceExecutor")
     public Map<String,Object> executeAsync(OrderMessage orderMessage) {
 		Map<String,Object> map = new HashMap<String,Object>();
-        logger.info("start executeAsync");
+        log.info("start executeAsync");
         try{
         	if(orderMessage != null) {
     			OrderMessage pmTemp = new OrderMessage();
@@ -69,7 +67,7 @@ public class AsyncService {
     		}
         }catch(Exception e){
             e.printStackTrace();
-            logger.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
+            log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
         }
         //logger.info("end executeAsync");
 		return map;

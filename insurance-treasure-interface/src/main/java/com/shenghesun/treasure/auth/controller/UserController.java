@@ -19,8 +19,11 @@ import com.shenghesun.treasure.utils.RedisUtil;
 import com.shenghesun.treasure.utils.SmsCodeService;
 import com.shenghesun.treasure.utils.TokenUtil;
 
+import lombok.extern.slf4j.Slf4j;
+
 @RestController
 @RequestMapping("/api/user")
+@Slf4j
 public class UserController {
 
 	@Autowired
@@ -34,9 +37,14 @@ public class UserController {
 	 */
 	@RequestMapping(value = "/sms", method = RequestMethod.GET)
 	public JSONObject sendMessage(String account) {
-		String code = RandomUtil.randomNum();
-		SmsCodeService.sendSmsCode(account, code);
-		redisUtil.set(account, code, CustomConfig.SMSCODE_TIME_SECOND);
+		String code=null;
+		try {
+			code = RandomUtil.randomNum();
+			SmsCodeService.sendSmsCode(account, code);
+			redisUtil.set(account, code, CustomConfig.SMSCODE_TIME_SECOND);
+		} catch (Exception e) {
+			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
+		}
 		return JsonUtil.getSuccessJSONObject(code);
 	}
 	/**
@@ -58,6 +66,7 @@ public class UserController {
 			user.setCellphone(account);
 			sysUserService.save(user);
 		} catch (Exception e) {
+			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
 			return JsonUtil.getFailJSONObject();
 		}
 		return JsonUtil.getSuccessJSONObject();
@@ -68,22 +77,26 @@ public class UserController {
 	 */
 	@RequestMapping(value = "/password", method = RequestMethod.GET)
 	public JSONObject changePassword(HttpServletRequest request,String old,String current,String code) {
-		//获取登陆用户信息
-		String token = HttpHeaderUtil.getToken((HttpServletRequest) request);
-		Long userId = TokenUtil.getLoginUserId(token);
-		SysUser user = sysUserService.findById(userId);
-		//获取用户原始密码
-		if(PasswordUtil.encrypt(old, user.getSalt())!=user.getPassword()) {
-			return JsonUtil.getFailJSONObject("原密码输入错误");
+		try {
+			//获取登陆用户信息
+			String token = HttpHeaderUtil.getToken((HttpServletRequest) request);
+			Long userId = TokenUtil.getLoginUserId(token);
+			SysUser user = sysUserService.findById(userId);
+			//获取用户原始密码
+			if(PasswordUtil.encrypt(old, user.getSalt())!=user.getPassword()) {
+				return JsonUtil.getFailJSONObject("原密码输入错误");
+			}
+			//验证码判断
+			//验证码是否正确
+			String smsCode = redisUtil.get(user.getCellphone());
+			if(smsCode==null || smsCode!=code) {
+				return JsonUtil.getFailJSONObject("验证码错误"); 
+			}
+			user.setPassword(PasswordUtil.encrypt(current, user.getSalt()));
+			sysUserService.save(user);
+		} catch (Exception e) {
+			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
 		}
-		//验证码判断
-		//验证码是否正确
-		String smsCode = redisUtil.get(user.getCellphone());
-		if(smsCode==null || smsCode!=code) {
-			return JsonUtil.getFailJSONObject("验证码错误"); 
-		}
-		user.setPassword(PasswordUtil.encrypt(current, user.getSalt()));
-		sysUserService.save(user);
 		return JsonUtil.getSuccessJSONObject();
 	}
 }
