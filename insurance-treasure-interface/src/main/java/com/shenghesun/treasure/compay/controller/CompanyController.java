@@ -72,7 +72,7 @@ public class CompanyController {
 	    try {
 	        // Get the file and save it somewhere
 	        byte[] bytes = file.getBytes();
-	        filePath = "C:\\" + file.getOriginalFilename();
+	        filePath = "C:\\Users\\EDZ\\workspace\\" + file.getOriginalFilename();
 	        Path path = Paths.get(filePath);
 	        System.out.println(path);
 	        Files.write(path, bytes);
