@@ -120,6 +120,21 @@ public class LoginController {
 		}
 	}
 	/**
+	 * 检测token是否失效
+	 */
+	@RequestMapping(value = "/checkToken", method = RequestMethod.GET)
+	public JSONObject checkToken(HttpServletRequest request, @Validated String token) {
+		try {
+			if(redisUtil.exists(CustomConfig.REDIS_TOKEN_PREFIX+token)) {
+				return JsonUtil.getSuccessJSONObject(true);
+			}else {
+				return JsonUtil.getSuccessJSONObject(false);
+			}
+		} catch (Exception e) {
+			return JsonUtil.getFailJSONObject();
+		}
+	}
+	/**
 	 * 判断是否可以登录逻辑，库存密码存在且与输入的现有密码相等，即登录成功
 	 * 
 	 * @param passwordSource 库存密码
