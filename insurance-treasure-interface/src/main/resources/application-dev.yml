@@ -31,6 +31,7 @@ spring:
            file-size-threshold: 0
            max-file-size: 1Mb
            max-request-size: 10Mb
+           file-path: C:\\Users\\EDZ\\workspace\\
 logging:
     level:
         root: INFO

@@ -8,6 +8,7 @@ import java.nio.file.Paths;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -35,6 +36,8 @@ public class CompanyController {
 	CompanyMessageService companyService;
 	@Autowired
 	SysUserService sysUserService;
+	@Value("${spring.servlet.multipart.file-path}")
+	private String filePath;
 	/**
 	 * 完善公司信息
 	 * @return
@@ -68,11 +71,11 @@ public class CompanyController {
 	    if (file.isEmpty()) {
 	        return JsonUtil.getFailJSONObject("上传内容为空");
 	    }
-	    String filePath = "";
+	   // String filePath = "";
 	    try {
 	        // Get the file and save it somewhere
 	        byte[] bytes = file.getBytes();
-	        filePath = "C:\\Users\\EDZ\\workspace\\" + file.getOriginalFilename();
+	        filePath = filePath + file.getOriginalFilename();
 	        Path path = Paths.get(filePath);
 	        System.out.println(path);
 	        Files.write(path, bytes);
