@@ -2,7 +2,6 @@ package com.shenghesun.treasure.filter;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Enumeration;
 import java.util.Map;
 
 import javax.servlet.Filter;
@@ -39,8 +38,6 @@ public class CheckTokenFilter implements Filter{
 			throws IOException, ServletException {
 		if(request instanceof HttpServletRequest) {
 			String token = HttpHeaderUtil.getToken((HttpServletRequest) request);
-			Enumeration<String> headerNames = ((HttpServletRequest) request).getHeaderNames();
-			System.out.println(headerNames.toString());
 			if(StringUtils.isEmpty(token)) {
 				this.setReturnResponse((HttpServletResponse) response, "invalid token");
 				return;

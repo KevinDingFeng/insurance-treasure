@@ -118,6 +118,7 @@ public class OrderController {
 					//修改订单状态
 					order.setPayStatus(1);
 				}else {
+					orderMessageService.save(order);
 					return JsonUtil.getFailJSONObject("余额不足，请联系管理员充值");
 				}
 			}else {
