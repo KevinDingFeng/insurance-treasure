@@ -47,6 +47,7 @@ public class CompanyController {
 		try {
 			//获取请求用户信息
 			String token = HttpHeaderUtil.getToken((HttpServletRequest) request);
+			System.out.println(token);
 			Long userId = TokenUtil.getLoginUserId(token);
 			//保存公司信息
 			CompanyMessage company = companyService.save(companyMessage);

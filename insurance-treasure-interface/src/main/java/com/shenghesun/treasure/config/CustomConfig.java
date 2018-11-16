@@ -17,6 +17,7 @@ public class CustomConfig {
 	public static final Long SMSCODE_TIME_SECOND = 180L; //秒值
 	public static final String REDIS_TOKEN_PREFIX = "login_token:";
 	public static final String URL_PATTERNS = "/api/*";
+	public static final String URL_ALL = "/*";
 	
 //	public static final String HASH_ALGORITHM_NAME = "md5";// 散列算法:这里使用MD5算法;;
 	public static final int HASH_ITERATIONS = 10;// 散列的次数，比如散列两次，相当于 md5(md5(""));;
@@ -39,7 +40,16 @@ public class CustomConfig {
     	System.out.println("----------------check token filter-----------------");
     	return new CheckTokenFilter();
     }
-	
+	 @Bean
+	    public FilterRegistrationBean crossFilter() {
+	    	FilterRegistrationBean registration = new FilterRegistrationBean();
+	    	registration.setFilter(kevinCrossFilter());
+	    	registration.addUrlPatterns(URL_ALL);
+//	    	registration.addInitParameter("", "");
+	    	registration.setName("kevinCrossFilter");
+	    	
+	    	return registration;
+	    }
     @Bean
     public FilterRegistrationBean tokenFilter() {
     	FilterRegistrationBean registration = new FilterRegistrationBean();
