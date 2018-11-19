@@ -10,4 +10,6 @@ import com.shenghesun.treasure.system.cpic.Approvl;
 public interface ApprovlDao extends PagingAndSortingRepository<Approvl, Long>, JpaSpecificationExecutor<Approvl>{
 	
 	public Approvl findByApplyId(String applyId);
+	
+	public Approvl findByOrderNo(String orderNo);
 }

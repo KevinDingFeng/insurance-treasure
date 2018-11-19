@@ -19,4 +19,7 @@ public class ApprovlService {
 	public Approvl findByApplyId(String applyId) {
 		return approvlDao.findByApplyId(applyId);
 	}
+	public Approvl findByOrderNo(String orderNo) {
+		return approvlDao.findByOrderNo(orderNo);
+	}
 }

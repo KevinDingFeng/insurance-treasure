@@ -27,26 +27,10 @@ import lombok.extern.slf4j.Slf4j;
 public class UserController {
 
 	@Autowired
-	private SmsCodeService SmsCodeService;
-	@Autowired
 	private RedisUtil redisUtil;
 	@Autowired
 	private SysUserService sysUserService;
-	/**
-	 * 发送手机验证码
-	 */
-	@RequestMapping(value = "/sms", method = RequestMethod.GET)
-	public JSONObject sendMessage(String account) {
-		String code=null;
-		try {
-			code = RandomUtil.randomNum();
-			SmsCodeService.sendSmsCode(account, code);
-			redisUtil.set(account, code, CustomConfig.SMSCODE_TIME_SECOND);
-		} catch (Exception e) {
-			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
-		}
-		return JsonUtil.getSuccessJSONObject(code);
-	}
+
 	/**
 	 * 修改手机号
 	 */

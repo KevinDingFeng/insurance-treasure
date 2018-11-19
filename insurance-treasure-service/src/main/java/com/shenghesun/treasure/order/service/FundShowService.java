@@ -12,9 +12,7 @@ import com.shenghesun.treasure.system.model.FundShow;
 public class FundShowService {
 	@Autowired
 	private FundShowDao fundShowDao;
-/*	public Page<FundShow> findByCompanyId(Long companyid,Pageable pageable){
-		return fundShowDao.findByCompanyId(companyid,pageable);
-	}*/
+	
 	public List<FundShow> findByCompanyId(Long companyid,Integer page,Integer size){
 		int start = (page-1)*size;
 		return fundShowDao.findByCompanyId(companyid,start,size);
