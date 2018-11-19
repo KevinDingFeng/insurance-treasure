@@ -1,9 +1,12 @@
 package com.shenghesun.treasure.compay.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -74,6 +77,13 @@ public class CompanyController {
 	    }
 	   // String filePath = "";
 	    try {
+	    	//判断上传路径是否存在
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd/");
+			filePath = filePath+sdf.format(new Date());
+	    	File f = new File(filePath);
+	        if (!f.exists()) {
+	            f.mkdirs();
+	        }
 	        // Get the file and save it somewhere
 	        byte[] bytes = file.getBytes();
 	        filePath = filePath + file.getOriginalFilename();

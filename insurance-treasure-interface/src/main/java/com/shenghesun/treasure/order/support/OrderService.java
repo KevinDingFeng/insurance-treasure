@@ -29,7 +29,14 @@ public class OrderService {
 	 */
 	public Map<String,Object> complete(HttpServletRequest request,OrderMessage orderMessage) {
 		Map<String,Object> map =new HashMap<String,Object>();
-		orderMessage.setCreation(null);
+		//校验包装代码是否存在
+		if(!redisUtil.exists(orderMessage.getPackCode()+"pack")){
+			map.put("pack_error", ": 包装代码不存在");
+		}
+		if(!redisUtil.exists(orderMessage.getCurrencyCode()+"curr")){
+			map.put("currency_error", ": 币种代码不存在");
+		}
+		//校验币种代码是否存在
 		//获取用户信息
 		String token = HttpHeaderUtil.getToken((HttpServletRequest) request);
 		Long userId = TokenUtil.getLoginUserId(token);
@@ -39,10 +46,8 @@ public class OrderService {
 		orderMessage.setCompanyId(companyId);
 		orderMessage.setPlusOrMinus("0");
 		//设置订单号
-	
 		String orderNo = System.currentTimeMillis() + RandomUtil.randomString(2);
 		orderMessage.setOrderNo(orderNo);
-		
 		//设置运输相关信息
 		orderMessage = this.setTansport(orderMessage,map);
 		//设置货物名称相关信息
