@@ -104,7 +104,6 @@ public class BaseDictionaryController {
 			}
 			if(redisUtil.exists(business+"rate")){
 				rate = redisUtil.get(business+"rate");
-				System.out.println(rate);
 			}
 			if(transCode!=null) {
 				itemName = transCode.getItemName();

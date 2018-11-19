@@ -38,7 +38,8 @@ public class OrderMessage extends BaseEntity implements Serializable{
 	//保单订单号
 	//自定义查询码
 	@Column(length=50)
-	@XStreamAlias("USERNO")
+	//@XStreamAlias("USERNO")
+	@XStreamOmitField
 	private String orderNo;
 
 	//资金状态，入账还是出账，0代表出账 1代表入账
@@ -71,12 +72,12 @@ public class OrderMessage extends BaseEntity implements Serializable{
 	@XStreamOmitField
 	private Integer goodsValue;
 	//币种名称
-	@NotBlank(message = "{order.currencyName.notBlank}")
+	//@NotBlank(message = "{order.currencyName.notBlank}")
 	@Column(length=10)
 	@XStreamOmitField
 	private String currencyName;
 	//包装类型
-	@NotBlank(message = "{order.packageType.notBlank}")
+	//@NotBlank(message = "{order.packageType.notBlank}")
 	@Column(length=100)
 	@XStreamOmitField
 	private String packageType;
@@ -194,7 +195,7 @@ public class OrderMessage extends BaseEntity implements Serializable{
 	private String currencyCode;
 
 	//保费
-	@NotBlank(message = "{order.preminum.notBlank}")
+	//@NotBlank(message = "{order.preminum.notBlank}")
 	@Column(columnDefinition="DECIMAL(16,2)")
 	@XStreamAlias("PREMIUM")
 	private String preminum;
@@ -249,6 +250,6 @@ public class OrderMessage extends BaseEntity implements Serializable{
 	 */
 	@Column
 	@XStreamOmitField
-	private Integer insuranceStatus; 
+	private Integer insuranceStatus=0; 
 
 }

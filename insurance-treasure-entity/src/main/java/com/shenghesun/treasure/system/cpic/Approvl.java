@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.shenghesun.treasure.entity.base.BaseEntity;
 
 import lombok.Data;
@@ -42,6 +43,7 @@ public class Approvl extends BaseEntity{
 	private String workType;
 	
 	@Column(length=10)
+	@JsonIgnore
 	private String unitCode;
 	
 	@Column(length=25)

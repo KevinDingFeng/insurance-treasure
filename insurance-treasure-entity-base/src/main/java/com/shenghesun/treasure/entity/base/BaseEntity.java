@@ -12,6 +12,7 @@ import javax.persistence.Version;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.shenghesun.treasure.entity.base.listener.BaseEntityListener;
 
 @MappedSuperclass
@@ -54,10 +55,12 @@ public class BaseEntity{
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@JsonIgnore
 	protected Long id;
 	
 	@Version
 	@JSONField(serialize = false)
+	@JsonIgnore
 	protected long version=0l;
 	
 	@JsonFormat(timezone="GMT+8",pattern="yyyy-MM-dd HH:mm:ss")
@@ -65,9 +68,9 @@ public class BaseEntity{
 	protected Timestamp creation;
 	
 //	@Index(name="lastModified")
-	@JsonFormat(timezone="GMT+8",pattern="yyyy-MM-dd HH:mm:ss")
+	//@JsonFormat(timezone="GMT+8",pattern="yyyy-MM-dd HH:mm:ss")
 	@Column()
-	@JSONField(serialize = false)
+	@JsonIgnore
 	protected Timestamp lastModified;
 	
 }

@@ -63,19 +63,8 @@ public class TransRedisService implements ApplicationRunner{
 		}
 		//添加费率信息
 		setRate();
-		//添加城市信息
-/*		List<BaseCity> cityList = baseCityService.find();
-		if(!CollectionUtils.isEmpty(cityList)) {
-			logger.info("redis缓存城市信息:"+cityList.size());
-			long start = System.currentTimeMillis();
-			for(int i=0;i<cityList.size();i++) {
-				BaseCity city = cityList.get(i);
-				String key = city.getName();
-				redisUtil.set("wuliu-"+key,key);
-			}
-			long end = System.currentTimeMillis(); 
-			logger.info("redis缓存城市信息:"+(end - start)+"毫秒");
-		}*/
+		setPackage();
+		setCurrency();
 	}
 	/**
 	 * 向redis中添加费率信息
@@ -93,5 +82,28 @@ public class TransRedisService implements ApplicationRunner{
 		redisUtil.set("B09rate", 0.03);
 		redisUtil.set("B10rate", 0.05);
 	}
-
+	/**
+	 * 向redis中添加包装代码对应
+	 */
+	public void setPackage() {
+		redisUtil.set("01pack", "箱装");
+		redisUtil.set("02pack", "袋装");
+		redisUtil.set("03pack", "托盘");
+		redisUtil.set("04pack", "散装");
+		redisUtil.set("05pack", "裸装");
+		redisUtil.set("06pack", "桶装");
+		redisUtil.set("07pack", "罐装");
+		redisUtil.set("08pack", "盘卷");
+	}
+	/**
+	 * 向redis中添加币种代码对应
+	 */
+	public void setCurrency() {
+		redisUtil.set("01curr", "人民币");
+		redisUtil.set("02curr", "美元");
+		redisUtil.set("03curr", "港元");
+		redisUtil.set("04curr", "日元");
+		redisUtil.set("06curr", "英镑");
+		redisUtil.set("07curr", "欧元");
+	}
 }

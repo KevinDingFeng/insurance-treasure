@@ -29,6 +29,7 @@ public class OrderService {
 	 */
 	public Map<String,Object> complete(HttpServletRequest request,OrderMessage orderMessage) {
 		Map<String,Object> map =new HashMap<String,Object>();
+		orderMessage.setCreation(null);
 		//获取用户信息
 		String token = HttpHeaderUtil.getToken((HttpServletRequest) request);
 		Long userId = TokenUtil.getLoginUserId(token);
@@ -38,8 +39,10 @@ public class OrderService {
 		orderMessage.setCompanyId(companyId);
 		orderMessage.setPlusOrMinus("0");
 		//设置订单号
+	
 		String orderNo = System.currentTimeMillis() + RandomUtil.randomString(2);
 		orderMessage.setOrderNo(orderNo);
+		
 		//设置运输相关信息
 		orderMessage = this.setTansport(orderMessage,map);
 		//设置货物名称相关信息
@@ -51,14 +54,24 @@ public class OrderService {
 		if(city.equals("0")) {
 			//设置国内保险金额和保费
 			orderMessage.setOrderAmount(orderMessage.getGoodsValue());
+			//设置保费
+			float preminum = orderMessage.getOrderAmount()*Float.parseFloat(orderMessage.getRate());
+			orderMessage.setPreminum(Double.toString(Math.ceil(preminum)));
 			//设置发票金额
 			orderMessage.setInvamount(orderMessage.getOrderAmount());
 			orderMessage.setClassesType("1");
 		}else {
+			//设置国内保险金额和保费
+			orderMessage.setOrderAmount(orderMessage.getGoodsValue()*(1+orderMessage.getIncrate()));
+			//设置保费
+			float preminum = orderMessage.getOrderAmount()*Float.parseFloat(orderMessage.getRate());
+			orderMessage.setPreminum(Double.toString(Math.ceil(preminum)));
 			//设置发票金额
 			orderMessage.setInvamount(orderMessage.getOrderAmount());
 			orderMessage.setClassesType("2");
 		}
+
+		
 		map.put("order", orderMessage);
 		return map;
 	}
@@ -105,4 +118,5 @@ public class OrderService {
 		}
 		return orderMessage;
 	}
+	
 }
