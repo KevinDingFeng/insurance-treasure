@@ -32,6 +32,7 @@ spring:
            max-file-size: 100Mb
            max-request-size: 100Mb
            file-path: C:/home/workspace/
+           show: /f/
 logging:
     level:
         root: INFO
