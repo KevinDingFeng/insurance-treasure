@@ -65,7 +65,7 @@ public class OrderMessageService {
 				
 				if (StringUtils.isNotEmpty(condition.getKeyword())) {
 					Predicate pre = cb.like(
-							cb.concat(root.get("orderNo"), root.get("id").as(String.class)),
+							cb.concat(root.get("orderNo"), root.get("businessType")),
 							"%" + condition.getKeyword() + "%");
 					predicate.getExpressions().add(pre);
 				}
@@ -81,8 +81,6 @@ public class OrderMessageService {
 							.add(cb.lessThanOrEqualTo(root.get("creation").as(Date.class), condition.getEndDate()));
 				}
 				
-				predicate.getExpressions().add(cb.isFalse(root.<Boolean>get("removed")));
-
 				return predicate;
 			}
 		}, pageable);

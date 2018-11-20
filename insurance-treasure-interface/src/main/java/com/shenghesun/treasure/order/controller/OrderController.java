@@ -91,21 +91,6 @@ public class OrderController {
 		}
 	}
 	/**
-	 * 查询全部保单
-	 */
-	@RequestMapping(value = "/all", method = RequestMethod.GET)
-	public JSONObject showAll(HttpServletRequest request) {
-		String token = HttpHeaderUtil.getToken((HttpServletRequest) request);
-		try {
-			Long id = TokenUtil.getLoginUserId(token);
-			List<OrderMessage> orderList = orderMessageService.findByByUserId(id);
-			return JsonUtil.getSuccessJSONObject(orderList);
-		} catch (Exception e) {
-			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
-			return JsonUtil.getFailJSONObject();
-		}
-	}
-	/**
 	 * 系统提前使用，用户获取token后直接进行使用
 	 * @param request
 	 * @param orderMessage

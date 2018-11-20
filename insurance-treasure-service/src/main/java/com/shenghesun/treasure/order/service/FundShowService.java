@@ -14,7 +14,7 @@ public class FundShowService {
 	private FundShowDao fundShowDao;
 	
 	public List<FundShow> findByCompanyId(Long companyid,Integer page,Integer size){
-		int start = (page-1)*size;
+		int start = page*size;
 		return fundShowDao.findByCompanyId(companyid,start,size);
 	}
 	public Integer findCount(Long companyId) {

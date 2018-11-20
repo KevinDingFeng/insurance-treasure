@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSONObject;
 import com.shenghesun.treasure.company.CompanyMessageService;
+import com.shenghesun.treasure.config.CustomConfig;
 import com.shenghesun.treasure.system.company.CompanyMessage;
 import com.shenghesun.treasure.system.entity.SysUser;
 import com.shenghesun.treasure.system.service.SysUserService;
@@ -45,13 +46,18 @@ public class CompanyController {
 	 * 完善公司信息
 	 * @return
 	 */
-	@RequestMapping(value = "/complete", method = RequestMethod.POST)
-	public JSONObject completeCompanyMessage(HttpServletRequest request,CompanyMessage companyMessage) {
+	@PostMapping(value = "/complete")
+	public JSONObject completeCompanyMessage(HttpServletRequest request,CompanyMessage companyMessage,@RequestParam(value = "file", required = false) MultipartFile file) {
 		try {
 			//获取请求用户信息
 			String token = HttpHeaderUtil.getToken((HttpServletRequest) request);
 			System.out.println(token);
 			Long userId = TokenUtil.getLoginUserId(token);
+			//图片上传
+			if(file!=null) {
+				String filePath = singleFileUpload(file);
+				companyMessage.setCreditCard(filePath);
+			}
 			//保存公司信息
 			CompanyMessage company = companyService.save(companyMessage);
 			//更新当前用户的公司信息
@@ -70,31 +76,29 @@ public class CompanyController {
 	 * @param redirectAttributes
 	 * @return
 	 */
-	@PostMapping("/upload") 
-	public JSONObject singleFileUpload(@RequestParam("file") MultipartFile file) {
-	    if (file.isEmpty()) {
+	public String singleFileUpload(MultipartFile companyFile) {
+	   /* if (companyFile.isEmpty()) {
 	        return JsonUtil.getFailJSONObject("上传内容为空");
-	    }
+	    }*/
 	   // String filePath = "";
+	    String returnPath="";
 	    try {
 	    	//判断上传路径是否存在
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd/");
-			filePath = filePath+sdf.format(new Date());
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd/");
+			returnPath = CustomConfig.MODEL+sdf.format(new Date())+ companyFile.getOriginalFilename();
+	    	filePath = filePath+returnPath;
 	    	File f = new File(filePath);
 	        if (!f.exists()) {
 	            f.mkdirs();
 	        }
 	        // Get the file and save it somewhere
-	        byte[] bytes = file.getBytes();
-	        filePath = filePath + file.getOriginalFilename();
+	        byte[] bytes = companyFile.getBytes();
 	        Path path = Paths.get(filePath);
-	        System.out.println(path);
 	        Files.write(path, bytes);
 	    } catch (IOException e) {
 	    	log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
-			return JsonUtil.getFailJSONObject();
 	    }
-	    return JsonUtil.getSuccessJSONObject(filePath);
+	    return returnPath;
 	}
 	/**
 	 * 查看公司信息

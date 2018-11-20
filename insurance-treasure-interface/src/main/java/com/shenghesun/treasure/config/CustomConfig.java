@@ -18,7 +18,7 @@ public class CustomConfig {
 	public static final String REDIS_TOKEN_PREFIX = "login_token:";
 	public static final String URL_PATTERNS = "/api/*";
 	public static final String URL_ALL = "/*";
-	
+	public static final String MODEL = "company/";
 //	public static final String HASH_ALGORITHM_NAME = "md5";// 散列算法:这里使用MD5算法;;
 	public static final int HASH_ITERATIONS = 10;// 散列的次数，比如散列两次，相当于 md5(md5(""));;
 
