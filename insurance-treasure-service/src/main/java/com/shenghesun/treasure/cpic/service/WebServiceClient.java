@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import com.shenghesun.treasure.order.service.OrderMessageService;
 import com.shenghesun.treasure.system.cpic.Approvl;
+import com.shenghesun.treasure.system.cpic.ReturnApprovl;
 import com.shenghesun.treasure.system.order.OrderMessage;
 import com.shenghesun.util.cpic.XmlUtils;
 
@@ -125,10 +126,24 @@ public class WebServiceClient {
 
 			String result = reposne.getPolicyInfo();
 			Approvl approvl =  xml2Approvl(result,orderMessage);
-			map.put("approvl", approvl);
-			
 			if(approvl != null) {
-
+				//将接口返回的approv对象时间设置为空
+				/*Approvl returnApprovl = new Approvl();
+				BeanUtils.copyProperties(approvl, returnApprovl);
+				returnApprovl.setId(null);
+				returnApprovl.setCreation(null);
+				returnApprovl.setLastModified(null);
+				returnApprovl.setVersion(0l);*/
+				ReturnApprovl returnApprovl = new ReturnApprovl();
+				returnApprovl.setOrderNo(approvl.getOrderNo());
+				returnApprovl.setApplyId(approvl.getApplyId());
+				returnApprovl.setType(approvl.getType());
+				returnApprovl.setWorkType(approvl.getWorkType());
+				returnApprovl.setApplyNo(approvl.getApplyNo());
+				returnApprovl.setPolicyNo(approvl.getPolicyNo());
+				returnApprovl.setStatus(approvl.getStatus());
+				returnApprovl.setComments(approvl.getComments());
+				returnApprovl.setStatusEpolicy(approvl.getStatusEpolicy());
 				Approvl approvlDB = approvlService.findByApplyId(approvl.getApplyId());
 				if(approvlDB != null) {//已有则修改
 					BeanUtils.copyProperties(approvl, approvlDB);
@@ -136,7 +151,7 @@ public class WebServiceClient {
 				}else {//新增
 					approvlService.save(approvl);
 				}
-
+				map.put("approvl", returnApprovl);
 				String status = approvl.getStatus();
 				/**
 				 * 保单状态

@@ -36,9 +36,24 @@ public class TransRedisService implements ApplicationRunner{
 	private BaseCityService baseCityService;
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
-		//添加运输和货物代码对应表
+		//添加运输代码对照表
+		setTransport();
+		//添加货物代码对照表
+		setGoods();
+		//添加费率信息
+		setRate();
+		//添加包装
+		setPackage();
+		//添加币种
+		setCurrency();
+		//添加城市
+		setCity();
+	}
+	/**
+	 * 向redis中添加运输方式代码表
+	 */
+	public void setTransport() {
 		List<TransCode> transCodeList = transCodeService.find();
-		List<GoodsCode> goodsList = goodsCodeService.find();
 		if(!CollectionUtils.isEmpty(transCodeList)) {
 			logger.info("redis缓存运输方式代码表:"+transCodeList.size());
 			long start = System.currentTimeMillis();
@@ -50,6 +65,13 @@ public class TransRedisService implements ApplicationRunner{
 			long end = System.currentTimeMillis(); 
 			logger.info("redis缓存运输方式代码表结束===运行时间:"+(end - start)+"毫秒");
 		}
+	}
+	/**
+	 * 向redis中添加货物名称对应代码表
+	 */
+	public void setGoods() {
+		List<GoodsCode> goodsList = goodsCodeService.find();
+
 		if(!CollectionUtils.isEmpty(goodsList)) {
 			logger.info("redis缓存货物名称代码表:"+goodsList.size());
 			long start = System.currentTimeMillis();
@@ -61,10 +83,6 @@ public class TransRedisService implements ApplicationRunner{
 			long end = System.currentTimeMillis(); 
 			logger.info("redis缓存货物名称代码表结束===运行时间:"+(end - start)+"毫秒");
 		}
-		//添加费率信息
-		setRate();
-		setPackage();
-		setCurrency();
 	}
 	/**
 	 * 向redis中添加费率信息
@@ -105,5 +123,23 @@ public class TransRedisService implements ApplicationRunner{
 		redisUtil.set("04curr", "日元");
 		redisUtil.set("06curr", "英镑");
 		redisUtil.set("07curr", "欧元");
+	}
+	/**
+	 * 向redis中添加城市信息
+	 */
+	public void setCity() {
+		List<BaseCity> cityList = baseCityService.find();
+		
+		if(!CollectionUtils.isEmpty(cityList)) {
+			logger.info("redis缓存城市信息:"+cityList.size());
+			long start = System.currentTimeMillis();
+			for(int i=0;i<cityList.size();i++) {
+				BaseCity baseCity = cityList.get(i);
+				String key = baseCity.getName();
+				redisUtil.set(key+"city", key);
+			}
+			long end = System.currentTimeMillis(); 
+			logger.info("redis缓存城市信息结束===运行时间:"+(end - start)+"毫秒");
+		}
 	}
 }
