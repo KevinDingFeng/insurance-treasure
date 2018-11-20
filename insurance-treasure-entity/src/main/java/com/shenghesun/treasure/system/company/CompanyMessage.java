@@ -54,7 +54,7 @@ public class CompanyMessage extends BaseEntity implements Serializable{
 	/**
 	 * 统一信用凭证，图片上传
 	 */
-	@Column(nullable = false, length = 64)
+	@Column(nullable = false, length = 500)
 	private String creditCard;
 	
 	/**

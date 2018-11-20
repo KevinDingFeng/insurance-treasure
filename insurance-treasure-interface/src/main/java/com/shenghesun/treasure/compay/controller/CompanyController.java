@@ -27,6 +27,7 @@ import com.shenghesun.treasure.system.entity.SysUser;
 import com.shenghesun.treasure.system.service.SysUserService;
 import com.shenghesun.treasure.utils.HttpHeaderUtil;
 import com.shenghesun.treasure.utils.JsonUtil;
+import com.shenghesun.treasure.utils.RandomUtil;
 import com.shenghesun.treasure.utils.TokenUtil;
 
 import lombok.extern.slf4j.Slf4j;
@@ -76,7 +77,7 @@ public class CompanyController {
 	 * @param redirectAttributes
 	 * @return
 	 */
-	public String singleFileUpload(MultipartFile companyFile) {
+	public String singleFileUpload(MultipartFile file) {
 	   /* if (companyFile.isEmpty()) {
 	        return JsonUtil.getFailJSONObject("上传内容为空");
 	    }*/
@@ -85,14 +86,17 @@ public class CompanyController {
 	    try {
 	    	//判断上传路径是否存在
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd/");
-			returnPath = CustomConfig.MODEL+sdf.format(new Date())+ companyFile.getOriginalFilename();
+	        String fileName = file.getOriginalFilename();
+	        /*String suffix = fileName.substring(fileName.lastIndexOf("."));
+	        System.out.println(suffix);*/
+			returnPath = CustomConfig.MODEL+sdf.format(new Date())+ RandomUtil.randomString(4);
 	    	filePath = filePath+returnPath;
 	    	File f = new File(filePath);
 	        if (!f.exists()) {
 	            f.mkdirs();
 	        }
 	        // Get the file and save it somewhere
-	        byte[] bytes = companyFile.getBytes();
+	        byte[] bytes = file.getBytes();
 	        Path path = Paths.get(filePath);
 	        Files.write(path, bytes);
 	    } catch (IOException e) {
