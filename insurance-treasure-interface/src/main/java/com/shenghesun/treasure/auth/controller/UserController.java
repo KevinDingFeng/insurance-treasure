@@ -67,7 +67,7 @@ public class UserController {
 			Long userId = TokenUtil.getLoginUserId(token);
 			SysUser user = sysUserService.findById(userId);
 			//获取用户原始密码
-			if(PasswordUtil.encrypt(old, user.getSalt())!=user.getPassword()) {
+			if(!PasswordUtil.encrypt(old, user.getSalt()).equals(user.getPassword())) {
 				return JsonUtil.getFailJSONObject("原密码输入错误");
 			}
 			//验证码判断
