@@ -1,5 +1,6 @@
 package com.shenghesun.treasure.order.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -79,6 +80,21 @@ public class OrderController {
 				OrderMessage orderMessage = orderMessageService.findByOrderNo(orderNo);
 				return JsonUtil.getSuccessJSONObject(orderMessage);
 			}
+		} catch (Exception e) {
+			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
+			return JsonUtil.getFailJSONObject();
+		}
+	}
+	/**
+	 * 查询全部保单
+	 */
+	@RequestMapping(value = "/all", method = RequestMethod.GET)
+	public JSONObject showAll(HttpServletRequest request) {
+		String token = HttpHeaderUtil.getToken((HttpServletRequest) request);
+		try {
+			Long id = TokenUtil.getLoginUserId(token);
+			List<OrderMessage> orderList = orderMessageService.findByByUserId(id);
+			return JsonUtil.getSuccessJSONObject(orderList);
 		} catch (Exception e) {
 			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
 			return JsonUtil.getFailJSONObject();

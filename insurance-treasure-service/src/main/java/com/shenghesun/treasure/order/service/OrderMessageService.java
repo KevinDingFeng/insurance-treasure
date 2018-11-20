@@ -1,5 +1,7 @@
 package com.shenghesun.treasure.order.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,5 +29,8 @@ public class OrderMessageService {
 	}
 	public OrderMessage findByOrderNo(String orderNo) {
 		return orderMessageDao.findByOrderNo(orderNo);
+	}
+	public List<OrderMessage> findByByUserId(Long userId) {
+		return orderMessageDao.findByUserId(userId);
 	}
 }

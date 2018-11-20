@@ -18,4 +18,6 @@ public interface OrderMessageDao extends JpaRepository<OrderMessage, Long>, JpaS
 	Page<OrderMessage> findByUserId(Long id,Pageable page);
 	
 	OrderMessage findByOrderNo(String orderNo);
+	
+	List<OrderMessage> findByUserId(Long userId);
 }
