@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -64,7 +63,7 @@ public class OrderController {
 	 * @return
 	 */
 	@RequestMapping(value = "/show", method = RequestMethod.GET)
-	public JSONObject getOrder(HttpServletRequest request,Integer page,Long orderId) {
+	public JSONObject getOrder(HttpServletRequest request,Integer page,String orderNo) {
 		String token = HttpHeaderUtil.getToken((HttpServletRequest) request);
 		try {
 			Long id = TokenUtil.getLoginUserId(token);
@@ -77,7 +76,7 @@ public class OrderController {
 				orderList = orderMessageService.findByUserId(id,pageRequest);
 				return JsonUtil.getSuccessJSONObject(orderList);
 			}else {
-				OrderMessage orderMessage = orderMessageService.findById(orderId);
+				OrderMessage orderMessage = orderMessageService.findByOrderNo(orderNo);
 				return JsonUtil.getSuccessJSONObject(orderMessage);
 			}
 		} catch (Exception e) {
