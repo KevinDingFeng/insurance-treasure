@@ -67,7 +67,7 @@ public class OrderService {
 			orderMessage.setClassesType("1");
 		}else {
 			//设置国内保险金额和保费
-			orderMessage.setOrderAmount(orderMessage.getGoodsValue()*(1+orderMessage.getIncrate()));
+			orderMessage.setOrderAmount((int) (orderMessage.getGoodsValue()*(1+Double.parseDouble(orderMessage.getIncrate()))));
 			//设置保费
 			float preminum = orderMessage.getOrderAmount()*Float.parseFloat(orderMessage.getRate());
 			orderMessage.setPreminum(Double.toString(Math.ceil(preminum)));
@@ -75,8 +75,6 @@ public class OrderService {
 			orderMessage.setInvamount(orderMessage.getOrderAmount());
 			orderMessage.setClassesType("2");
 		}
-
-		
 		map.put("order", orderMessage);
 		return map;
 	}

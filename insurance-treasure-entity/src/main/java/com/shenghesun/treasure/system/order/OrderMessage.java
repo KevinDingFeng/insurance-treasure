@@ -8,6 +8,9 @@ import javax.persistence.Table;
 
 import org.hibernate.validator.constraints.NotBlank;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize.Inclusion;
 import com.shenghesun.treasure.entity.base.BaseEntity;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
@@ -23,6 +26,7 @@ import lombok.ToString;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @XStreamAlias("DATA")
+@JsonIgnoreProperties({"handler","hibernateLazyInitializer"})
 public class OrderMessage extends BaseEntity implements Serializable{
 
 	private static final long serialVersionUID = -4353307437903537087L;
@@ -202,7 +206,7 @@ public class OrderMessage extends BaseEntity implements Serializable{
 	//加成比例
 	@Column(columnDefinition="DECIMAL(16,2)")
 	@XStreamAlias("INCRATE")
-	private Integer incrate;
+	private String incrate;
 	//保费币种
 	@Column(length=50)
 	@XStreamAlias("FCURRENCYCODE")

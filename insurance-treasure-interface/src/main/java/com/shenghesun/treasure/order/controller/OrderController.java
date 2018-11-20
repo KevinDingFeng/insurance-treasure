@@ -64,13 +64,22 @@ public class OrderController {
 	 * @return
 	 */
 	@RequestMapping(value = "/show", method = RequestMethod.GET)
-	public JSONObject getOrder(HttpServletRequest request,Integer page) {
+	public JSONObject getOrder(HttpServletRequest request,Integer page,Long orderId) {
 		String token = HttpHeaderUtil.getToken((HttpServletRequest) request);
 		try {
 			Long id = TokenUtil.getLoginUserId(token);
-			PageRequest pageRequest = new PageRequest(page, 10);
-			Page<OrderMessage> orderList = orderMessageService.findByUserId(id,pageRequest);
-			return JsonUtil.getSuccessJSONObject(orderList);
+			PageRequest pageRequest = null;
+			Page<OrderMessage> orderList = null;
+			if(page!=null) {
+				pageRequest = new PageRequest(page, 10);
+			}
+			if(pageRequest!=null) {
+				orderList = orderMessageService.findByUserId(id,pageRequest);
+				return JsonUtil.getSuccessJSONObject(orderList);
+			}else {
+				OrderMessage orderMessage = orderMessageService.findById(orderId);
+				return JsonUtil.getSuccessJSONObject(orderMessage);
+			}
 		} catch (Exception e) {
 			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
 			return JsonUtil.getFailJSONObject();
@@ -82,10 +91,9 @@ public class OrderController {
 	 * @param orderMessage
 	 * @return
 	 */
-	@RequestMapping(value = "/order", method = RequestMethod.POST)
+	@RequestMapping(value = "/approvl", method = RequestMethod.POST)
 	public JSONObject order(HttpServletRequest request,@Validated OrderMessage order) {
 		try {
-			order.setCreation(null);
 			JSONObject insurance = insurance(request,order);
 			return insurance;
 		} catch (Exception e) {
