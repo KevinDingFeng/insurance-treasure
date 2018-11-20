@@ -9,8 +9,6 @@ import javax.persistence.Table;
 import org.hibernate.validator.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize.Inclusion;
 import com.shenghesun.treasure.entity.base.BaseEntity;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
@@ -75,16 +73,6 @@ public class OrderMessage extends BaseEntity implements Serializable{
 	@Column(columnDefinition="DECIMAL(16,2)")
 	@XStreamOmitField
 	private Integer goodsValue;
-	//币种名称
-	//@NotBlank(message = "{order.currencyName.notBlank}")
-	@Column(length=10)
-	@XStreamOmitField
-	private String currencyName;
-	//包装类型
-	//@NotBlank(message = "{order.packageType.notBlank}")
-	@Column(length=100)
-	@XStreamOmitField
-	private String packageType;
 	//一级运输方式
 	@Column(length=100)
 	@XStreamOmitField
@@ -199,7 +187,6 @@ public class OrderMessage extends BaseEntity implements Serializable{
 	private String currencyCode;
 
 	//保费
-	//@NotBlank(message = "{order.preminum.notBlank}")
 	@Column(columnDefinition="DECIMAL(16,2)")
 	@XStreamAlias("PREMIUM")
 	private String preminum;
