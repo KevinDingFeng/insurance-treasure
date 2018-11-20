@@ -72,8 +72,9 @@ public class UserController {
 			}
 			//验证码判断
 			//验证码是否正确
-			String smsCode = redisUtil.get(user.getCellphone());
-			if(smsCode==null || smsCode!=code) {
+			String smsCode = (String) redisUtil.getObj(user.getCellphone());
+			String sms = smsCode.replaceAll("\"", "");
+			if(sms==null || !sms.equals(code)) {
 				return JsonUtil.getFailJSONObject("验证码错误"); 
 			}
 			user.setPassword(PasswordUtil.encrypt(current, user.getSalt()));
