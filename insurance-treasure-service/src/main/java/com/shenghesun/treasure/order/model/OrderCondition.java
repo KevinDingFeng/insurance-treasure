@@ -32,4 +32,8 @@ public class OrderCondition {
 	 * 关键字查询
 	 */
 	private String keyword;
+	/**
+	 * 保单状态查询
+	 */
+	private String insuranceStatus;
 }

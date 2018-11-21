@@ -62,6 +62,9 @@ public class OrderMessageService {
 				if (condition.getUserId() != null) {
 					predicate.getExpressions().add(cb.equal(root.get("userId"), condition.getUserId()));
 				}
+				if (condition.getInsuranceStatus() != null) {
+					predicate.getExpressions().add(cb.equal(root.get("insuranceStatus"), condition.getInsuranceStatus()));
+				}
 				
 				if (StringUtils.isNotEmpty(condition.getKeyword())) {
 					Predicate pre = cb.like(

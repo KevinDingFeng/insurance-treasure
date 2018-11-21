@@ -5,16 +5,17 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -39,7 +40,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping(value="/api/company")
 @Slf4j
 public class CompanyController {
-	
+
 	@Autowired
 	CompanyMessageService companyService;
 	@Autowired
@@ -55,19 +56,33 @@ public class CompanyController {
 		try {
 			//获取请求用户信息
 			String token = HttpHeaderUtil.getToken((HttpServletRequest) request);
-			System.out.println(token);
 			Long userId = TokenUtil.getLoginUserId(token);
+			Long companyId = TokenUtil.getLoginCompanyId(token);
 			//图片上传
 			if(file!=null) {
 				String filePath = singleFileUpload(file);
 				companyMessage.setCreditCard(filePath);
 			}
-			//保存公司信息
-			CompanyMessage company = companyService.save(companyMessage);
-			//更新当前用户的公司信息
-			SysUser user = sysUserService.findById(userId);
-			user.setCompanyId(company.getId());
-			sysUserService.save(user);
+			if(companyId==null) {
+				//保存公司信息
+				CompanyMessage company = companyService.save(companyMessage);
+				//更新当前用户的公司信息
+				SysUser user = sysUserService.findById(userId);
+				user.setCompanyId(company.getId());
+				sysUserService.save(user);
+			}else {
+				CompanyMessage company = companyService.findById(companyId);
+				//保存公司信息
+				company.setCompanyName(companyMessage.getCompanyName());
+				company.setContactName(companyMessage.getContactName());
+				company.setContactCell(companyMessage.getContactCell());
+				company.setEmail(companyMessage.getEmail());
+				company.setCreditCode(companyMessage.getCreditCode());
+				if(companyMessage.getCreditCard()!=null) {
+					company.setCreditCard(companyMessage.getCreditCard());
+				}
+				companyService.save(company);
+			}
 		} catch (Exception e) {
 			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
 			return JsonUtil.getFailJSONObject();
@@ -81,37 +96,37 @@ public class CompanyController {
 	 * @return
 	 */
 	public String singleFileUpload(MultipartFile file) {
-	    String returnPath="";
-	    try {
-	    	//格式化日期，用于创建日期目录
+		String returnPath="";
+		try {
+			//格式化日期，用于创建日期目录
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd/");
 			//获取文件后缀
-	        String fileName = file.getOriginalFilename();
-	        String suffix = fileName.substring(fileName.lastIndexOf("."));
-	        //生成文件名称
-	        String name = RandomUtil.randomString(4)+suffix;
-	        //模块+日期子目录
-	        String dir = CustomConfig.MODEL+sdf.format(new Date());
-	        //判断上传文件路径是否存在，不存在则创建
-	    	filePath = filePath+dir;
-	    	File f = new File(filePath);
-	        if (!f.exists()) {
-	            f.mkdirs();
-	        }
-	        //创建文件流，开始文件上传
-	        InputStream is = file.getInputStream();
-	        byte[] bytes = new byte[is.available()];
-	        OutputStream os = new FileOutputStream(filePath+name);
-	        is.read(bytes);
-	        os.write(bytes);
-	        is.close();
-	        os.close();
-	        //将目录和文件名返回调用方法端，用于存储上传文件数据
+			String fileName = file.getOriginalFilename();
+			String suffix = fileName.substring(fileName.lastIndexOf("."));
+			//生成文件名称
+			String name = RandomUtil.randomString(4)+suffix;
+			//模块+日期子目录
+			String dir = CustomConfig.MODEL+sdf.format(new Date());
+			//判断上传文件路径是否存在，不存在则创建
+			filePath = filePath+dir;
+			File f = new File(filePath);
+			if (!f.exists()) {
+				f.mkdirs();
+			}
+			//创建文件流，开始文件上传
+			InputStream is = file.getInputStream();
+			byte[] bytes = new byte[is.available()];
+			OutputStream os = new FileOutputStream(filePath+name);
+			is.read(bytes);
+			os.write(bytes);
+			is.close();
+			os.close();
+			//将目录和文件名返回调用方法端，用于存储上传文件数据
 			returnPath = dir+name;
-	    } catch (IOException e) {
-	    	log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
-	    }
-	    return returnPath;
+		} catch (IOException e) {
+			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
+		}
+		return returnPath;
 	}
 	/**
 	 * 查看公司信息
