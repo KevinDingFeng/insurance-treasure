@@ -52,6 +52,7 @@ public class CompanyController {
 	 */
 	@PostMapping(value = "/complete")
 	public JSONObject completeCompanyMessage(HttpServletRequest request,CompanyMessage companyMessage,@RequestParam(value = "file", required = false) MultipartFile file) {
+		
 		try {
 			//获取请求用户信息
 			String token = HttpHeaderUtil.getToken((HttpServletRequest) request);
@@ -62,7 +63,8 @@ public class CompanyController {
 				String filePath = singleFileUpload(file);
 				companyMessage.setCreditCard(filePath);
 			}
-			if(companyId==0) {         
+			if(companyId==0) {
+				//用户注册完善公司信息
 				if(companyMessage.getCreditCard()==null) {
 					return JsonUtil.getFailJSONObject("请上传公司凭证");
 				}
@@ -76,6 +78,7 @@ public class CompanyController {
 				return JsonUtil.getSuccessJSONObject(newToken);
 				
 			}else {
+				//修改用户信息
 				CompanyMessage company = companyService.findById(companyId);
 				//保存公司信息
 				company.setCompanyName(companyMessage.getCompanyName());

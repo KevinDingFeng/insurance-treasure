@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.alibaba.druid.util.StringUtils;
+import com.alibaba.fastjson.JSONObject;
 import com.shenghesun.treasure.config.CustomConfig;
 import com.shenghesun.treasure.utils.HttpHeaderUtil;
 import com.shenghesun.treasure.utils.JWTUtil;
@@ -39,24 +40,24 @@ public class CheckTokenFilter implements Filter{
 		if(request instanceof HttpServletRequest) {
 			String token = HttpHeaderUtil.getToken((HttpServletRequest) request);
 			if(StringUtils.isEmpty(token)) {
-				this.setReturnResponse((HttpServletResponse) response, "invalid token");
+				this.setReturnResponse((HttpServletResponse) response,"token为空");
 				return;
 			}
 			Map<String, Object> userInfoMap=null;
 			try {
 				userInfoMap = TokenUtil.decode(token);
 				if(userInfoMap.get(JWTUtil.ERR_MSG) != null) {
-					this.setReturnResponse((HttpServletResponse) response, "invalid token");
+					this.setReturnResponse((HttpServletResponse) response,"token失效");
 					return;
 				}
 			} catch (Exception e) {
-				this.setReturnResponse((HttpServletResponse) response, "invalid token");
+				this.setReturnResponse((HttpServletResponse) response,"token异常");
 				return;
 			}
 			String userInfoId = redisUtil.get(CustomConfig.REDIS_TOKEN_PREFIX + token);
 			//TODO 如果有必要，可以再加更严谨的校验方式，比如解析 token 获取到的数据和数据库进行匹配
 			if(StringUtils.isEmpty(userInfoId)) {
-				this.setReturnResponse((HttpServletResponse) response, "invalid token");
+				this.setReturnResponse((HttpServletResponse) response,"用户信息为空");
 				return;
 			}
 			//更新有效时长
@@ -72,7 +73,8 @@ public class CheckTokenFilter implements Filter{
 		PrintWriter out = null ;
 		try{
 		    out = response.getWriter();
-		    out.append(JsonUtil.getFailJSONObject(message).toJSONString());
+		    
+		    out.append(JsonUtil.getFailJSONToken(message).toJSONString());
 		}
 		catch (Exception e){
 		    e.printStackTrace();

@@ -46,4 +46,15 @@ public class JsonUtil {
 		json.put("data", data);
 		return json;
 	}
+	/**
+	 * tokenFilter返回数据
+	 * @return
+	 */
+	public static JSONObject getFailJSONToken(Object obj) {
+		JSONObject json = new JSONObject();
+		json.put("data", "-1");
+		json.put("message", obj);
+		return json;
+	}
+	
 }
