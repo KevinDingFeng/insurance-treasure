@@ -1,7 +1,10 @@
 package com.shenghesun.treasure.compay.controller;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -78,27 +81,33 @@ public class CompanyController {
 	 * @return
 	 */
 	public String singleFileUpload(MultipartFile file) {
-	   /* if (companyFile.isEmpty()) {
-	        return JsonUtil.getFailJSONObject("上传内容为空");
-	    }*/
-	   // String filePath = "";
 	    String returnPath="";
 	    try {
-	    	//判断上传路径是否存在
+	    	//格式化日期，用于创建日期目录
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd/");
+			//获取文件后缀
 	        String fileName = file.getOriginalFilename();
-	        /*String suffix = fileName.substring(fileName.lastIndexOf("."));
-	        System.out.println(suffix);*/
-			returnPath = CustomConfig.MODEL+sdf.format(new Date())+ RandomUtil.randomString(4);
-	    	filePath = filePath+returnPath;
+	        String suffix = fileName.substring(fileName.lastIndexOf("."));
+	        //生成文件名称
+	        String name = RandomUtil.randomString(4)+suffix;
+	        //模块+日期子目录
+	        String dir = CustomConfig.MODEL+sdf.format(new Date());
+	        //判断上传文件路径是否存在，不存在则创建
+	    	filePath = filePath+dir;
 	    	File f = new File(filePath);
 	        if (!f.exists()) {
 	            f.mkdirs();
 	        }
-	        // Get the file and save it somewhere
-	        byte[] bytes = file.getBytes();
-	        Path path = Paths.get(filePath);
-	        Files.write(path, bytes);
+	        //创建文件流，开始文件上传
+	        InputStream is = file.getInputStream();
+	        byte[] bytes = new byte[is.available()];
+	        OutputStream os = new FileOutputStream(filePath+name);
+	        is.read(bytes);
+	        os.write(bytes);
+	        is.close();
+	        os.close();
+	        //将目录和文件名返回调用方法端，用于存储上传文件数据
+			returnPath = dir+name;
 	    } catch (IOException e) {
 	    	log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
 	    }
