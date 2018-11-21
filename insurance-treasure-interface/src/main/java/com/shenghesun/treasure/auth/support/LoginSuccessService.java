@@ -26,7 +26,7 @@ public class LoginSuccessService {
 		Map<String, Object> returnMap = new HashMap<>();
 		Long companyId = user.getCompanyId();
 		//返回token
-		String token = loginService.login(user.getId(), user.getAccount(),user.getCompanyId());
+		String token = loginService.login(user.getId(), user.getAccount(),user.getCompanyId()==null?0:user.getCompanyId());
 		//返回公司是否存在，存在时1  不存在是0
 		if(companyId!=null) {
 			CompanyMessage company = companyService.findById(companyId);

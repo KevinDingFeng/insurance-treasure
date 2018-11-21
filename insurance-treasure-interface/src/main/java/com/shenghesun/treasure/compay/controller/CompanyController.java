@@ -6,16 +6,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -24,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSONObject;
+import com.shenghesun.treasure.auth.support.LoginService;
 import com.shenghesun.treasure.company.CompanyMessageService;
 import com.shenghesun.treasure.config.CustomConfig;
 import com.shenghesun.treasure.system.company.CompanyMessage;
@@ -47,6 +44,8 @@ public class CompanyController {
 	SysUserService sysUserService;
 	@Value("${spring.servlet.multipart.file-path}")
 	private String filePath;
+	@Autowired
+	private LoginService loginService;
 	/**
 	 * 完善公司信息
 	 * @return
@@ -63,13 +62,19 @@ public class CompanyController {
 				String filePath = singleFileUpload(file);
 				companyMessage.setCreditCard(filePath);
 			}
-			if(companyId==null) {
+			if(companyId==0) {
+				if(companyMessage.getCreditCard()==null) {
+					return JsonUtil.getFailJSONObject("请上传公司凭证");
+				}
 				//保存公司信息
 				CompanyMessage company = companyService.save(companyMessage);
 				//更新当前用户的公司信息
 				SysUser user = sysUserService.findById(userId);
 				user.setCompanyId(company.getId());
 				sysUserService.save(user);
+				String newToken = loginService.login(user.getId(), user.getAccount(),user.getCompanyId());
+				return JsonUtil.getSuccessJSONObject(newToken);
+				
 			}else {
 				CompanyMessage company = companyService.findById(companyId);
 				//保存公司信息

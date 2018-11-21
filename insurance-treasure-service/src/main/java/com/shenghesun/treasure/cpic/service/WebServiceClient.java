@@ -163,14 +163,12 @@ public class WebServiceClient {
 				//发送短信状态
 //				String smsStatus = null;
 				if(StringUtils.isNotEmpty(status)) {
+					orderMessage.setInsuranceStatus(Integer.parseInt(status));
+					orderMessageService.save(orderMessage);
 					if("10".equals(status)) {
-						orderMessage.setInsuranceStatus(Integer.parseInt(status));
-						orderMessageService.save(orderMessage);
 						map.put("flag", true);
 						return map;
 					}else if("19".equals(status)) {
-						orderMessage.setInsuranceStatus(Integer.parseInt(status));
-						orderMessageService.save(orderMessage);
 						map.put("flag", false);
 						return map;
 					}

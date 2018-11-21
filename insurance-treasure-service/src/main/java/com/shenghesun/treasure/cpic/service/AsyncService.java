@@ -54,7 +54,6 @@ public class AsyncService {
         				//货运险承保接口
         				map = webServiceClient.approvl(xml,orderMessage);
         				flag = (boolean) map.get("flag");
-        				System.out.println(flag);
         				if(!flag) {
         					flag = false;
         				}
@@ -66,7 +65,6 @@ public class AsyncService {
     				}
     		}
         }catch(Exception e){
-            e.printStackTrace();
             log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
         }
         //logger.info("end executeAsync");
