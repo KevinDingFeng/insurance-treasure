@@ -52,7 +52,7 @@ public class JsonUtil {
 	 */
 	public static JSONObject getFailJSONToken(Object obj) {
 		JSONObject json = new JSONObject();
-		json.put("data", "-1");
+		json.put("code", "-1");
 		json.put("message", obj);
 		return json;
 	}
