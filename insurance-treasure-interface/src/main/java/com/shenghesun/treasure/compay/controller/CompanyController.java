@@ -62,7 +62,7 @@ public class CompanyController {
 				String filePath = singleFileUpload(file);
 				companyMessage.setCreditCard(filePath);
 			}
-			if(companyId==0) {
+			if(companyId==0) {         
 				if(companyMessage.getCreditCard()==null) {
 					return JsonUtil.getFailJSONObject("请上传公司凭证");
 				}
