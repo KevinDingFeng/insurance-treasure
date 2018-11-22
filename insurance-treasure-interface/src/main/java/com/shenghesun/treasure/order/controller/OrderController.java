@@ -6,7 +6,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
@@ -47,48 +46,7 @@ public class OrderController {
 	private AsyncService asyncService;
 	@Autowired
 	CompanyMessageService companyService;
-	/**
-	 * 下单
-	 * @return
-	 */
-	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public JSONObject saveOrder(HttpServletRequest request,OrderMessage order) {
-		try {
-			JSONObject insurance = insurance(request,order);
-			return insurance;
-		} catch (Exception e) {
-			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
-			return JsonUtil.getFailJSONObject();
-		}
-		
-	}
-	/**
-	 * 我的保单
-	 * @param id
-	 * @return
-	 */
-	@RequestMapping(value = "/show", method = RequestMethod.GET)
-	public JSONObject getOrder(HttpServletRequest request,Integer page,String orderNo) {
-		String token = HttpHeaderUtil.getToken((HttpServletRequest) request);
-		try {
-			Long id = TokenUtil.getLoginUserId(token);
-			PageRequest pageRequest = null;
-			Page<OrderMessage> orderList = null;
-			if(page!=null) {
-				pageRequest = new PageRequest(page, 10);
-			}
-			if(pageRequest!=null) {
-				orderList = orderMessageService.findByUserId(id,pageRequest);
-				return JsonUtil.getSuccessJSONObject(orderList);
-			}else {
-				OrderMessage orderMessage = orderMessageService.findByOrderNo(orderNo);
-				return JsonUtil.getSuccessJSONObject(orderMessage);
-			}
-		} catch (Exception e) {
-			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
-			return JsonUtil.getFailJSONObject();
-		}
-	}
+
 	/**
 	 * 系统提前使用，用户获取token后直接进行使用
 	 * @param request

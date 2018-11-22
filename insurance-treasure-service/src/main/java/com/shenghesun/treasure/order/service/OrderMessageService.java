@@ -28,11 +28,9 @@ public class OrderMessageService {
 	public OrderMessage findById(Long id) {
 		return orderMessageDao.getOne(id);
 	}
-	
 	public OrderMessage save(OrderMessage orderMessage) {
 		return orderMessageDao.save(orderMessage);
 	}
-	
 	public Page<OrderMessage> findByUserId(Long userId,Pageable page) {
 		return orderMessageDao.findByUserId(userId,page);
 	}
@@ -42,7 +40,6 @@ public class OrderMessageService {
 	public List<OrderMessage> findByByUserId(Long userId) {
 		return orderMessageDao.findByUserId(userId);
 	}
-	
 	/**
 	 * @Title: findByConditions 
 	 * @Description: 按照条件查询 
@@ -63,7 +60,11 @@ public class OrderMessageService {
 					predicate.getExpressions().add(cb.equal(root.get("userId"), condition.getUserId()));
 				}
 				if (condition.getInsuranceStatus() != null) {
-					predicate.getExpressions().add(cb.equal(root.get("insuranceStatus"), condition.getInsuranceStatus()));
+					if(condition.getInsuranceStatus() .equals("10")) {
+						predicate.getExpressions().add(cb.equal(root.get("insuranceStatus"), condition.getInsuranceStatus()));
+					}else {
+						predicate.getExpressions().add(cb.notEqual(root.get("insuranceStatus"), "10"));
+					}
 				}
 				
 				if (StringUtils.isNotEmpty(condition.getKeyword())) {

@@ -17,6 +17,8 @@ public interface OrderMessageDao extends JpaRepository<OrderMessage, Long>, JpaS
 	
 	Page<OrderMessage> findByUserId(Long id,Pageable page);
 	
+	//Page<OrderMessage> findByInsuranceStatusNot(Integer status);
+	
 	OrderMessage findByOrderNo(String orderNo);
 	
 	List<OrderMessage> findByUserId(Long userId);
