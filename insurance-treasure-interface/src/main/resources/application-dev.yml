@@ -41,10 +41,10 @@ logging:
     file: /home/kevin/temp/log/log.log
 sms:
     app:
-        key: LTAIBrbJGQt4pWoP
-        secret: jxFsdTMPBvMamzMrYGqp883wavHhbX
+        key: LTAIwHu0sqMlrOjl
+        secret: HYD7y8YO2NIvp5KBH6acAZYbTSZQ5P
     template:
-        code: SMS_147196678
+        code: SMS_149710018
 cpic:
     web:
         wsdl.url: http://182.150.60.64/freight/zrxservices/FreightCommonService?wsdl

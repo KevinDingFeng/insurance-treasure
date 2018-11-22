@@ -31,19 +31,20 @@ spring:
            file-size-threshold: 0
            max-file-size: 1Mb
            max-request-size: 10Mb
-           file-path: /home/kevin/temp/insurance/files
+           file-path: /data/insurance-treasure/test/files/
+           show: /f/
 logging:
     level:
         root: INFO
         org.springframework.web: INFO
         org.hibernate: INFO
-    file: /home/hetong/temp/treasure/log/log.log
+    file: ./log/log.log
 sms:
     app:
-        key: LTAIBrbJGQt4pWoP
-        secret: jxFsdTMPBvMamzMrYGqp883wavHhbX
+        key: LTAIwHu0sqMlrOjl
+        secret: HYD7y8YO2NIvp5KBH6acAZYbTSZQ5P
     template:
-        code: SMS_147196678
+        code: SMS_149710018
 cpic:
     web:
         wsdl.url: http://182.150.60.49/freight/zrxservices/FreightCommonService?wsdl
