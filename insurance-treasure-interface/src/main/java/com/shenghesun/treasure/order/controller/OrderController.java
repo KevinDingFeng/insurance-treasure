@@ -100,8 +100,8 @@ public class OrderController {
 				company.setBalance(company.getBalance()-preminum);
 				//修改订单状态
 				order.setPayStatus(1);
-				orderMessageService.save(order);
 				map = asyncService.executeAsync(order);
+				orderMessageService.save(order);
 			}else {
 				orderMessageService.save(order);
 				return JsonUtil.getFailJSONObject("余额不足，请联系管理员充值");
