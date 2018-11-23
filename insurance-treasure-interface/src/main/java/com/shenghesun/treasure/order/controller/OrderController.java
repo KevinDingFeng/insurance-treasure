@@ -91,8 +91,6 @@ public class OrderController {
 		if(orderMap.get("currency_error")!=null) {
 			return JsonUtil.getFailJSONObject(orderMap.get("currency_error"));
 		}
-		//保存下单信息
-		orderMessageService.save(order);
 		Map<String, Object> map =null;
 		if(company!=null&&order!=null) {
 			//保费
@@ -148,9 +146,7 @@ public class OrderController {
 		try {
 			String token = HttpHeaderUtil.getToken((HttpServletRequest) request);
 			Long id = TokenUtil.getLoginUserId(token);
-			
 			condition.setUserId(id);
-			
 			Page<OrderMessage> page = orderMessageService.findByConditions(condition, pageable);
 			return JsonUtil.getSuccessJSONObject(page);
 		} catch (Exception e) {

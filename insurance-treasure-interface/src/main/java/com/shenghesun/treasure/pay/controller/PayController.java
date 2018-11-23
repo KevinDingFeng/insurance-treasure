@@ -13,7 +13,6 @@ import com.shenghesun.treasure.cpic.service.AsyncService;
 import com.shenghesun.treasure.order.service.FundDetailsService;
 import com.shenghesun.treasure.order.service.OrderMessageService;
 import com.shenghesun.treasure.system.company.CompanyMessage;
-import com.shenghesun.treasure.system.entity.SysUser;
 import com.shenghesun.treasure.system.order.OrderMessage;
 import com.shenghesun.treasure.system.service.SysUserService;
 import com.shenghesun.treasure.utils.HttpHeaderUtil;
@@ -43,19 +42,13 @@ public class PayController {
 	 */
 	@RequestMapping(value = "/pay", method = RequestMethod.GET)
 	public JSONObject pay(HttpServletRequest request,String orderNo) {
-		CompanyMessage company = null;
 		try {
-			//获取用户id
+			//获取登陆用户信息
 			String token = HttpHeaderUtil.getToken((HttpServletRequest) request);
-			Long userId = TokenUtil.getLoginUserId(token);
-			//查找订单所属用户
-			SysUser user = sysUserService.findById(userId);
+			Long companyId = TokenUtil.getLoginCompanyId(token);
 			//根据订单id查找到订单信息
 			OrderMessage order = orderMessageService.findByOrderNo(orderNo);
-			if(user!=null) {
-				Long companyId = user.getCompanyId();
-				company = companyService.findById(companyId);
-			}
+			CompanyMessage company = companyService.findById(companyId);
 			if(company!=null&&order!=null) {
 				//保单金额
 				Integer price = order.getOrderAmount();
