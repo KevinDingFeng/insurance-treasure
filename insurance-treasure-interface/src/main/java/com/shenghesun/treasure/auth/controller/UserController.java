@@ -8,15 +8,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
-import com.shenghesun.treasure.config.CustomConfig;
+import com.shenghesun.treasure.core.constant.BaseConstant;
 import com.shenghesun.treasure.system.entity.SysUser;
 import com.shenghesun.treasure.system.service.SysUserService;
 import com.shenghesun.treasure.utils.HttpHeaderUtil;
 import com.shenghesun.treasure.utils.JsonUtil;
 import com.shenghesun.treasure.utils.PasswordUtil;
-import com.shenghesun.treasure.utils.RandomUtil;
 import com.shenghesun.treasure.utils.RedisUtil;
-import com.shenghesun.treasure.utils.SmsCodeService;
 import com.shenghesun.treasure.utils.TokenUtil;
 
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +38,7 @@ public class UserController {
 			//验证码是否正确
 			String smsCode = redisUtil.get(account);
 			if(smsCode==null || smsCode!=code) {
-				return JsonUtil.getFailJSONObject("验证码错误"); 
+				return JsonUtil.getFailJSONObject(BaseConstant.CODE_ERROR); 
 			}
 			//获取登陆用户信息
 			String token = HttpHeaderUtil.getToken((HttpServletRequest) request);
@@ -68,14 +66,14 @@ public class UserController {
 			SysUser user = sysUserService.findById(userId);
 			//获取用户原始密码
 			if(!PasswordUtil.encrypt(old, user.getSalt()).equals(user.getPassword())) {
-				return JsonUtil.getFailJSONObject("原密码输入错误");
+				return JsonUtil.getFailJSONObject(BaseConstant.OLD_PASSWORD_ERROR);
 			}
 			//验证码判断
 			//验证码是否正确
 			String smsCode = (String) redisUtil.getObj(user.getCellphone());
 			String sms = smsCode.replaceAll("\"", "");
 			if(sms==null || !sms.equals(code)) {
-				return JsonUtil.getFailJSONObject("验证码错误"); 
+				return JsonUtil.getFailJSONObject(BaseConstant.CODE_ERROR); 
 			}
 			user.setPassword(PasswordUtil.encrypt(current, user.getSalt()));
 			sysUserService.save(user);

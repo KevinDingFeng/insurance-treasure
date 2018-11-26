@@ -22,55 +22,73 @@ import lombok.extern.slf4j.Slf4j;
 
 
 /**
-  * 异步方法
-  * @ClassName: AsyncService 
-  * @Description: TODO
-  * @author: yangzp
-  * @date: 2018年10月10日 下午7:04:32  
-  */
+ * 异步方法
+ * @ClassName: AsyncService 
+ * @Description: TODO
+ * @author: yangzp
+ * @date: 2018年10月10日 下午7:04:32  
+ */
 @Service
 @Slf4j
 public class AsyncService {
 
 	@Autowired
 	private WebServiceClient webServiceClient;
-	
+
+	/**
+	 * 异步  项目使用投保方法
+	 * @param orderMessage
+	 * @return
+	 */
 	@Async("asyncServiceExecutor")
-    public Map<String,Object> executeAsync(OrderMessage orderMessage) {
-		Map<String,Object> map = new HashMap<String,Object>();
-        log.info("start executeAsync");
-        try{
-        	if(orderMessage != null) {
-    			OrderMessage pmTemp = new OrderMessage();
-    			BeanUtils.copyProperties(orderMessage, pmTemp);
-    			pmTemp.setId(null);
-    			pmTemp.setCreation(null);
-    			pmTemp.setLastModified(null);
-    			pmTemp.setVersion(0l);
-    				boolean flag = true;
-    				String xml = orderMessage2Xml(pmTemp);
-    				System.out.println(xml);
-        			if(StringUtils.isNotEmpty(xml)) {
-        				//货运险承保接口
-        				map = webServiceClient.approvl(xml,orderMessage);
-        				flag = (boolean) map.get("flag");
-        				if(!flag) {
-        					flag = false;
-        				}
-        			}
-    				if(flag) {
-    					log.info("订单号为:"+orderMessage.getOrderNo()+"的订单投保成功");
-    				}else {
-    					log.info("订单号为:"+orderMessage.getOrderNo()+"的订单投保失败");
-    				}
-    		}
-        }catch(Exception e){
-            log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
-        }
-        //logger.info("end executeAsync");
+	public Map<String,Object> executeAsync(OrderMessage orderMessage) {
+		Map<String, Object> map = execute(orderMessage);
 		return map;
-    }
-	
+	}
+	/**
+	 * 同步 提供给外部投保方法
+	 */
+	public Map<String,Object> executeApprovl(OrderMessage orderMessage) {
+		Map<String, Object> map = execute(orderMessage);
+		return map;
+	}
+	/**
+	 * 投保方法
+	 */
+	public Map<String,Object> execute(OrderMessage orderMessage){
+		Map<String,Object> map = new HashMap<String,Object>();
+		log.info("start executeAsync");
+		try{
+			if(orderMessage != null) {
+				OrderMessage pmTemp = new OrderMessage();
+				BeanUtils.copyProperties(orderMessage, pmTemp);
+				pmTemp.setId(null);
+				pmTemp.setCreation(null);
+				pmTemp.setLastModified(null);
+				pmTemp.setVersion(0l);
+				boolean flag = true;
+				String xml = orderMessage2Xml(pmTemp);
+				System.out.println(xml);
+				if(StringUtils.isNotEmpty(xml)) {
+					//货运险承保接口
+					map = webServiceClient.approvl(xml,orderMessage);
+					flag = (boolean) map.get("flag");
+					if(!flag) {
+						flag = false;
+					}
+				}
+				if(flag) {
+					log.info("订单号为:"+orderMessage.getOrderNo()+"的订单投保成功");
+				}else {
+					log.info("订单号为:"+orderMessage.getOrderNo()+"的订单投保失败");
+				}
+			}
+		}catch(Exception e){
+			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
+		}
+		log.info("end executeAsync");
+		return map;
+	}
 	/**
 	 * 货运险承保接口应答报文转xml
 	 * @Title: orderMessage2Xml 
@@ -82,23 +100,23 @@ public class AsyncService {
 	 **/ 
 	private String orderMessage2Xml(OrderMessage orderMessage) {
 		Freightcpic freightcpic = new Freightcpic();
-		
+
 		Header header = new Header();
 		header.setApplyid(StringGenerateUtils.generateId());
 		header.setClassestype(orderMessage.getClassesType());
 		freightcpic.setHeader(header);
-		
+
 		Datas datas = new Datas();
-//		if("2".equals(orderMessage.getClassestype())) {
-//			orderMessage.setFlightareacode("12040200");
-//		}
+		//		if("2".equals(orderMessage.getClassestype())) {
+		//			orderMessage.setFlightareacode("12040200");
+		//		}
 		datas.setOrderMessage(orderMessage);
-		
+
 		freightcpic.setDatas(datas);
-		
+
 		return XStreamUtil.beanToXmlWithTag(freightcpic);
 	}
-	
-	
-	
+
+
+
 }

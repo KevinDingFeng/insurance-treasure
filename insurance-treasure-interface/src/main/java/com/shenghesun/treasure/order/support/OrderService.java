@@ -74,6 +74,7 @@ public class OrderService {
 			//设置发票金额
 			orderMessage.setInvamount(orderMessage.getOrderAmount());
 			orderMessage.setClassesType("2");
+			orderMessage.setFlightareacode("11040400");
 		}
 		map.put("order", orderMessage);
 		return map;

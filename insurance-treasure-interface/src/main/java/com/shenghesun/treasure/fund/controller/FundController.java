@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
-import com.shenghesun.treasure.company.CompanyMessageService;
+import com.shenghesun.treasure.company.service.CompanyMessageService;
 import com.shenghesun.treasure.order.service.FundDetailsService;
 import com.shenghesun.treasure.order.service.FundShowService;
 import com.shenghesun.treasure.system.company.CompanyMessage;

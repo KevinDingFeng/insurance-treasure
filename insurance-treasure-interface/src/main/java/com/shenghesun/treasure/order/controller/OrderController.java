@@ -1,7 +1,5 @@
 package com.shenghesun.treasure.order.controller;
 
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +13,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
-import com.shenghesun.treasure.company.CompanyMessageService;
+import com.shenghesun.treasure.core.constant.BaseConstant;
 import com.shenghesun.treasure.core.constant.Presentation;
 import com.shenghesun.treasure.cpic.service.AsyncService;
 import com.shenghesun.treasure.order.model.OrderCondition;
 import com.shenghesun.treasure.order.service.OrderMessageService;
-import com.shenghesun.treasure.order.support.OrderService;
-import com.shenghesun.treasure.system.company.CompanyMessage;
+import com.shenghesun.treasure.order.support.InsuranceService;
 import com.shenghesun.treasure.system.order.OrderMessage;
 import com.shenghesun.treasure.system.service.SysUserService;
 import com.shenghesun.treasure.utils.HttpHeaderUtil;
@@ -37,18 +34,31 @@ import lombok.extern.slf4j.Slf4j;
 public class OrderController {
 
 	@Autowired
-	OrderMessageService orderMessageService;
-	@Autowired
-	OrderService orderService;
-	@Autowired
 	SysUserService sysUserService;
 	@Autowired
-	private AsyncService asyncService;
+	AsyncService asyncService;
 	@Autowired
-	CompanyMessageService companyService;
-
+	OrderMessageService orderMessageService;
+	@Autowired
+	InsuranceService insuranceService;
 	/**
-	 * 系统提前使用，用户获取token后直接进行使用
+	 * 内部投保接口，用户获取token后直接进行使用
+	 * @param request
+	 * @param orderMessage
+	 * @return
+	 */
+	@RequestMapping(value = "/save", method = RequestMethod.POST)
+	public JSONObject save(HttpServletRequest request,@Validated OrderMessage order) {
+		try {
+			return insuranceService.insurance(request,order,BaseConstant.SYS_LOCAL);
+		} catch (Exception e) {
+			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
+			return JsonUtil.getFailJSONObject();
+		}
+	}
+	
+	/**
+	 * 外部投保接口，用户获取token后直接进行使用
 	 * @param request
 	 * @param orderMessage
 	 * @return
@@ -56,60 +66,26 @@ public class OrderController {
 	@RequestMapping(value = "/approvl", method = RequestMethod.POST)
 	public JSONObject order(HttpServletRequest request,@Validated OrderMessage order) {
 		try {
-			JSONObject insurance = insurance(request,order);
-			return insurance;
+			return insuranceService.insurance(request,order,BaseConstant.SYS_OUT);
 		} catch (Exception e) {
 			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
 			return JsonUtil.getFailJSONObject();
 		}
 	}
 	/**
-	 * 投保
+	 * 订单支付
+	 * @param request
+	 * @param orderNo
+	 * @return
 	 */
-	public JSONObject insurance(HttpServletRequest request,@Validated OrderMessage order) {
-		//获取公司信息
-		String token = HttpHeaderUtil.getToken((HttpServletRequest) request);
-		Long companyId = TokenUtil.getLoginCompanyId(token);
-		Long userId = TokenUtil.getLoginUserId(token);
-		CompanyMessage company = companyService.findById(companyId);
-		log.info("投保用户ID："+userId+"投保公司ID: "+companyId);
-		//完善订单信息
-		Map<String,Object> orderMap = orderService.complete(request,order);
-		order = (OrderMessage) orderMap.get("order");
-		//判断完善信息过程中是否出现运输代码查找错误和货物代码错误
-		if(orderMap.get("trans_error")!=null) {
-			log.error("运输代码不存在");
-			return JsonUtil.getFailJSONObject(orderMap.get("trans_error"));
+	@RequestMapping(value = "/pay", method = RequestMethod.GET)
+	public JSONObject pay(HttpServletRequest request,String orderNo) {
+		try {
+			return insuranceService.completePay(request,orderNo,BaseConstant.SYS_LOCAL);
+		} catch (Exception e) {
+			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
+			return JsonUtil.getFailJSONObject();
 		}
-		if(orderMap.get("goods_error")!=null) {
-			log.error("货物代码不存在");
-			return JsonUtil.getFailJSONObject(orderMap.get("goods_error"));
-		}
-		if(orderMap.get("pack_error")!=null) {
-			return JsonUtil.getFailJSONObject(orderMap.get("pack_error"));
-		}
-		if(orderMap.get("currency_error")!=null) {
-			return JsonUtil.getFailJSONObject(orderMap.get("currency_error"));
-		}
-		Map<String, Object> map =null;
-		if(company!=null&&order!=null) {
-			//保费
-			Double preminum = Double.parseDouble(order.getPreminum());
-			//如果余额大于保单金额,才进行支付扣款
-			if(company.getBalance()>=preminum) {
-				company.setBalance(company.getBalance()-preminum);
-				//修改订单状态
-				order.setPayStatus(1);
-				map = asyncService.executeAsync(order);
-				orderMessageService.save(order);
-			}else {
-				orderMessageService.save(order);
-				return JsonUtil.getFailJSONObject("余额不足，请联系管理员充值");
-			}
-		}else {
-			return JsonUtil.getFailJSONObject("公司不存在或订单不存在");
-		}
-		return JsonUtil.getSuccessJSONObject(map);
 	}
 	
 	////////////////////////////////////////////////////////////////

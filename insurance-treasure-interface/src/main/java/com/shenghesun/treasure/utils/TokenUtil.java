@@ -3,7 +3,7 @@ package com.shenghesun.treasure.utils;
 import java.util.Map;
 
 public class TokenUtil {
-
+	
 	/**
 	 * 获取包含有登录用户 id 和 用户名的 token
 	 * @param userId

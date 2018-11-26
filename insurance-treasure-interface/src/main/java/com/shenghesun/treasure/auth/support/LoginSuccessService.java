@@ -6,7 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.shenghesun.treasure.company.CompanyMessageService;
+import com.shenghesun.treasure.company.service.CompanyMessageService;
 import com.shenghesun.treasure.system.company.CompanyMessage;
 import com.shenghesun.treasure.system.entity.SysUser;
 

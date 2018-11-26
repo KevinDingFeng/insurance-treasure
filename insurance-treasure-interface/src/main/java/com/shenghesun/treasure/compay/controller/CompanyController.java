@@ -21,7 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSONObject;
 import com.shenghesun.treasure.auth.support.LoginService;
-import com.shenghesun.treasure.company.CompanyMessageService;
+import com.shenghesun.treasure.company.service.CompanyMessageService;
 import com.shenghesun.treasure.config.CustomConfig;
 import com.shenghesun.treasure.system.company.CompanyMessage;
 import com.shenghesun.treasure.system.entity.SysUser;
