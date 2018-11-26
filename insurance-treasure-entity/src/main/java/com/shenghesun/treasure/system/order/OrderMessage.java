@@ -193,6 +193,18 @@ public class OrderMessage extends BaseEntity implements Serializable{
 	@Column(length=10)
 	@XStreamAlias("CLAIMAGENT")
 	private String claimagent;
+	//价格条件
+	@Column(length=10)
+	@XStreamAlias("PRICECOND")
+	private String pricecond;
+	//赔偿币种代码
+	@Column(length=10)
+	@XStreamAlias("CLAIMCURRENCYCODE")
+	private String claimcurrencycode;
+	//赔款偿付地
+	@Column(length=10)
+	@XStreamAlias("CLAIMPAYPLACE")
+	private String claimpayplace;
 	//保费
 	@Column(columnDefinition="DECIMAL(16,2)")
 	@XStreamAlias("PREMIUM")

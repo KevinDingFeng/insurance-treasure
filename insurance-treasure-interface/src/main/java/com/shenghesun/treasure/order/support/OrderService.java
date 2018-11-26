@@ -76,6 +76,9 @@ public class OrderService {
 			orderMessage.setClassesType("2");
 			orderMessage.setFlightareacode("11040400");
 			orderMessage.setClaimagent("ALEXANDRIA");
+			orderMessage.setPricecond("1");
+			orderMessage.setClaimcurrencycode("01");
+			orderMessage.setClaimpayplace("意大利");
 		}
 		map.put("order", orderMessage);
 		return map;
