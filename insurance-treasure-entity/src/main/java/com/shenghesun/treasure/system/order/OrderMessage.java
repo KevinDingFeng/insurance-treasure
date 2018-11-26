@@ -189,6 +189,10 @@ public class OrderMessage extends BaseEntity implements Serializable{
 	@Column(length=10)
 	@XStreamAlias("FLIGHTAREACODE")
 	private String flightareacode;
+	//理赔地区域代码
+	@Column(length=10)
+	@XStreamAlias("CLAIMAGENT")
+	private String claimagent;
 	//保费
 	@Column(columnDefinition="DECIMAL(16,2)")
 	@XStreamAlias("PREMIUM")

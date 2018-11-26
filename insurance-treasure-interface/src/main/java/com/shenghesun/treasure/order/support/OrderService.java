@@ -75,6 +75,7 @@ public class OrderService {
 			orderMessage.setInvamount(orderMessage.getOrderAmount());
 			orderMessage.setClassesType("2");
 			orderMessage.setFlightareacode("11040400");
+			orderMessage.setClaimagent("ALEXANDRIA");
 		}
 		map.put("order", orderMessage);
 		return map;
