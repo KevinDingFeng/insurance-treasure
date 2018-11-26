@@ -71,14 +71,14 @@ public class OrderService {
 			//设置保费
 			float preminum = 0.01f*orderMessage.getOrderAmount()*Float.parseFloat(orderMessage.getRate());
 			orderMessage.setPreminum(Double.toString(preminum));
-			//设置发票金额
+			//设置发票金额 
 			orderMessage.setInvamount(orderMessage.getOrderAmount());
 			orderMessage.setClassesType("2");
-			orderMessage.setFlightareacode("11040400");
-			orderMessage.setClaimagent("ALEXANDRIA");
+			orderMessage.setFlightareacode("EODE");
+			orderMessage.setClaimagent("876264693");
 			orderMessage.setPricecond("1");
 			orderMessage.setClaimcurrencycode("01");
-			orderMessage.setClaimpayplace("意大利");
+			orderMessage.setClaimpayplace("德国");
 		}
 		map.put("order", orderMessage);
 		return map;
