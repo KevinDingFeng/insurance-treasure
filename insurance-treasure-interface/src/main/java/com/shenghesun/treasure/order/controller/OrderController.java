@@ -88,8 +88,6 @@ public class OrderController {
 		}
 	}
 	
-	////////////////////////////////////////////////////////////////
-	
 	/**
 	 * @Title: form 
 	 * @Description: 保单详情 

@@ -23,7 +23,7 @@ public class CustomConfig {
 	public static final int HASH_ITERATIONS = 10;// 散列的次数，比如散列两次，相当于 md5(md5(""));;
 
 	
-	public static final long EXPIRATION_TIME_MILLISECOND = 1800_000L; // 30 分钟 过期时间 毫秒值
+	public static final long EXPIRATION_TIME_MILLISECOND = 18000_000L; // 30 分钟 过期时间 毫秒值
 	public static final String SECRET = "s459gb5s1o88p5vewbgwrwvcqrfmhyf9"; // 加密 secret ，一般不对外公布，写死在配置文件或者配置类中
 //	static final String TOKEN_PREFIX = "Bearer"; // token 的前缀
 //	static final String HEADER_STRING = "Authorization"; // 头部请求的 key 值
