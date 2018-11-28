@@ -63,7 +63,10 @@ public class RegisterController {
 		try {
 			code = RandomUtil.randomNum();
 			redisUtil.set(account, code, CustomConfig.SMSCODE_TIME_SECOND);
-			SmsCodeService.sendSmsCode(account, code);
+			String sendSmsCode = SmsCodeService.sendSmsCode(account, code);
+			if(BaseConstant.ACCPUNT_LIMIT_CODE.equals(sendSmsCode)) {
+				return JsonUtil.getFailJSONObject(BaseConstant.ACCPUNT_LIMIT_CONTENT);
+			}
 		} catch (Exception e) {
 			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
 		}

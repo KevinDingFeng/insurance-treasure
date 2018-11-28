@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
+import com.shenghesun.treasure.core.constant.BaseConstant;
 import com.shenghesun.treasure.system.code.GoodsCode;
 import com.shenghesun.treasure.system.code.TransCode;
 import com.shenghesun.treasure.system.order.OrderMessage;
@@ -19,7 +20,7 @@ import com.shenghesun.treasure.utils.TokenUtil;
 
 @Service
 public class OrderService {
-	
+
 	@Autowired
 	private RedisUtil redisUtil;
 	/**
@@ -36,49 +37,15 @@ public class OrderService {
 		if(!redisUtil.exists(orderMessage.getCurrencyCode()+"curr")){
 			map.put("currency_error", ": 币种代码不存在");
 		}
-		//校验币种代码是否存在
-		//获取用户信息
-		String token = HttpHeaderUtil.getToken((HttpServletRequest) request);
-		Long userId = TokenUtil.getLoginUserId(token);
-		Long companyId = TokenUtil.getLoginCompanyId(token);
-		//完善下单信息
-		orderMessage.setUserId(userId);
-		orderMessage.setCompanyId(companyId);
-		orderMessage.setPlusOrMinus("0");
-		//设置订单号
-		String orderNo = System.currentTimeMillis() + RandomUtil.randomString(2);
-		orderMessage.setOrderNo(orderNo);
-		//设置运输相关信息
-		orderMessage = this.setTansport(orderMessage,map);
-		//设置货物名称相关信息
-		orderMessage = this.setGoods(orderMessage,map);
-		//设置起保日期
-		orderMessage.setEffectDate(orderMessage.getSaildate());
+		//设置公共投保信息
+		orderMessage = this.all(request,orderMessage,map);
 		//获取保险进出口类型
-		String city = orderMessage.getCity();
-		if(city.equals("0")) {
-			//设置国内保险金额和保费
-			orderMessage.setOrderAmount(orderMessage.getGoodsValue());
-			//设置保费
-			float preminum = 0.01f*orderMessage.getOrderAmount()*Float.parseFloat(orderMessage.getRate());
-			orderMessage.setPreminum(Double.toString(preminum));
-			//设置发票金额
-			orderMessage.setInvamount(orderMessage.getOrderAmount());
-			orderMessage.setClassesType("1");
+		if(orderMessage.getCity().equals(BaseConstant.INLAND)) {
+			//完善国内投保数据
+			orderMessage = this.inland(orderMessage);
 		}else {
-			//设置国内保险金额和保费
-			orderMessage.setOrderAmount((int) (orderMessage.getGoodsValue()*(1+Double.parseDouble(orderMessage.getIncrate()))));
-			//设置保费
-			float preminum = 0.01f*orderMessage.getOrderAmount()*Float.parseFloat(orderMessage.getRate());
-			orderMessage.setPreminum(Double.toString(preminum));
-			//设置发票金额 
-			orderMessage.setInvamount(orderMessage.getOrderAmount());
-			orderMessage.setClassesType("2");
-			orderMessage.setFlightareacode("EODE");
-			orderMessage.setClaimagent("876264693");
-			orderMessage.setPricecond("1");
-			orderMessage.setClaimcurrencycode("01");
-			orderMessage.setClaimpayplace("德国");
+			//完善国际投保数据
+			orderMessage = this.international(orderMessage);
 		}
 		map.put("order", orderMessage);
 		return map;
@@ -126,5 +93,62 @@ public class OrderService {
 		}
 		return orderMessage;
 	}
-	
+	/**
+	 * 完善公共投保数据
+	 */
+	public OrderMessage all(HttpServletRequest request,OrderMessage orderMessage,Map<String,Object> map) {
+		//获取用户信息
+		String token = HttpHeaderUtil.getToken((HttpServletRequest) request);
+		Long userId = TokenUtil.getLoginUserId(token);
+		Long companyId = TokenUtil.getLoginCompanyId(token);
+		//完善下单信息
+		orderMessage.setUserId(userId);
+		orderMessage.setCompanyId(companyId);
+		orderMessage.setPlusOrMinus("0");
+		//设置订单号
+		String orderNo = System.currentTimeMillis() + RandomUtil.randomString(2);
+		orderMessage.setOrderNo(orderNo);
+		//设置运输相关信息
+		orderMessage = this.setTansport(orderMessage,map);
+		//设置货物名称相关信息
+		orderMessage = this.setGoods(orderMessage,map);
+		//设置起保日期
+		orderMessage.setEffectDate(orderMessage.getSaildate());
+		return orderMessage;
+	}
+	/**
+	 * 国内投保完善数据
+	 */
+	public OrderMessage inland(OrderMessage orderMessage) {
+		//设置国内保险金额和保费
+		orderMessage.setOrderAmount(orderMessage.getGoodsValue());
+		//设置保费
+		float preminum = 0.01f*orderMessage.getOrderAmount()*Float.parseFloat(orderMessage.getRate());
+		orderMessage.setPreminum(Double.toString(preminum));
+		//设置发票金额
+		orderMessage.setInvamount(orderMessage.getOrderAmount());
+		orderMessage.setClassesType("1");
+		return orderMessage;
+	}
+	/**
+	 * 国际投保完善数据
+	 */
+	public OrderMessage international(OrderMessage orderMessage) {
+		//设置国内保险金额和保费
+		orderMessage.setOrderAmount((int) (orderMessage.getGoodsValue()*(1+Double.parseDouble(orderMessage.getIncrate()))));
+		//设置保费
+		float preminum = 0.01f*orderMessage.getOrderAmount()*Float.parseFloat(orderMessage.getRate());
+		orderMessage.setPreminum(Double.toString(preminum));
+		//设置发票金额 
+		orderMessage.setInvamount(orderMessage.getOrderAmount());
+		orderMessage.setClassesType("2");
+		orderMessage.setFlightareacode("EODE");
+		orderMessage.setClaimagent("876264693");
+		orderMessage.setPricecond("1");
+		orderMessage.setClaimcurrencycode("01");
+		orderMessage.setClaimpayplace("德国");
+		return orderMessage;
+	}
+
+
 }

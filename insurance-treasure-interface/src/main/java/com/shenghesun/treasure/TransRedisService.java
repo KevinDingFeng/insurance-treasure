@@ -2,8 +2,6 @@ package com.shenghesun.treasure;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -19,12 +17,13 @@ import com.shenghesun.treasure.system.code.TransCode;
 import com.shenghesun.treasure.system.dictionary.BaseCity;
 import com.shenghesun.treasure.utils.RedisUtil;
 
+import lombok.extern.slf4j.Slf4j;
+
 
 @Component
 @Order(value = 1)
+@Slf4j
 public class TransRedisService implements ApplicationRunner{
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
 	@Autowired
 	private RedisUtil redisUtil;
 
@@ -55,7 +54,7 @@ public class TransRedisService implements ApplicationRunner{
 	public void setTransport() {
 		List<TransCode> transCodeList = transCodeService.find();
 		if(!CollectionUtils.isEmpty(transCodeList)) {
-			logger.info("redis缓存运输方式代码表:"+transCodeList.size());
+			log.info("redis缓存运输方式代码表:"+transCodeList.size());
 			long start = System.currentTimeMillis();
 			for(int i=0;i<transCodeList.size();i++) {
 				TransCode transCode = transCodeList.get(i);
@@ -63,7 +62,7 @@ public class TransRedisService implements ApplicationRunner{
 				redisUtil.set(key, transCode);
 			}
 			long end = System.currentTimeMillis(); 
-			logger.info("redis缓存运输方式代码表结束===运行时间:"+(end - start)+"毫秒");
+			log.info("redis缓存运输方式代码表结束===运行时间:"+(end - start)+"毫秒");
 		}
 	}
 	/**
@@ -73,7 +72,7 @@ public class TransRedisService implements ApplicationRunner{
 		List<GoodsCode> goodsList = goodsCodeService.find();
 
 		if(!CollectionUtils.isEmpty(goodsList)) {
-			logger.info("redis缓存货物名称代码表:"+goodsList.size());
+			log.info("redis缓存货物名称代码表:"+goodsList.size());
 			long start = System.currentTimeMillis();
 			for(int i=0;i<goodsList.size();i++) {
 				GoodsCode goodsCode = goodsList.get(i);
@@ -81,7 +80,7 @@ public class TransRedisService implements ApplicationRunner{
 				redisUtil.set(key, goodsCode);
 			}
 			long end = System.currentTimeMillis(); 
-			logger.info("redis缓存货物名称代码表结束===运行时间:"+(end - start)+"毫秒");
+			log.info("redis缓存货物名称代码表结束===运行时间:"+(end - start)+"毫秒");
 		}
 	}
 	/**
@@ -131,7 +130,7 @@ public class TransRedisService implements ApplicationRunner{
 		List<BaseCity> cityList = baseCityService.find();
 		
 		if(!CollectionUtils.isEmpty(cityList)) {
-			logger.info("redis缓存城市信息:"+cityList.size());
+			log.info("redis缓存城市信息:"+cityList.size());
 			long start = System.currentTimeMillis();
 			for(int i=0;i<cityList.size();i++) {
 				BaseCity baseCity = cityList.get(i);
@@ -139,7 +138,7 @@ public class TransRedisService implements ApplicationRunner{
 				redisUtil.set(key+"city", key);
 			}
 			long end = System.currentTimeMillis(); 
-			logger.info("redis缓存城市信息结束===运行时间:"+(end - start)+"毫秒");
+			log.info("redis缓存城市信息结束===运行时间:"+(end - start)+"毫秒");
 		}
 	}
 }
