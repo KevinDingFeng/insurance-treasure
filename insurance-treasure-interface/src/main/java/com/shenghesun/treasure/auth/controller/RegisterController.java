@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSONObject;
 import com.shenghesun.treasure.auth.support.RegisterService;
 import com.shenghesun.treasure.config.CustomConfig;
+import com.shenghesun.treasure.core.constant.BaseConstant;
 import com.shenghesun.treasure.system.entity.SysUser;
 import com.shenghesun.treasure.system.service.SysUserService;
 import com.shenghesun.treasure.utils.JsonUtil;
@@ -42,7 +43,7 @@ public class RegisterController {
 			// 获取登录名对应的数据
 			SysUser findUser = sysUserService.findByCell(user.getCellphone());
 			if (findUser != null) {
-				return JsonUtil.getFailJSONObject("该用户已存在");
+				return JsonUtil.getFailJSONObject(BaseConstant.ACCOUNT_ERROR);
 			}
 			user = registerService.regist(user);
 			//保存用户
@@ -62,7 +63,7 @@ public class RegisterController {
 		try {
 			code = RandomUtil.randomNum();
 			redisUtil.set(account, code, CustomConfig.SMSCODE_TIME_SECOND);
-			//SmsCodeService.sendSmsCode(account, code);
+			SmsCodeService.sendSmsCode(account, code);
 		} catch (Exception e) {
 			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
 		}
