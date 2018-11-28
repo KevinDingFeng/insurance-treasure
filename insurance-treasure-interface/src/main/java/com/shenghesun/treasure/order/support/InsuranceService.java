@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import com.alibaba.fastjson.JSONObject;
-import com.shenghesun.treasure.auth.support.UserService;
 import com.shenghesun.treasure.company.service.CompanyMessageService;
 import com.shenghesun.treasure.core.constant.BaseConstant;
 import com.shenghesun.treasure.cpic.service.AsyncService;
@@ -33,8 +32,6 @@ public class InsuranceService {
 	OrderService orderService;
 	@Autowired
 	OrderMessageService orderMessageService;
-	@Autowired
-	UserService userService;
 	/**
 	 * 投保
 	 */
@@ -44,7 +41,8 @@ public class InsuranceService {
 		Long userId = TokenUtil.getLoginUserId(token);
 		Long companyId = TokenUtil.getLoginCompanyId(token);
 		CompanyMessage company = companyService.findById(companyId);
-		
+	//	SysUser user = userService.getUser(request);
+	//	CompanyMessage company = userService.getCompany(request);
 		log.info("投保用户ID："+userId+"投保公司ID: "+companyId);
 		//完善订单信息
 		Map<String,Object> orderMap = orderService.complete(request,order);

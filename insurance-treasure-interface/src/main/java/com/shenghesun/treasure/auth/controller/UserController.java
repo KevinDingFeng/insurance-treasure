@@ -36,9 +36,13 @@ public class UserController {
 	public JSONObject changeCell(HttpServletRequest request,String account,String code) {
 		try {
 			//验证码是否正确
-			String smsCode = redisUtil.get(account);
-			if(smsCode==null || smsCode!=code) {
+			String smsCode = getCode(account);
+			if(smsCode==null || !smsCode.equals(code)) {
 				return JsonUtil.getFailJSONObject(BaseConstant.CODE_ERROR); 
+			}
+			//验证新修改的手机号是否已经被注册
+			if(sysUserService.findByAccount(account)!=null) {
+				return JsonUtil.getFailJSONObject(BaseConstant.ACCOUNT_ERROR); 
 			}
 			//获取登陆用户信息
 			String token = HttpHeaderUtil.getToken((HttpServletRequest) request);
@@ -70,8 +74,7 @@ public class UserController {
 			}
 			//验证码判断
 			//验证码是否正确
-			String smsCode = (String) redisUtil.getObj(user.getCellphone());
-			String sms = smsCode.replaceAll("\"", "");
+			String sms = getCode(user.getCellphone());
 			if(sms==null || !sms.equals(code)) {
 				return JsonUtil.getFailJSONObject(BaseConstant.CODE_ERROR); 
 			}
@@ -98,5 +101,13 @@ public class UserController {
 			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
 			return JsonUtil.getFailJSONObject();
 		}
+	}
+	/**
+	 * 从redis中取出验证码
+	 */
+	public String getCode(String code) {
+		String smsCode = (String) redisUtil.getObj(code);
+		String sms = smsCode.replaceAll("\"", "");
+		return sms;
 	}
 }

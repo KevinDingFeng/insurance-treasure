@@ -19,16 +19,8 @@ public class BaseTransportService {
 	public List<BaseTransport> findByBusinessAndParentCodeAndCountry(String business,String parentCode,String city){
 		return transportDao.findByBusinessCodeAndParentCodeAndCity(business, parentCode,city);
 	}
-	/*
-
-	public List<BaseTransport> findByBusinessCodeAndCountry(String code,String country){
-		return transportDao.findByBusinessCodeAndCountry(code,country);
+	public List<BaseTransport> findByCode(String code,String city){
+		return transportDao.findByCodeAndCity(code,city);
 	}
 	
-	public List<BaseTransport> findByBusinessCode(String code,String parentCode){
-		return transportDao.findByBusinessCodeAndTparentCode(code,parentCode);
-	}
-	public List<BaseTransport> findByCountryAndTparentCode(String country,String code){
-		return transportDao.findByCountryAndTparentCode(country,code);
-	}*/
 }

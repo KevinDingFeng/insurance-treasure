@@ -62,7 +62,7 @@ public class RegisterController {
 		try {
 			code = RandomUtil.randomNum();
 			redisUtil.set(account, code, CustomConfig.SMSCODE_TIME_SECOND);
-			SmsCodeService.sendSmsCode(account, code);
+			//SmsCodeService.sendSmsCode(account, code);
 		} catch (Exception e) {
 			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
 		}

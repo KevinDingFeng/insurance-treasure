@@ -21,4 +21,9 @@ public class BaseConstant {
 	 * 原始密码错误
 	 */
 	public static final String OLD_PASSWORD_ERROR = "原密码错误";
+	
+	/**
+	 * 手机号已经被注册
+	 */
+	public static final String ACCOUNT_ERROR = "手机号已被注册，请更换手机号";
 }

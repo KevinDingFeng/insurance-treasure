@@ -14,7 +14,9 @@ public interface BaseTransportDao extends JpaRepository<BaseTransport, Long>, Jp
 	List<BaseTransport> findByBusinessCodeAndParentCode(String business,String parentCode);
 	
 	List<BaseTransport> findByBusinessCodeAndParentCodeAndCity(String business,String parentCode,String city);
-	/*List<BaseTransport> findByBusinessCodeAndCountry(String code,String country);
+	
+	List<BaseTransport> findByCodeAndCity(String code,String city);
+	/*
 	
 	List<BaseTransport> findByBusinessCodeAndTparentCode(String code,String parentCode);
 	
