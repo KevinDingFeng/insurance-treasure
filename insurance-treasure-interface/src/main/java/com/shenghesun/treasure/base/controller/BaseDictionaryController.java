@@ -97,6 +97,7 @@ public class BaseDictionaryController {
 			Map<String,Object> map = new HashMap<String,Object>();
 			TransCode transCode = null;
 			String itemName = null;
+			String markName = null;
 			String rate = null;
 			if(redisUtil.exists(transport)){
 				String string = redisUtil.get(transport);
@@ -107,8 +108,10 @@ public class BaseDictionaryController {
 			}
 			if(transCode!=null) {
 				itemName = transCode.getItemName();
+				markName = transCode.getMarkName();
 			}
 			map.put("itemName", itemName);
+			map.put("markName", markName);
 			map.put("rate", rate);
 			return JsonUtil.getSuccessJSONObject(map);
 		} catch (Exception e) {

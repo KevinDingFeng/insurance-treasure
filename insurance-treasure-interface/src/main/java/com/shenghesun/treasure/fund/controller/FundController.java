@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
@@ -43,7 +44,8 @@ public class FundController {
 	 * @return
 	 */
 	@RequestMapping(value = "/detail", method = RequestMethod.GET)
-	public JSONObject completeCompanyMessage(HttpServletRequest request,Integer page,Integer size) {
+	public JSONObject completeCompanyMessage(HttpServletRequest request,@RequestParam(value="page", defaultValue="0") Integer page,
+			@RequestParam(value="size", defaultValue="20") Integer size) {
 		try {
 			Map<String,Object> map = new HashMap<String,Object>();
 			//获取请求用户公司信息

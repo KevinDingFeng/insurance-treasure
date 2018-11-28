@@ -58,5 +58,10 @@ public class TransCode extends BaseEntity implements Serializable{
 	 */
 	@Column
 	private String itemName;
+	/**
+	 * 标识名称
+	 */
+	@Column
+	private String markName;
 
 }

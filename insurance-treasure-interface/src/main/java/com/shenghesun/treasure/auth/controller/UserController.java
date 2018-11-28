@@ -79,7 +79,24 @@ public class UserController {
 			sysUserService.save(user);
 		} catch (Exception e) {
 			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
+			return JsonUtil.getFailJSONObject();
 		}
 		return JsonUtil.getSuccessJSONObject();
+	}
+	/**
+	 * 获取邀请码
+	 */
+	@RequestMapping(value = "/invite", method = RequestMethod.GET)
+	public JSONObject invite(HttpServletRequest request,String old,String current,String code) {
+		try {
+			//获取登陆用户信息
+			String token = HttpHeaderUtil.getToken((HttpServletRequest) request);
+			Long userId = TokenUtil.getLoginUserId(token);
+			SysUser user = sysUserService.findById(userId);
+			return JsonUtil.getSuccessJSONObject(user.getInvitCode());
+		} catch (Exception e) {
+			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
+			return JsonUtil.getFailJSONObject();
+		}
 	}
 }
