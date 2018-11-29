@@ -164,6 +164,7 @@ public class WebServiceClient {
 //				String smsStatus = null;
 				if(StringUtils.isNotEmpty(status)) {
 					orderMessage.setInsuranceStatus(Integer.parseInt(status));
+					orderMessage.setApply_no(approvl.getApplyNo());
 					orderMessageService.save(orderMessage);
 					if("10".equals(status)) {
 						map.put("flag", true);
@@ -232,6 +233,8 @@ public class WebServiceClient {
 					String statusEpolicy = recordEle.elementTextTrim("STATUS_EPOLICY"); // 拿到RESULT节点下的子节点STATUS_EPOLICY值
 					approvl.setStatusEpolicy(statusEpolicy);
 
+					String fileEpolicy = recordEle.elementTextTrim("FILE_EPOLICY"); // 拿到RESULT节点下的子节点FILE_EPOLICY值
+					approvl.setFileEpolicy(fileEpolicy);
 					return approvl;
 				}
 			} catch (DocumentException e) {

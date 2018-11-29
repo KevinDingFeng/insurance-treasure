@@ -123,7 +123,7 @@ public class OrderService {
 		//设置国内保险金额和保费
 		orderMessage.setOrderAmount(orderMessage.getGoodsValue());
 		//设置保费
-		float preminum = 0.01f*orderMessage.getOrderAmount()*Float.parseFloat(orderMessage.getRate());
+		float preminum = 0.01f*Float.parseFloat(orderMessage.getOrderAmount())*Float.parseFloat(orderMessage.getRate());
 		orderMessage.setPreminum(Double.toString(preminum));
 		//设置发票金额
 		orderMessage.setInvamount(orderMessage.getOrderAmount());
@@ -135,9 +135,9 @@ public class OrderService {
 	 */
 	public OrderMessage international(OrderMessage orderMessage) {
 		//设置国内保险金额和保费
-		orderMessage.setOrderAmount((int) (orderMessage.getGoodsValue()*(1+Double.parseDouble(orderMessage.getIncrate()))));
+		orderMessage.setOrderAmount(Float.toString((Float.parseFloat(orderMessage.getGoodsValue())*(1+Float.parseFloat(orderMessage.getIncrate())))));
 		//设置保费
-		float preminum = 0.01f*orderMessage.getOrderAmount()*Float.parseFloat(orderMessage.getRate());
+		float preminum = 0.01f*Float.parseFloat(orderMessage.getOrderAmount())*Float.parseFloat(orderMessage.getRate());
 		orderMessage.setPreminum(Double.toString(preminum));
 		//设置发票金额 
 		orderMessage.setInvamount(orderMessage.getOrderAmount());

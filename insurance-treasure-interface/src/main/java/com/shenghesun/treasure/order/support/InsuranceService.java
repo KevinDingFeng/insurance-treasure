@@ -37,7 +37,7 @@ public class InsuranceService {
 	 */
 	public JSONObject insurance(HttpServletRequest request,@Validated OrderMessage order,String comFrom) {
 		//获取公司信息
-		String token = HttpHeaderUtil.getToken((HttpServletRequest) request);
+		String token = HttpHeaderUtil.getToken((HttpServletRequest) request); 
 		Long userId = TokenUtil.getLoginUserId(token);
 		Long companyId = TokenUtil.getLoginCompanyId(token);
 		CompanyMessage company = companyService.findById(companyId);

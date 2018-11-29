@@ -72,7 +72,7 @@ public class OrderMessage extends BaseEntity implements Serializable{
 	//货物价值
 	@Column(columnDefinition="DECIMAL(16,2)")
 	@XStreamOmitField
-	private Integer goodsValue;
+	private String goodsValue;
 	//一级运输方式
 	@Column(length=100)
 	@XStreamOmitField
@@ -231,11 +231,11 @@ public class OrderMessage extends BaseEntity implements Serializable{
 	 */
 	@Column(columnDefinition="DECIMAL(16,2)")
 	@XStreamAlias("AMOUNT")
-	private Integer orderAmount;
+	private String orderAmount;
 	//发票金额
 	@Column(columnDefinition="DECIMAL(16,2)")
 	@XStreamAlias("INVAMOUNT")
-	private Integer invamount;
+	private String invamount;
 	//险类
 	@Column(length=1)
 	@XStreamAlias("CLASSESTYPE")
