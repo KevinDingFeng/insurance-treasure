@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import com.shenghesun.treasure.system.union.UnionGoodsCode;
-import com.shenghesun.treasure.system.union.UnionPackageCode;
-import com.shenghesun.treasure.system.union.UnionTransCode;
+import com.shenghesun.treasure.system.union.code.UnionGoodsCode;
+import com.shenghesun.treasure.system.union.code.UnionPackageCode;
+import com.shenghesun.treasure.system.union.code.UnionTransCode;
 import com.shenghesun.treasure.union.service.UnionGoodsCodeService;
 import com.shenghesun.treasure.union.service.UnionPackageCodeService;
 import com.shenghesun.treasure.union.service.UnionTransCodeService;

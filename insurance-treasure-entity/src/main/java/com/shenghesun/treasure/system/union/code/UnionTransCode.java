@@ -1,4 +1,4 @@
-package com.shenghesun.treasure.system.union;
+package com.shenghesun.treasure.system.union.code;
 
 import java.io.Serializable;
 

@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.shenghesun.treasure.system.union.UnionPackageCode;
+import com.shenghesun.treasure.system.union.code.UnionPackageCode;
 import com.shenghesun.treasure.union.dao.UnionPackageCodeDao;
 
 @Service

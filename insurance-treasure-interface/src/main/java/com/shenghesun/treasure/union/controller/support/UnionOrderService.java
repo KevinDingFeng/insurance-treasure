@@ -5,9 +5,9 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
 import com.shenghesun.treasure.system.order.OrderMessage;
-import com.shenghesun.treasure.system.union.UnionGoodsCode;
-import com.shenghesun.treasure.system.union.UnionPackageCode;
-import com.shenghesun.treasure.system.union.UnionTransCode;
+import com.shenghesun.treasure.system.union.code.UnionGoodsCode;
+import com.shenghesun.treasure.system.union.code.UnionPackageCode;
+import com.shenghesun.treasure.system.union.code.UnionTransCode;
 import com.shenghesun.treasure.union.core.constant.UnionBaseConstant;
 import com.shenghesun.treasure.utils.RedisUtil;
 
