@@ -75,6 +75,6 @@ public class Approvl extends BaseEntity{
 	/**
 	 * 电子保单内容
 	 */
-	@Column(nullable = false,columnDefinition="MEDIUMTEXT")
+	@Column(columnDefinition="MEDIUMTEXT")
 	private String fileEpolicy;
 }
