@@ -21,6 +21,7 @@ import com.shenghesun.treasure.order.service.OrderMessageService;
 import com.shenghesun.treasure.order.support.InsuranceService;
 import com.shenghesun.treasure.system.order.OrderMessage;
 import com.shenghesun.treasure.system.service.SysUserService;
+import com.shenghesun.treasure.union.controller.support.UnionOrderService;
 import com.shenghesun.treasure.utils.HttpHeaderUtil;
 import com.shenghesun.treasure.utils.JsonUtil;
 import com.shenghesun.treasure.utils.TokenUtil;
@@ -41,6 +42,8 @@ public class OrderController {
 	OrderMessageService orderMessageService;
 	@Autowired
 	InsuranceService insuranceService;
+	@Autowired
+	UnionOrderService unionOrderService;
 	/**
 	 * 内部投保接口，用户获取token后直接进行使用
 	 * @param request
@@ -50,6 +53,8 @@ public class OrderController {
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public JSONObject save(HttpServletRequest request,@Validated OrderMessage order) {
 		try {
+			//联盟速运代码翻译
+			order = unionOrderService.union_complete(order);
 			return insuranceService.insurance(request,order,BaseConstant.SYS_LOCAL);
 		} catch (Exception e) {
 			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());

@@ -1,27 +1,17 @@
 package com.shenghesun.treasure.cpic.service;
 
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import javax.xml.rpc.ServiceException;
 
 import org.apache.axis.client.Stub;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.Element;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.shenghesun.treasure.order.service.OrderMessageService;
-import com.shenghesun.treasure.system.cpic.Approvl;
-import com.shenghesun.treasure.system.cpic.ReturnApprovl;
+import com.shenghesun.treasure.approvl.service.ApprovlResultService;
 import com.shenghesun.treasure.system.order.OrderMessage;
-import com.shenghesun.util.cpic.XmlUtils;
 
 import cn.com.cpic.wss.propertyinsurance.commonservice.freight.FreightCommonServiceLocator;
 import cn.com.cpic.wss.propertyinsurance.commonservice.freight.IZrxCommonService;
@@ -65,12 +55,8 @@ public class WebServiceClient {
 	 */
 	@Value("${cpic.unitcode}")
 	private String unitCode;
-
 	@Autowired
-	private ApprovlService approvlService;
-	@Autowired
-	private OrderMessageService orderMessageService;
-	
+	private ApprovlResultService approvlResultService;
 
 	public IZrxCommonService getBinding() throws ServiceException {
 		FreightCommonServiceLocator locator = new FreightCommonServiceLocator();
@@ -78,7 +64,34 @@ public class WebServiceClient {
 		locator.setFreightCommonServicePortEndpointAddress(url);
 		return locator.getFreightCommonServicePort();
 	}
-
+	/**
+	 * 货运承保前完善用户信息以及产品信息等
+	 */
+	public ApprovalRequest preApprovl(String xml) {
+		ApprovalRequest request = null;
+		try {
+			request = new ApprovalRequest();
+			//用户信息
+			LoginUser userInfo = new LoginUser();
+			userInfo.setUserName(userName);
+			userInfo.setPassword(password);
+			//产品信息
+			ApprovalProduct productInfo = new ApprovalProduct();	
+			//航空险种
+			productInfo.setClassesCode(classesCode);
+			//用户信息
+			request.setUserInfo(userInfo);
+			request.setProductInfo(productInfo);
+			request.setPolicyInfo(xml);
+			//默认
+			request.setCheckCode("hyxnew");
+			request.setFormCommit(true);
+			((Stub) this.getBinding()).setTimeout(60000);
+		} catch (ServiceException e) {
+			e.printStackTrace();
+		}
+		return request;
+	}
 	/**
 	 * 货运险承保接口
 	 * @Title: approvl 
@@ -94,156 +107,31 @@ public class WebServiceClient {
 	 **/ 
 	//@Async("asyncServiceExecutor")
 	public Map<String,Object> approvl(String xml, OrderMessage orderMessage) {
-		ApprovalRequest request = new ApprovalRequest();
-		Map<String,Object> map = new HashMap<String,Object>();
-		//用户信息
-		LoginUser userInfo = new LoginUser();
-		userInfo.setUserName(userName);
-		userInfo.setPassword(password);
-		//产品信息
-		ApprovalProduct productInfo = new ApprovalProduct();	
-		//航空险种
-		productInfo.setClassesCode(classesCode);
-		ApprovalResponse reposne=null;
+		Map<String, Object> map = null;
 		try {
-			//用户信息
-			request.setUserInfo(userInfo);
-			request.setProductInfo(productInfo);
-			request.setPolicyInfo(xml);
-			//默认
-			request.setCheckCode("hyxnew");
-			request.setFormCommit(true);
-			((Stub) this.getBinding()).setTimeout(60000);
+			//完善投保用户相关信息
+			ApprovalRequest request = preApprovl(xml);
 			//投保
-			reposne = this.getBinding().approval(request);
-			SysMessage sysMessage = reposne.getSysMessage();
-			if (sysMessage != null) {
-				log.error("错误类型:" + sysMessage.getErrorType() + "\n");
-				log.error("错误代码:" + sysMessage.getErrorCode() + "\n");
-				log.error("错误信息:" + sysMessage.getErrorMsg() + "\n");
-			}				
-			//log.info("返回报文: \r" + reposne.getPolicyInfo()+ "\n");
-
-			String result = reposne.getPolicyInfo();
-			Approvl approvl =  xml2Approvl(result,orderMessage);
-			if(approvl != null) {
-				//将接口返回的approv对象时间设置为空
-				/*Approvl returnApprovl = new Approvl();
-				BeanUtils.copyProperties(approvl, returnApprovl);
-				returnApprovl.setId(null);
-				returnApprovl.setCreation(null);
-				returnApprovl.setLastModified(null);
-				returnApprovl.setVersion(0l);*/
-				ReturnApprovl returnApprovl = new ReturnApprovl();
-				returnApprovl.setOrderNo(approvl.getOrderNo());
-				returnApprovl.setApplyId(approvl.getApplyId());
-				returnApprovl.setType(approvl.getType());
-				returnApprovl.setWorkType(approvl.getWorkType());
-				returnApprovl.setApplyNo(approvl.getApplyNo());
-				returnApprovl.setPolicyNo(approvl.getPolicyNo());
-				returnApprovl.setStatus(approvl.getStatus());
-				returnApprovl.setComments(approvl.getComments());
-				returnApprovl.setStatusEpolicy(approvl.getStatusEpolicy());
-				Approvl approvlDB = approvlService.findByApplyId(approvl.getApplyId());
-				if(approvlDB != null) {//已有则修改
-					BeanUtils.copyProperties(approvl, approvlDB);
-					approvlService.save(approvlDB);
-				}else {//新增
-					approvlService.save(approvl);
-				}
-				map.put("approvl", returnApprovl);
-				String status = approvl.getStatus();
-				/**
-				 * 保单状态
-				 * 7  待审核-----投保单录入成功，提交人工审核
-				   36 待签发-----投保单录入成功，自动核保通过 （非在线支付情况，状态 10 --保单生效）
-				   19 提交失败----投保单录入成功，系统提交核保失败，需联系技术人员处理
-				 * 
-				 */
-				//发送短信状态
-//				String smsStatus = null;
-				if(StringUtils.isNotEmpty(status)) {
-					orderMessage.setInsuranceStatus(Integer.parseInt(status));
-					orderMessage.setApply_no(approvl.getApplyNo());
-					orderMessageService.save(orderMessage);
-					if("10".equals(status)) {
-						map.put("flag", true);
-						return map;
-					}else if("19".equals(status)) {
-						map.put("flag", false);
-						return map;
-					}
-				}
-			}
-			map.put("flag", false);
-			return map;
+			ApprovalResponse reposne = this.getBinding().approval(request);
+			//处理投保返回结果
+			map = approvlResultService.manageApprovl(reposne,orderMessage);
+			//日志记录
+			logApprovl(reposne);
 		} catch (Exception e) {
 			log.error(e.getMessage());
-			return map;
 		} 
+		return map;
 	}
 
 	/**
-	 * 货运险承保接口应答报文转对象
-	 * @Title: xml2Approvl 
-	 * @Description: TODO 
-	 * @param xml  void 
-	 * @author yangzp
-	 * @date 2018年10月10日下午5:18:00
-	 **/ 
-	private Approvl xml2Approvl(String xml, OrderMessage payMessage) {
-		if(StringUtils.isNotEmpty(xml)) {
-			Approvl approvl = new Approvl();
-			approvl.setOrderNo(payMessage.getOrderNo());
-			Document resultDo;
-			try {
-				resultDo = XmlUtils.parseWithSAX(xml,"GBK");
-				Element rootElt = resultDo.getRootElement(); // 获取根节点
-
-				Iterator<?> iter = rootElt.elementIterator("CONFIG"); // 获取根节点下的子节点CONFIG
-				while (iter.hasNext()) {
-					Element recordEle = (Element) iter.next();
-					String ApplyId = recordEle.elementTextTrim("ApplyId"); // 拿到CONFIG节点下的子节点ApplyId值
-					approvl.setApplyId(ApplyId);
-					String type = recordEle.elementTextTrim("TYPE"); // 拿到CONFIG节点下的子节点TYPE值
-					approvl.setType(type);
-
-					String worktype = recordEle.elementTextTrim("WORKTYPE"); // 拿到CONFIG节点下的子节点WORKTYPE值
-					approvl.setWorkType(worktype);
-				}
-
-				Iterator<?> iterResult = rootElt.elementIterator("RESULT"); // 获取根节点下的子节点RESULT
-				while (iterResult.hasNext()) {
-					Element recordEle = (Element) iterResult.next();
-					String unitcode = recordEle.elementTextTrim("UNITCODE"); // 拿到RESULT节点下的子节点UNITCODE值
-					approvl.setUnitCode(unitcode);
-
-					String applyno = recordEle.elementTextTrim("APPLYNO"); // 拿到RESULT节点下的子节点APPLYNO值
-					approvl.setApplyNo(applyno);
-
-					String policyno = recordEle.elementTextTrim("POLICYNO"); // 拿到RESULT节点下的子节点POLICYNO值
-					approvl.setPolicyNo(policyno);
-
-					String status = recordEle.elementTextTrim("STATUS"); // 拿到RESULT节点下的子节点STATUS值
-					approvl.setStatus(status);
-
-					String comments = recordEle.elementTextTrim("COMMENTS"); // 拿到RESULT节点下的子节点COMMENTS值
-					approvl.setComments(comments);
-
-					String statusEpolicy = recordEle.elementTextTrim("STATUS_EPOLICY"); // 拿到RESULT节点下的子节点STATUS_EPOLICY值
-					approvl.setStatusEpolicy(statusEpolicy);
-
-					String fileEpolicy = recordEle.elementTextTrim("FILE_EPOLICY"); // 拿到RESULT节点下的子节点FILE_EPOLICY值
-					approvl.setFileEpolicy(fileEpolicy);
-					return approvl;
-				}
-			} catch (DocumentException e) {
-				log.error("错误信息:" + e.getStackTrace());
-				return null;
-			}
-
+	 * 投保日志记录
+	 */
+	public void logApprovl(ApprovalResponse response) {
+		SysMessage sysMessage = response.getSysMessage();
+		if (sysMessage != null) {
+			log.error("错误类型:" + sysMessage.getErrorType() + "\n");
+			log.error("错误代码:" + sysMessage.getErrorCode() + "\n");
+			log.error("错误信息:" + sysMessage.getErrorMsg() + "\n");
 		}
-		return null;
 	}
-
 }

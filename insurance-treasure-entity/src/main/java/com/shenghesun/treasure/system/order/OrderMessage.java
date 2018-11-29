@@ -95,7 +95,7 @@ public class OrderMessage extends BaseEntity implements Serializable{
 	@XStreamOmitField
 	private String transCode;
 	//货物代码
-	@NotBlank(message = "{order.goodsCode.notBlank}")
+	//@NotBlank(message = "{order.goodsCode.notBlank}")
 	@Column(length=10)
 	@XStreamOmitField
 	private String goodsCode;

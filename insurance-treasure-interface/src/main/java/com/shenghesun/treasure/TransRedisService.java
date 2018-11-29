@@ -33,6 +33,8 @@ public class TransRedisService implements ApplicationRunner{
 	private GoodsCodeService goodsCodeService;
 	@Autowired
 	private BaseCityService baseCityService;
+	@Autowired
+	private com.shenghesun.treasure.union.controller.support.UnionRedisService unionRedisService;
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
 		//添加运输代码对照表
@@ -47,6 +49,8 @@ public class TransRedisService implements ApplicationRunner{
 		setCurrency();
 		//添加城市
 		setCity();
+		//添加联盟速运数据字典
+		unionRedisService.setToRedis();
 	}
 	/**
 	 * 向redis中添加运输方式代码表

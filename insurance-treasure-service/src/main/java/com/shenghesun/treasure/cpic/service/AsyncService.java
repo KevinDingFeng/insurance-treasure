@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -60,15 +58,8 @@ public class AsyncService {
 		log.info("start executeAsync");
 		try{
 			if(orderMessage != null) {
-				OrderMessage pmTemp = new OrderMessage();
-				BeanUtils.copyProperties(orderMessage, pmTemp);
-				pmTemp.setId(null);
-				pmTemp.setCreation(null);
-				pmTemp.setLastModified(null);
-				pmTemp.setVersion(0l);
+				String xml = getOrderMessageXml(orderMessage);
 				boolean flag = true;
-				String xml = orderMessage2Xml(pmTemp);
-				System.out.println(xml);
 				if(StringUtils.isNotEmpty(xml)) {
 					//货运险承保接口
 					map = webServiceClient.approvl(xml,orderMessage);
@@ -77,17 +68,37 @@ public class AsyncService {
 						flag = false;
 					}
 				}
-				if(flag) {
-					log.info("订单号为:"+orderMessage.getOrderNo()+"的订单投保成功");
-				}else {
-					log.info("订单号为:"+orderMessage.getOrderNo()+"的订单投保失败");
-				}
+				//记录日志
+				setLog(flag,orderMessage);
 			}
 		}catch(Exception e){
 			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
 		}
 		log.info("end executeAsync");
 		return map;
+	}
+	/**
+	 * 将投保对象处理转为xml用于投保
+	 */
+	public String getOrderMessageXml(OrderMessage orderMessage) {
+		OrderMessage pmTemp = new OrderMessage();
+		BeanUtils.copyProperties(orderMessage, pmTemp);
+		pmTemp.setId(null);
+		pmTemp.setCreation(null);
+		pmTemp.setLastModified(null);
+		pmTemp.setVersion(0l);
+		String xml = orderMessage2Xml(pmTemp);
+		return xml;
+	}
+	/**
+	 * 记录投保日志
+	 */
+	public void setLog(Boolean flag,OrderMessage orderMessage) {
+		if(flag) {
+			log.info("订单号为:"+orderMessage.getOrderNo()+"的订单投保成功");
+		}else {
+			log.info("订单号为:"+orderMessage.getOrderNo()+"的订单投保失败");
+		}
 	}
 	/**
 	 * 货运险承保接口应答报文转xml
