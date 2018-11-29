@@ -67,7 +67,8 @@ public class InsuranceService {
 				//调用投保
 				map = approvl(comFrom,order);
 			}else {
-				return JsonUtil.getFailJSONObject("余额不足，请联系管理员充值");
+				orderMessageService.save(order);
+				return JsonUtil.getSuccessJSONObject("余额不足，请联系管理员充值");
 			}
 			orderMessageService.save(order);
 		}else {
