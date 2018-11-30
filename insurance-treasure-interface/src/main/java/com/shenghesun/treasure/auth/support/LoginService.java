@@ -42,7 +42,6 @@ public class LoginService {
 	 */
 	public String login(Long userId, String account,Long companyId) {
 		String token = TokenUtil.create(userId, account,companyId);
-		System.out.println("login................"+token);
 		// 缓存用户的权限和角色
 		JSONObject rolesAndPermsJson = this.getJSONRolesAndPerms(account);
 		redisUtil.set(CustomConfig.REDIS_TOKEN_PREFIX + token, rolesAndPermsJson.toJSONString(), CustomConfig.EXPIRE_TIME_SECOND);// 存入缓存
