@@ -68,7 +68,7 @@ public class InsuranceService {
 				map = approvl(comFrom,order);
 			}else {
 				orderMessageService.save(order);
-				return JsonUtil.getSuccessJSONObject("余额不足，请联系管理员充值");
+				return JsonUtil.getFailJSONObject("余额不足，请联系管理员充值");
 			}
 			orderMessageService.save(order);
 		}else {
@@ -98,11 +98,9 @@ public class InsuranceService {
 	 */
 	public JSONObject check(Map<String,Object> orderMap) {
 		if(orderMap.get("trans_error")!=null) {
-			log.error("运输代码不存在");
 			return JsonUtil.getFailJSONObject(orderMap.get("trans_error"));
 		}
 		if(orderMap.get("goods_error")!=null) {
-			log.error("货物代码不存在");
 			return JsonUtil.getFailJSONObject(orderMap.get("goods_error"));
 		}
 		if(orderMap.get("pack_error")!=null) {

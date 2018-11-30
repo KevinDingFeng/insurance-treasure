@@ -50,11 +50,10 @@ public class OrderController {
 	 * @param orderMessage
 	 * @return
 	 */
-	@RequestMapping(value = "/save", method = RequestMethod.POST)
+	@RequestMapping(value = "/approvl", method = RequestMethod.POST)
 	public JSONObject save(HttpServletRequest request,@Validated OrderMessage order) {
 		try {
-			//联盟速运代码翻译
-			order = unionOrderService.union_complete(order);
+			
 			return insuranceService.insurance(request,order,BaseConstant.SYS_LOCAL);
 		} catch (Exception e) {
 			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
@@ -68,9 +67,11 @@ public class OrderController {
 	 * @param orderMessage
 	 * @return
 	 */
-	@RequestMapping(value = "/approvl", method = RequestMethod.POST)
+	@RequestMapping(value = "/insure", method = RequestMethod.POST)
 	public JSONObject order(HttpServletRequest request,@Validated OrderMessage order) {
 		try {
+			//联盟速运代码翻译
+			order = unionOrderService.union_complete(order);
 			return insuranceService.insurance(request,order,BaseConstant.SYS_OUT);
 		} catch (Exception e) {
 			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());

@@ -15,6 +15,8 @@ import com.shenghesun.treasure.code.service.TransCodeService;
 import com.shenghesun.treasure.system.code.GoodsCode;
 import com.shenghesun.treasure.system.code.TransCode;
 import com.shenghesun.treasure.system.dictionary.BaseCity;
+import com.shenghesun.treasure.system.entity.SysUserType;
+import com.shenghesun.treasure.system.service.SysUserTypeService;
 import com.shenghesun.treasure.utils.RedisUtil;
 
 import lombok.extern.slf4j.Slf4j;
@@ -34,9 +36,13 @@ public class TransRedisService implements ApplicationRunner{
 	@Autowired
 	private BaseCityService baseCityService;
 	@Autowired
+	private SysUserTypeService sysUserTypeService;
+	@Autowired
 	private com.shenghesun.treasure.union.controller.support.UnionRedisService unionRedisService;
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
+		//添加接口对照信息
+		setUserType();
 		//添加运输代码对照表
 		setTransport();
 		//添加货物代码对照表
@@ -51,6 +57,23 @@ public class TransRedisService implements ApplicationRunner{
 		setCity();
 		//添加联盟速运数据字典
 		unionRedisService.setToRedis();
+	}
+	/**
+	 * 向redis中添加接口对照信息
+	 */
+	private void setUserType() {
+		List<SysUserType> userTypeList = sysUserTypeService.findAll();
+		if(!CollectionUtils.isEmpty(userTypeList)) {
+			log.info("redis缓存用户访问接口类型表:"+userTypeList.size());
+			long start = System.currentTimeMillis();
+			for(int i=0;i<userTypeList.size();i++) {
+				SysUserType userType = userTypeList.get(i);
+				String key = userType.getAccount();
+				redisUtil.set("union"+key, userType);
+			}
+			long end = System.currentTimeMillis(); 
+			log.info("redis缓存用户访问接口类型表结束===运行时间:"+(end - start)+"毫秒");
+		}
 	}
 	/**
 	 * 向redis中添加运输方式代码表
@@ -88,8 +111,13 @@ public class TransRedisService implements ApplicationRunner{
 		}
 	}
 	/**
-	 * 向redis中添加费率信息
+	 * 向redis中添加codeList
 	 */
+	
+	
+	
+	
+	
 	public void setRate() {
 		//向redis中存储费率对照表
 		redisUtil.set("B01rate", 0.02);

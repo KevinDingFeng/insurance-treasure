@@ -12,6 +12,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.shenghesun.treasure.core.constant.BaseConstant;
 import com.shenghesun.treasure.cpic.service.ApprovlService;
 import com.shenghesun.treasure.order.service.OrderMessageService;
 import com.shenghesun.treasure.system.cpic.Approvl;
@@ -77,6 +78,7 @@ public class ApprovlResultService {
 		returnApprovl.setStatus(approvl.getStatus());
 		returnApprovl.setComments(approvl.getComments());
 		returnApprovl.setStatusEpolicy(approvl.getStatusEpolicy());
+		returnApprovl.setFileEpolicy(approvl.getFileEpolicy());
 		return returnApprovl;
 	}
 	/**
@@ -95,10 +97,10 @@ public class ApprovlResultService {
 			orderMessage.setInsuranceStatus(Integer.parseInt(status));
 			orderMessage.setApply_no(approvl.getApplyNo());
 			orderMessageService.save(orderMessage);
-			if("10".equals(status)) {
+			if(BaseConstant.APPROVL_SUCCESS.equals(status)) {
 				map.put("flag", true);
 				return map;
-			}else if("19".equals(status)) {
+			}else if(BaseConstant.APPROVL_FAIL.equals(status)) {
 				map.put("flag", false);
 				return map;
 			}

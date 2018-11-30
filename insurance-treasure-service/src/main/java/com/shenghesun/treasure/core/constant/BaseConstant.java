@@ -42,4 +42,14 @@ public class BaseConstant {
 	 */
 	public static final String ACCPUNT_LIMIT_CONTENT = "发送短信数量超出限制！";
 	
+	/**
+	 * 投保返回状态10，成功
+	 */
+	public static final String APPROVL_SUCCESS = "10";
+	
+	/**
+	 * 投保返回状态19,提交失败
+	 */
+	public static final String APPROVL_FAIL = "19";
+	
 }

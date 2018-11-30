@@ -25,4 +25,6 @@ public class ReturnApprovl{
 	private String comments;
 	
 	private String statusEpolicy;
+	
+	private String fileEpolicy;
 }
