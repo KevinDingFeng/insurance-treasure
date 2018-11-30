@@ -17,4 +17,8 @@ public class UnionTransCodeService {
 	public List<UnionTransCode> findAll(){
 		return unionTransCodeDao.findAll();
 	}
+	
+	public UnionTransCode findByTransCode(String transCode){
+		return unionTransCodeDao.findByUnionTranscode(transCode);
+	}
 }

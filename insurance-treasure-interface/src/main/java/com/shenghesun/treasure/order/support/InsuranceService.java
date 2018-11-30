@@ -10,7 +10,7 @@ import org.springframework.validation.annotation.Validated;
 
 import com.alibaba.fastjson.JSONObject;
 import com.shenghesun.treasure.company.service.CompanyMessageService;
-import com.shenghesun.treasure.core.constant.BaseConstant;
+import com.shenghesun.treasure.core.constant.OrderConstant;
 import com.shenghesun.treasure.cpic.service.AsyncService;
 import com.shenghesun.treasure.order.service.OrderMessageService;
 import com.shenghesun.treasure.system.company.CompanyMessage;
@@ -44,13 +44,15 @@ public class InsuranceService {
 		log.info("投保用户ID："+userId+"投保公司ID: "+companyId);
 		//完善订单信息
 		Map<String,Object> orderMap = orderService.complete(request,order);
-		order = (OrderMessage) orderMap.get("order");
+		order = (OrderMessage) orderMap.get(OrderConstant.Order);
 		//判断完善信息过程中是否出现运输代码查找错误和货物代码错误
-		check(orderMap);
+		JSONObject check = orderService.check(orderMap);
+		if(check!=null) {
+			return check;
+		}
 		//支付扣款并且进行投保
 		return pay(company,order,comFrom);
 	}
-	
 	/**
 	 * 支付
 	 */
@@ -84,32 +86,13 @@ public class InsuranceService {
 	 * @return
 	 */
 	public Map<String,Object> approvl(String comFrom,OrderMessage order){
-		if(comFrom.equals(BaseConstant.SYS_LOCAL)) {
+		if(comFrom.equals(OrderConstant.SYS_LOCAL)) {
 			//异步调用
 			return asyncService.executeAsync(order);
 		}else {
 			//同步调用
 			return asyncService.executeApprovl(order);
 		}
-	}
-	/**
-	 * 判断完善信息过程中是否出现运输代码查找错误和货物代码错误
-	 * @return 
-	 */
-	public JSONObject check(Map<String,Object> orderMap) {
-		if(orderMap.get("trans_error")!=null) {
-			return JsonUtil.getFailJSONObject(orderMap.get("trans_error"));
-		}
-		if(orderMap.get("goods_error")!=null) {
-			return JsonUtil.getFailJSONObject(orderMap.get("goods_error"));
-		}
-		if(orderMap.get("pack_error")!=null) {
-			return JsonUtil.getFailJSONObject(orderMap.get("pack_error"));
-		}
-		if(orderMap.get("currency_error")!=null) {
-			return JsonUtil.getFailJSONObject(orderMap.get("currency_error"));
-		}
-		return null;
 	}
 	/**
 	 * 完成订单支付

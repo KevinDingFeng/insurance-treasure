@@ -17,4 +17,8 @@ public class TransCodeService {
 	public List<TransCode> find(){
 		return transCodeDao.findAll();
 	}
+	
+	public TransCode findByTransCode(String transCode) {
+		return transCodeDao.findByTransCode(transCode);
+	}
 }

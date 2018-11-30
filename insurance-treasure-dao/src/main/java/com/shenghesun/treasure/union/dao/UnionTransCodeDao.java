@@ -8,5 +8,5 @@ import com.shenghesun.treasure.system.union.code.UnionTransCode;
 
 @Repository
 public interface UnionTransCodeDao extends JpaRepository<UnionTransCode, Long>, JpaSpecificationExecutor<UnionTransCode>{
-
+	public UnionTransCode findByUnionTranscode(String transCode);
 }

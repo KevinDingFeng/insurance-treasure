@@ -55,8 +55,8 @@ public class UnionRedisService {
 			long start = System.currentTimeMillis();
 			for(int i=0;i<goodsCodeList.size();i++) {
 				UnionGoodsCode goodsCode = goodsCodeList.get(i);
-				String key = goodsCode.getUnionGoodsName();
-				redisUtil.set("union"+key, goodsCode);
+				/*String key = goodsCode.getUniongoodsName();
+				redisUtil.set("union"+key, goodsCode);*/
 			}
 			long end = System.currentTimeMillis(); 
 			log.info("redis缓存联盟货物代码表结束===运行时间:"+(end - start)+"毫秒");

@@ -19,18 +19,18 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 public class UnionGoodsCode extends BaseEntity implements Serializable{
 
-	private static final long serialVersionUID = 831340152593234417L;
+	private static final long serialVersionUID = -7688627497273461894L;
 
 	/**
 	 * 联盟速运接口货物名称
 	 */
 	@Column
-	private String UnionGoodsName;
+	private String unionGoodsName;
 	
 	/**
 	 * 物流宝宝货物名称代码
 	 */
 	@Column
-	private String WBGoodsCode;
+	private String wBGoodsCode;
 	
 }

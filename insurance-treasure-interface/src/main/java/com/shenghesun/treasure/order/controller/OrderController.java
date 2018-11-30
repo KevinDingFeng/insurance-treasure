@@ -13,17 +13,19 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
-import com.shenghesun.treasure.core.constant.BaseConstant;
+import com.shenghesun.treasure.core.constant.OrderConstant;
 import com.shenghesun.treasure.core.constant.Presentation;
 import com.shenghesun.treasure.cpic.service.AsyncService;
 import com.shenghesun.treasure.order.model.OrderCondition;
 import com.shenghesun.treasure.order.service.OrderMessageService;
 import com.shenghesun.treasure.order.support.InsuranceService;
+import com.shenghesun.treasure.system.dto.OrderDto;
 import com.shenghesun.treasure.system.order.OrderMessage;
 import com.shenghesun.treasure.system.service.SysUserService;
 import com.shenghesun.treasure.union.controller.support.UnionOrderService;
 import com.shenghesun.treasure.utils.HttpHeaderUtil;
 import com.shenghesun.treasure.utils.JsonUtil;
+import com.shenghesun.treasure.utils.MapperUtil;
 import com.shenghesun.treasure.utils.TokenUtil;
 
 import lombok.extern.slf4j.Slf4j;
@@ -53,8 +55,7 @@ public class OrderController {
 	@RequestMapping(value = "/approvl", method = RequestMethod.POST)
 	public JSONObject save(HttpServletRequest request,@Validated OrderMessage order) {
 		try {
-			
-			return insuranceService.insurance(request,order,BaseConstant.SYS_LOCAL);
+			return insuranceService.insurance(request,order,OrderConstant.SYS_LOCAL);
 		} catch (Exception e) {
 			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
 			return JsonUtil.getFailJSONObject();
@@ -68,11 +69,14 @@ public class OrderController {
 	 * @return
 	 */
 	@RequestMapping(value = "/insure", method = RequestMethod.POST)
-	public JSONObject order(HttpServletRequest request,@Validated OrderMessage order) {
+	public JSONObject order(HttpServletRequest request,@Validated OrderDto orderDto) {
 		try {
+			//Dto对象转投保实体对象
+			OrderMessage order = new OrderMessage();
+			MapperUtil.mapping(orderDto,order);
 			//联盟速运代码翻译
 			order = unionOrderService.union_complete(order);
-			return insuranceService.insurance(request,order,BaseConstant.SYS_OUT);
+			return insuranceService.insurance(request,order,OrderConstant.SYS_OUT);
 		} catch (Exception e) {
 			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
 			return JsonUtil.getFailJSONObject();
@@ -87,7 +91,7 @@ public class OrderController {
 	@RequestMapping(value = "/pay", method = RequestMethod.GET)
 	public JSONObject pay(HttpServletRequest request,String orderNo) {
 		try {
-			return insuranceService.completePay(request,orderNo,BaseConstant.SYS_LOCAL);
+			return insuranceService.completePay(request,orderNo,OrderConstant.SYS_LOCAL);
 		} catch (Exception e) {
 			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
 			return JsonUtil.getFailJSONObject();

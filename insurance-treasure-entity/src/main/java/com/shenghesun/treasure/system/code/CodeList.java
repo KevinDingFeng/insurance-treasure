@@ -1,4 +1,4 @@
-package com.shenghesun.treasure.system.union.code;
+package com.shenghesun.treasure.system.code;
 
 import java.io.Serializable;
 
@@ -17,19 +17,13 @@ import lombok.ToString;
 @Data  
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class UnionTransCode extends BaseEntity implements Serializable{
+public class CodeList extends BaseEntity implements Serializable{
+
+	private static final long serialVersionUID = -3163096919831705249L;
 	
-	private static final long serialVersionUID = 6625853882803552837L;
-	
-	/**
-	 * 联盟速运接口运输代码
-	 */
 	@Column
-	private String unionTranscode;
+	private String codeKey;
 	
-	/**
-	 * 物流宝宝运输代码
-	 */
 	@Column
-	private String wBTranscode;
+	private String codeValue;
 }

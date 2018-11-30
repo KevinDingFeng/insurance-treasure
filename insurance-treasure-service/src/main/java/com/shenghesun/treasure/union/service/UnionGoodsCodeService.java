@@ -17,4 +17,7 @@ public class UnionGoodsCodeService {
 	public List<UnionGoodsCode> findAll(){
 		return unionGoodsCodeDao.findAll();
 	}
+	public UnionGoodsCode findByGoodsName(String goodsName) {
+		return unionGoodsCodeDao.findByUnionGoodsName(goodsName);
+	}
 }

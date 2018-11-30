@@ -17,4 +17,8 @@ public class UnionPackageCodeService {
 	public List<UnionPackageCode> findAll(){
 		return unionPackageCodeDao.findAll();
 	}
+	
+	public UnionPackageCode findByPackageCode(String packageCode){
+		return unionPackageCodeDao.findByUnionPackagecode(packageCode);
+	}
 }

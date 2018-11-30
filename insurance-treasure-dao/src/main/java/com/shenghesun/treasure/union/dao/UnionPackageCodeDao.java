@@ -8,5 +8,5 @@ import com.shenghesun.treasure.system.union.code.UnionPackageCode;
 
 @Repository
 public interface UnionPackageCodeDao extends JpaRepository<UnionPackageCode, Long>, JpaSpecificationExecutor<UnionPackageCode>{
-
+	public UnionPackageCode findByUnionPackagecode(String packageCode);
 }

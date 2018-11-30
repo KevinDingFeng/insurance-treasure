@@ -25,11 +25,11 @@ public class UnionPackageCode extends BaseEntity implements Serializable{
 	 * 联盟速运接口包装代码
 	 */
 	@Column
-	private String UnionPackagecode;
+	private String unionPackagecode;
 	
 	/**
 	 * 物流宝宝包装代码
 	 */
 	@Column
-	private String WBPackagecode;
+	private String wBPackagecode;
 }

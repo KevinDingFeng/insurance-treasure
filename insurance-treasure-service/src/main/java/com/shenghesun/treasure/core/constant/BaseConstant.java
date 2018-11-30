@@ -1,17 +1,6 @@
 package com.shenghesun.treasure.core.constant;
 
 public class BaseConstant {
-
-	/**
-	 * 接口调用来源，系统内部调用
-	 */
-	public static final String SYS_LOCAL = "local";
-	
-	/**
-	 * 接口调用来源，外部接口调用
-	 */
-	public static final String SYS_OUT = "out";
-	
 	/**
 	 * 验证码错误
 	 */
@@ -28,11 +17,6 @@ public class BaseConstant {
 	public static final String ACCOUNT_ERROR = "手机号已被注册，请更换手机号";
 	
 	/**
-	 * 国内
-	 */
-	public static final String INLAND = "0";
-	
-	/**
 	 * 阿里返回手机号发送信息超出数量限制标识
 	 */
 	public static final String ACCPUNT_LIMIT_CODE = "isv.BUSINESS_LIMIT_CONTROL";
@@ -41,15 +25,6 @@ public class BaseConstant {
 	 * 短信数量超限制错误
 	 */
 	public static final String ACCPUNT_LIMIT_CONTENT = "发送短信数量超出限制！";
-	
-	/**
-	 * 投保返回状态10，成功
-	 */
-	public static final String APPROVL_SUCCESS = "10";
-	
-	/**
-	 * 投保返回状态19,提交失败
-	 */
-	public static final String APPROVL_FAIL = "19";
+
 	
 }

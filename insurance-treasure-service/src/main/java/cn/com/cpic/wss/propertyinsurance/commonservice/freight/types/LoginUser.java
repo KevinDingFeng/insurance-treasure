@@ -8,7 +8,9 @@
 package cn.com.cpic.wss.propertyinsurance.commonservice.freight.types;
 
 public class LoginUser  implements java.io.Serializable {
-    private java.lang.String password;
+	private static final long serialVersionUID = 9087288186127740546L;
+
+	private java.lang.String password;
 
     private java.lang.String userName;
 

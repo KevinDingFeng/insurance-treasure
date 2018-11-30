@@ -8,5 +8,6 @@ import com.shenghesun.treasure.system.union.code.UnionGoodsCode;
 
 @Repository
 public interface UnionGoodsCodeDao extends JpaRepository<UnionGoodsCode, Long>, JpaSpecificationExecutor<UnionGoodsCode>{
-
+	
+	UnionGoodsCode findByUnionGoodsName(String name);
 }

@@ -10,8 +10,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import com.shenghesun.treasure.base.service.BaseCityService;
+import com.shenghesun.treasure.code.service.CodeListService;
 import com.shenghesun.treasure.code.service.GoodsCodeService;
 import com.shenghesun.treasure.code.service.TransCodeService;
+import com.shenghesun.treasure.system.code.CodeList;
 import com.shenghesun.treasure.system.code.GoodsCode;
 import com.shenghesun.treasure.system.code.TransCode;
 import com.shenghesun.treasure.system.dictionary.BaseCity;
@@ -39,6 +41,8 @@ public class TransRedisService implements ApplicationRunner{
 	private SysUserTypeService sysUserTypeService;
 	@Autowired
 	private com.shenghesun.treasure.union.controller.support.UnionRedisService unionRedisService;
+	@Autowired
+	private CodeListService codeListService;
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
 		//添加接口对照信息
@@ -47,12 +51,8 @@ public class TransRedisService implements ApplicationRunner{
 		setTransport();
 		//添加货物代码对照表
 		setGoods();
-		//添加费率信息
-		setRate();
-		//添加包装
-		setPackage();
-		//添加币种
-		setCurrency();
+		//添加对照表集合
+		setCodeList();
 		//添加城市
 		setCity();
 		//添加联盟速运数据字典
@@ -111,50 +111,23 @@ public class TransRedisService implements ApplicationRunner{
 		}
 	}
 	/**
-	 * 向redis中添加codeList
+	 * 向redis中添加codeList、包括费率对照表，包装代码对应表、币种对应表
 	 */
-	
-	
-	
-	
-	
-	public void setRate() {
-		//向redis中存储费率对照表
-		redisUtil.set("B01rate", 0.02);
-		redisUtil.set("B02rate", 0.03);
-		redisUtil.set("B03rate", 0.05);
-		redisUtil.set("B04rate", 0.04);
-		redisUtil.set("B05rate", 0.04);
-		redisUtil.set("B06rate", 0.05);
-		redisUtil.set("B07rate", 0.04);
-		redisUtil.set("B08rate", 0.06);
-		redisUtil.set("B09rate", 0.03);
-		redisUtil.set("B10rate", 0.05);
+	public void setCodeList() {
+		List<CodeList> codeList = codeListService.findAll();
+		
+		if(!CollectionUtils.isEmpty(codeList)) {
+			log.info("redis缓存对照表集合信息:"+codeList.size());
+			long start = System.currentTimeMillis();
+			for(int i=0;i<codeList.size();i++) {
+				CodeList code = codeList.get(i);
+				redisUtil.set(code.getCodeKey(),code.getCodeValue());
+			}
+			long end = System.currentTimeMillis(); 
+			log.info("redis缓存对照表集合信息结束===运行时间:"+(end - start)+"毫秒");
+		}
 	}
-	/**
-	 * 向redis中添加包装代码对应
-	 */
-	public void setPackage() {
-		redisUtil.set("01pack", "箱装");
-		redisUtil.set("02pack", "袋装");
-		redisUtil.set("03pack", "托盘");
-		redisUtil.set("04pack", "散装");
-		redisUtil.set("05pack", "裸装");
-		redisUtil.set("06pack", "桶装");
-		redisUtil.set("07pack", "罐装");
-		redisUtil.set("08pack", "盘卷");
-	}
-	/**
-	 * 向redis中添加币种代码对应
-	 */
-	public void setCurrency() {
-		redisUtil.set("01curr", "人民币");
-		redisUtil.set("02curr", "美元");
-		redisUtil.set("03curr", "港元");
-		redisUtil.set("04curr", "日元");
-		redisUtil.set("06curr", "英镑");
-		redisUtil.set("07curr", "欧元");
-	}
+	
 	/**
 	 * 向redis中添加城市信息
 	 */

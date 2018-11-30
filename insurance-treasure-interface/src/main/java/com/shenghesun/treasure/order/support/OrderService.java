@@ -9,11 +9,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
-import com.shenghesun.treasure.core.constant.BaseConstant;
+import com.alibaba.fastjson.JSONObject;
+import com.shenghesun.treasure.code.service.CodeListService;
+import com.shenghesun.treasure.code.service.GoodsCodeService;
+import com.shenghesun.treasure.code.service.TransCodeService;
+import com.shenghesun.treasure.core.constant.OrderConstant;
+import com.shenghesun.treasure.system.code.CodeList;
 import com.shenghesun.treasure.system.code.GoodsCode;
 import com.shenghesun.treasure.system.code.TransCode;
 import com.shenghesun.treasure.system.order.OrderMessage;
 import com.shenghesun.treasure.utils.HttpHeaderUtil;
+import com.shenghesun.treasure.utils.JsonUtil;
 import com.shenghesun.treasure.utils.RandomUtil;
 import com.shenghesun.treasure.utils.RedisUtil;
 import com.shenghesun.treasure.utils.TokenUtil;
@@ -23,6 +29,12 @@ public class OrderService {
 
 	@Autowired
 	private RedisUtil redisUtil;
+	@Autowired
+	private CodeListService codeListService;
+	@Autowired
+	private TransCodeService transCodeService;
+	@Autowired
+	private GoodsCodeService goodsCodeService;
 	/**
 	 * 完善订单信息
 	 * @param orderMessage
@@ -31,23 +43,18 @@ public class OrderService {
 	public Map<String,Object> complete(HttpServletRequest request,OrderMessage orderMessage) {
 		Map<String,Object> map =new HashMap<String,Object>();
 		//校验包装代码是否存在
-		if(!redisUtil.exists(orderMessage.getPackCode()+"pack")){
-			map.put("pack_error", ": 包装代码不存在");
-		}
-		if(!redisUtil.exists(orderMessage.getCurrencyCode()+"curr")){
-			map.put("currency_error", ": 币种代码不存在");
-		}
+		checkCode(orderMessage,map);
 		//设置公共投保信息
 		orderMessage = this.all(request,orderMessage,map);
 		//获取保险进出口类型
-		if(orderMessage.getCity().equals(BaseConstant.INLAND)) {
+		if(orderMessage.getCity().equals(OrderConstant.INLAND)) {
 			//完善国内投保数据
 			orderMessage = this.inland(orderMessage);
 		}else {
 			//完善国际投保数据
 			orderMessage = this.international(orderMessage);
 		}
-		map.put("order", orderMessage);
+		map.put(OrderConstant.Order, orderMessage);
 		return map;
 	}
 	/**
@@ -62,7 +69,12 @@ public class OrderService {
 			String string = redisUtil.get(t_code);
 			transCode = JSON.parseObject(string, TransCode.class);
 		}else {
-			map.put("trans_error", ": 运输代码不存在");
+			transCode = transCodeService.findByTransCode(t_code);
+			if(transCode==null) {
+				map.put(OrderConstant.TRANS_ERROR, OrderConstant.TRANS_MESSAGE);
+			}else {
+				redisUtil.set(transCode.getTransCode(), transCode);
+			}
 		}
 		if(transCode!=null) {
 			orderMessage.setClassType(transCode.getClassType());
@@ -85,7 +97,12 @@ public class OrderService {
 			String string = redisUtil.get(g_code);
 			goods = JSON.parseObject(string, GoodsCode.class);
 		}else {
-			map.put("goods_error", ": 货物代码不存在");
+			GoodsCode goodsCode = goodsCodeService.findByGoodsCode(g_code);
+			if(goodsCode==null) {
+				map.put(OrderConstant.GOODS_ERROR, OrderConstant.GOODS_MESSAGE);
+			}else {
+				redisUtil.set(goodsCode.getGoodsCode(), goodsCode);
+			}
 		}
 		if(goods!=null) {
 			orderMessage.setItemCode(goods.getItemCode());
@@ -104,7 +121,7 @@ public class OrderService {
 		//完善下单信息
 		orderMessage.setUserId(userId);
 		orderMessage.setCompanyId(companyId);
-		orderMessage.setPlusOrMinus("0");
+		orderMessage.setPlusOrMinus(OrderConstant.FUND_OUT);
 		//设置订单号
 		String orderNo = System.currentTimeMillis() + RandomUtil.randomString(2);
 		orderMessage.setOrderNo(orderNo);
@@ -120,14 +137,14 @@ public class OrderService {
 	 * 国内投保完善数据
 	 */
 	public OrderMessage inland(OrderMessage orderMessage) {
-		//设置国内保险金额和保费
+		//设置国内保险金额
 		orderMessage.setOrderAmount(orderMessage.getGoodsValue());
 		//设置保费
 		float preminum = 0.01f*Float.parseFloat(orderMessage.getOrderAmount())*Float.parseFloat(orderMessage.getRate());
 		orderMessage.setPreminum(Double.toString(preminum));
 		//设置发票金额
 		orderMessage.setInvamount(orderMessage.getOrderAmount());
-		orderMessage.setClassesType("1");
+		orderMessage.setClassesType(OrderConstant.CLASSESTYPE_IN);
 		return orderMessage;
 	}
 	/**
@@ -141,7 +158,7 @@ public class OrderService {
 		orderMessage.setPreminum(Double.toString(preminum));
 		//设置发票金额 
 		orderMessage.setInvamount(orderMessage.getOrderAmount());
-		orderMessage.setClassesType("2");
+		orderMessage.setClassesType(OrderConstant.CLASSESTYPE_OUT);
 		orderMessage.setFlightareacode("EODE");
 		orderMessage.setClaimagent("876264693");
 		orderMessage.setPricecond("1");
@@ -149,6 +166,48 @@ public class OrderService {
 		orderMessage.setClaimpayplace("德国");
 		return orderMessage;
 	}
-
+	/**
+	 * 检验代码是否存在
+	 */
+	public void checkCode(OrderMessage orderMessage,Map<String,Object> map) {
+		String pack = orderMessage.getPackCode()+"pack";
+		String currency = orderMessage.getCurrencyCode()+"curr";
+		if(!redisUtil.exists(pack)){
+			CodeList packCode = codeListService.findByKey(pack);
+			if(packCode==null) {
+				map.put(OrderConstant.PACK_ERROR, OrderConstant.PACK_MESSAGE);
+			}else {
+				redisUtil.set(packCode.getCodeKey(), packCode.getCodeValue());
+			}
+		}
+		if(!redisUtil.exists(currency)){
+			CodeList currCode = codeListService.findByKey(currency);
+			if(currCode==null) {
+				map.put(OrderConstant.CURRENCY_ERROR, OrderConstant.CURRENCY_MESSAGE);
+			}else {
+				redisUtil.set(currCode.getCodeKey(), currCode.getCodeValue());
+			}
+		}
+	}
+	
+	/**
+	 * 判断完善信息过程中是否出现运输代码查找错误和货物代码错误
+	 * @return 
+	 */
+	public JSONObject check(Map<String,Object> orderMap) {
+		if(orderMap.get(OrderConstant.TRANS_ERROR)!=null) {
+			return JsonUtil.getFailJSONObject(orderMap.get(OrderConstant.TRANS_ERROR));
+		}
+		if(orderMap.get(OrderConstant.GOODS_ERROR)!=null) {
+			return JsonUtil.getFailJSONObject(orderMap.get(OrderConstant.GOODS_ERROR));
+		}
+		if(orderMap.get(OrderConstant.PACK_ERROR)!=null) {
+			return JsonUtil.getFailJSONObject(orderMap.get(OrderConstant.PACK_ERROR));
+		}
+		if(orderMap.get(OrderConstant.CURRENCY_ERROR)!=null) {
+			return JsonUtil.getFailJSONObject(orderMap.get(OrderConstant.CURRENCY_ERROR));
+		}
+		return null;
+	}
 
 }

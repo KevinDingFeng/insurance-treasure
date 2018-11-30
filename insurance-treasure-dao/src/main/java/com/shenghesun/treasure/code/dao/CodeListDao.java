@@ -4,10 +4,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
-import com.shenghesun.treasure.system.code.TransCode;
+import com.shenghesun.treasure.system.code.CodeList;
 
 @Repository
-public interface TransCodeDao extends JpaRepository<TransCode, Long>, JpaSpecificationExecutor<TransCode>{
+public interface CodeListDao extends JpaRepository<CodeList, Long>, JpaSpecificationExecutor<CodeList>{
 	
-	TransCode findByTransCode(String transCode);
+	CodeList findByCodeKey(String key);
 }

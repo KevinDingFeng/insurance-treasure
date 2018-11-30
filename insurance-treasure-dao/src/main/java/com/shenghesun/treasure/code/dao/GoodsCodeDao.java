@@ -8,5 +8,5 @@ import com.shenghesun.treasure.system.code.GoodsCode;
 
 @Repository
 public interface GoodsCodeDao extends JpaRepository<GoodsCode, Long>, JpaSpecificationExecutor<GoodsCode>{
-	
+	GoodsCode findByGoodsCode(String goodsCode);
 }
