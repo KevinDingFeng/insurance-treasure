@@ -56,5 +56,14 @@ public class JsonUtil {
 		json.put("message", obj);
 		return json;
 	}
-	
+	/**
+	 * jwt失效，token验证失败后返回新的token
+	 */
+	public static JSONObject getFailToken(Object obj,Object data) {
+		JSONObject json = new JSONObject();
+		json.put("code", "-2");
+		json.put("data", data);
+		json.put("message", obj);
+		return json;
+	}
 }
