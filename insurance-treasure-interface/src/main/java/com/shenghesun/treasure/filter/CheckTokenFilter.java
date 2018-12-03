@@ -43,7 +43,6 @@ public class CheckTokenFilter implements Filter{
 		if(request instanceof HttpServletRequest) {
 			String token = HttpHeaderUtil.getToken((HttpServletRequest) request);
 			String json = redisUtil.get(CustomConfig.REDIS_USER_ID+token);
-			json = json.replaceAll("\\\\", "").replaceAll("\"", "");
 			
 			if(StringUtils.isEmpty(token)) {
 				this.setReturnResponse((HttpServletResponse) response,"token为空",null);
@@ -57,6 +56,8 @@ public class CheckTokenFilter implements Filter{
 					return;
 				}
 			} catch (Exception e) {
+				// jwt 已经过期，在设置jwt的时候如果设置了过期时间，这里会自动判断jwt是否已经过期，如果过期则会抛出这个异常，我们可以抓住这个异常并作相关处理。
+				//jwt过期，获取redis中存储的用户信息，重新生成jwt
 				String newToken = null;
 				if(redisUtil.exists(CustomConfig.REDIS_USER_ID+token)) {
 					SysUser user = JSON.parseObject(json, SysUser.class);

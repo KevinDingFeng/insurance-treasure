@@ -89,7 +89,7 @@ public class RedisUtil {
 		if (result == null) {
 			return null;
 		}
-		return result.toString();
+		return result.toString().replaceAll("\\\\", "").replaceAll("\"", "");
 	}
 	
 	public String getString(final String key) {

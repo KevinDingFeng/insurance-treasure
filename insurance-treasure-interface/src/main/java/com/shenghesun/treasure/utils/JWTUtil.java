@@ -67,15 +67,7 @@ public class JWTUtil {
 				e.printStackTrace();
 				resp.put(ERR_MSG, "token 解析错误，该请求不适合使用 jwt 解析");
 				return resp;
-			}/* catch (ExpiredJwtException e) {
-				//  handle exception
-				// jwt 已经过期，在设置jwt的时候如果设置了过期时间，这里会自动判断jwt是否已经过期，如果过期则会抛出这个异常，我们可以抓住这个异常并作相关处理。
-				
-				
-				e.printStackTrace();
-				resp.put(ERR_MSG, "token 已过期");
-				return resp;
-			}*/
+			}
 		} else {
 			resp.put(ERR_MSG, "token 是空");
 			return resp;
