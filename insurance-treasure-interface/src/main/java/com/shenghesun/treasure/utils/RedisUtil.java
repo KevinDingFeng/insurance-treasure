@@ -89,8 +89,14 @@ public class RedisUtil {
 		if (result == null) {
 			return null;
 		}
-		//.replaceAll("\"", "")
-		return result.toString().replaceAll("\\\\", "");
+		String str = result.toString();
+		if(str.indexOf("\"")==0) { 
+			str = str.substring(1,str.length());
+		}  //去掉第一个 "
+		if(str.lastIndexOf("\"")==(str.length()-1)) {
+			str = str.substring(0,str.length()-1);  //去掉最后一个 " 
+		}
+		return str.replaceAll("\\\\", "");
 	}
 	
 	public String getString(final String key) {
