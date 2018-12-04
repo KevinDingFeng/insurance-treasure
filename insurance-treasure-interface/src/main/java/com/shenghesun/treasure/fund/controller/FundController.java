@@ -82,7 +82,6 @@ public class FundController {
 			CompanyMessage company = companyMessageService.findById(fundDetails.getCompanyId());
 			if(company!=null) {
 				company.setBalance(company.getBalance()==null?fundDetails.getOrderAmount():company.getBalance()+fundDetails.getOrderAmount());
-				//fundDetails.setCompanyMessage(company);
 				fundDetailsService.save(fundDetails);
 			}else {
 				return JsonUtil.getFailJSONObject("公司不存在");

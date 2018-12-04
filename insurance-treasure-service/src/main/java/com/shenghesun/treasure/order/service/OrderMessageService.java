@@ -60,7 +60,7 @@ public class OrderMessageService {
 					predicate.getExpressions().add(cb.equal(root.get("userId"), condition.getUserId()));
 				}
 				if (condition.getInsuranceStatus() != null) {
-					if(condition.getInsuranceStatus() .equals("10")) {
+					if(condition.getInsuranceStatus().equals("10")) {
 						predicate.getExpressions().add(cb.equal(root.get("insuranceStatus"), condition.getInsuranceStatus()));
 					}else {
 						predicate.getExpressions().add(cb.notEqual(root.get("insuranceStatus"), "10"));

@@ -18,4 +18,8 @@ public class BaseCityService {
 	public List<BaseCity> find(){
 		return baseCityDao.findAll();
 	}
+	
+	public List<BaseCity> findLike(String city){
+		return baseCityDao.findByNameLike("%"+city+"%");
+	}
 }

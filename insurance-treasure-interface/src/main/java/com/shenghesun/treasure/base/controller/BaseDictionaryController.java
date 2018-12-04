@@ -123,10 +123,12 @@ public class BaseDictionaryController {
 	/**
 	 * 城市信息模糊查询
 	 */
-/*	@RequestMapping(value = "/getCity", method = RequestMethod.GET)
+	@RequestMapping(value = "/getCity", method = RequestMethod.GET)
 	public JSONObject getCity(String city) {
 		try {
-			Set<Object> keys = null;
+			List<BaseCity> cityList = baseCityService.findLike(city);
+			
+			/*Set<Object> keys = null;
 			Set<String> values = new HashSet<>();
 			if(redisUtil.keys("wuliu-*"+city+"*")!=null){
 				keys = redisUtil.keys("wuliu-*"+city+"*");
@@ -137,11 +139,11 @@ public class BaseDictionaryController {
 				String string = redisUtil.get(next);
 				string=string.substring(1, string.length()-1);
 				values.add(string);
-			}
-			return JsonUtil.getSuccessJSONObject(values);
+			}*/
+			return JsonUtil.getSuccessJSONObject(cityList);
 		} catch (Exception e) {
 			log.error("base_city error");
 			return JsonUtil.getFailJSONObject();
 		}
-	}*/
+	}
 }
