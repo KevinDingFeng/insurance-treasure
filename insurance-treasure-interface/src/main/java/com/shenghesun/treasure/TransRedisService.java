@@ -140,7 +140,7 @@ public class TransRedisService implements ApplicationRunner{
 			for(int i=0;i<cityList.size();i++) {
 				BaseCity baseCity = cityList.get(i);
 				String key = baseCity.getName();
-				redisUtil.set(key+"city", key);
+				redisUtil.set(key, key);
 			}
 			long end = System.currentTimeMillis(); 
 			log.info("redis缓存城市信息结束===运行时间:"+(end - start)+"毫秒");
