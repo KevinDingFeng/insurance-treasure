@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
 import com.shenghesun.treasure.company.service.CompanyMessageService;
+import com.shenghesun.treasure.core.constant.BaseConstant;
+import com.shenghesun.treasure.core.constant.OrderConstant;
+import com.shenghesun.treasure.core.constant.Presentation;
 import com.shenghesun.treasure.order.service.FundDetailsService;
 import com.shenghesun.treasure.order.service.FundShowService;
 import com.shenghesun.treasure.system.company.CompanyMessage;
@@ -44,8 +47,8 @@ public class FundController {
 	 * @return
 	 */
 	@RequestMapping(value = "/detail", method = RequestMethod.GET)
-	public JSONObject completeCompanyMessage(HttpServletRequest request,@RequestParam(value="page", defaultValue="0") Integer page,
-			@RequestParam(value="size", defaultValue="20") Integer size) {
+	public JSONObject completeCompanyMessage(HttpServletRequest request,@RequestParam(value="page", defaultValue=BaseConstant.ZERO) Integer page,
+			@RequestParam(value="size", defaultValue= Presentation.PAGE_SIZE) Integer size) {
 		try {
 			Map<String,Object> map = new HashMap<String,Object>();
 			//获取请求用户公司信息
@@ -77,14 +80,14 @@ public class FundController {
 		try {
 			String token = HttpHeaderUtil.getToken((HttpServletRequest) request);
 			Long userId = TokenUtil.getLoginUserId(token);
-			fundDetails.setPlusOrMinus("1");
+			fundDetails.setPlusOrMinus(OrderConstant.FUND_IN);
 			fundDetails.setUserId(userId);
 			CompanyMessage company = companyMessageService.findById(fundDetails.getCompanyId());
 			if(company!=null) {
-				company.setBalance(company.getBalance()==null?fundDetails.getOrderAmount():company.getBalance()+fundDetails.getOrderAmount());
+				company.setBalance(company.getBalance()+fundDetails.getOrderAmount());
 				fundDetailsService.save(fundDetails);
 			}else {
-				return JsonUtil.getFailJSONObject("公司不存在");
+				return JsonUtil.getFailJSONObject(BaseConstant.COMPANY_ERROR);
 			}
 		} catch (Exception e) {
 			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());

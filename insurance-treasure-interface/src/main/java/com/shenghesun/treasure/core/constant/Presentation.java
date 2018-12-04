@@ -12,16 +12,21 @@ public class Presentation {
 	 */
 	public static final String KEY_ENTITY = "entity";
 
-
 	/**
 	 * 翻页信息
 	 */
 	public static final String KEY_PAGE = "page";
+	
 	/**
 	 * 默认翻页每页显示条数
 	 */
 	public static final int DEFAULT_PAGE_SIZE = 20;
 
+	/**
+	 * 默认翻页每页显示条数
+	 */
+	public static final String PAGE_SIZE = "20";
+	
 	/**
 	 * 默认翻页排序字段
 	 */

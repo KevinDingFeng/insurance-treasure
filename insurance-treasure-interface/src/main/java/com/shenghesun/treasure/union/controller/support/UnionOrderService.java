@@ -1,13 +1,9 @@
 package com.shenghesun.treasure.union.controller.support;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
-import com.shenghesun.treasure.core.constant.OrderConstant;
 import com.shenghesun.treasure.system.order.OrderMessage;
 import com.shenghesun.treasure.system.union.code.UnionGoodsCode;
 import com.shenghesun.treasure.system.union.code.UnionPackageCode;

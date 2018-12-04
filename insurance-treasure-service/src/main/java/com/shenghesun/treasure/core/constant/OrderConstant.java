@@ -34,6 +34,10 @@ public class OrderConstant {
 	public static final String FUND_OUT = "0";
 	
 	/**
+	 * 资金充值
+	 */
+	public static final String FUND_IN = "1";
+	/**
 	 * 国内投保险类ClassesType
 	 */
 	public static final String CLASSESTYPE_IN = "1";

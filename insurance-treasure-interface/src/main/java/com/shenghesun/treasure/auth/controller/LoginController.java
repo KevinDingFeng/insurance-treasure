@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSONObject;
 import com.shenghesun.treasure.auth.support.LoginSuccessService;
 import com.shenghesun.treasure.config.CustomConfig;
+import com.shenghesun.treasure.core.constant.BaseConstant;
 import com.shenghesun.treasure.system.entity.SysUser;
 import com.shenghesun.treasure.system.service.SysUserService;
 import com.shenghesun.treasure.utils.JsonUtil;
@@ -44,11 +45,6 @@ public class LoginController {
 	public JSONObject login(HttpServletRequest request, @Validated String account,
 			@Validated String password,String code) {
 		try {
-			//判断验证码是否正确
-			/*String smsCode = redisUtil.get(account);
-			if(smsCode==null || smsCode!=code) {
-				return JsonUtil.getFailJSONObject("验证码错误"); 
-			}*/
 			return loginToken(account,password);
 		} catch (Exception e) {
 			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
@@ -103,8 +99,7 @@ public class LoginController {
 		// 获取登录名对应的数据
 		SysUser user = sysUserService.findByAccount(account);
 		if (user == null || user.getSalt() == null) {
-			System.out.println("用户名不存在或用户的盐值不存在");
-			return JsonUtil.getFailJSONObject("输入信息有误");
+			return JsonUtil.getFailJSONObject(BaseConstant.INPUT_ERROR);
 		}
 		password = PasswordUtil.encrypt(password, user.getSalt());
 		//根据用户名和密码（密文）校验是否登录成功
@@ -113,7 +108,7 @@ public class LoginController {
 			Map<String, Object> returnMap = loginSuccessService.setReturnMessage(user);
 			return JsonUtil.getSuccessJSONObject(returnMap);
 		}else {
-			return JsonUtil.getFailJSONObject("用户名密码错误"); 
+			return JsonUtil.getFailJSONObject(BaseConstant.PASSWORD_ERROR); 
 		}
 	}
 }

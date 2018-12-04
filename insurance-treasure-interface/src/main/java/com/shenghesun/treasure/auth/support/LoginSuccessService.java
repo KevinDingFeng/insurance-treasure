@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.shenghesun.treasure.company.service.CompanyMessageService;
+import com.shenghesun.treasure.core.constant.BaseConstant;
 import com.shenghesun.treasure.system.company.CompanyMessage;
 import com.shenghesun.treasure.system.entity.SysUser;
 
@@ -30,16 +31,14 @@ public class LoginSuccessService {
 		//返回公司是否存在，存在时1  不存在是0
 		if(companyId!=null) {
 			CompanyMessage company = companyService.findById(companyId);
-			Double balance = company==null?0:company.getBalance();
-			returnMap.put("balance", balance);
+			returnMap.put("balance", company.getBalance());
 			returnMap.put("company", companyId);
 		}else {
-			returnMap.put("balance", 0);
-			returnMap.put("company", "0");
+			returnMap.put("balance", BaseConstant.ZERO);
+			returnMap.put("company", BaseConstant.ZERO);
 		}
 		returnMap.put("token", token);
 		return returnMap;
-		
 	}
 
 	
