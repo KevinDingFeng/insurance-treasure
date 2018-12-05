@@ -81,22 +81,7 @@ public class InsuranceService {
 		}
 		return JsonUtil.getSuccessJSONObject();
 	}
-	
-	/**
-	 * 系统使用需要及时返回信息，异步调用，提供的外部接口需要及时获取结果，调用方式为同步
-	 * @param comFrom
-	 * @param order
-	 * @return
-	 */
-/*	public ReturnApprovl approvl(String comFrom,OrderMessage order){
-		if(comFrom.equals(OrderConstant.SYS_LOCAL)) {
-			//异步调用
-			asyncService.executeAsync(order);
-		}else {
-			//同步调用
-			return asyncService.executeApprovl(order);
-		}
-	}*/
+
 	/**
 	 * 完成订单支付
 	 * @param request

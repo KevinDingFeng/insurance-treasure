@@ -98,28 +98,20 @@ public class WebServiceClient {
 	 * 表明executeAsync方法进入的线程池是asyncServiceExecutor方法创建的
 	 **/ 
 	public ApprovalResponse approvl(String xml) {
-		ApprovalResponse reposne = null;
+		ApprovalResponse response = null;
 		try {
 			//完善投保用户相关信息
 			ApprovalRequest request = preApprovl(xml);
 			//投保
-			reposne = this.getBinding().approval(request);
+			response = this.getBinding().approval(request);
 			//日志记录
-			logApprovl(reposne);
+			SysMessage sysMessage = response.getSysMessage();
+			if (sysMessage != null) {
+				log.error("错误类型:"+sysMessage.getErrorType() +"错误代码:"+sysMessage.getErrorCode()+"错误信息:"+sysMessage.getErrorMsg());
+			}
 		} catch (Exception e) {
 			log.error(e.getMessage());
 		} 
-		return reposne;
-	}
-	/**
-	 * 投保日志记录
-	 */
-	public void logApprovl(ApprovalResponse response) {
-		SysMessage sysMessage = response.getSysMessage();
-		if (sysMessage != null) {
-			log.error("错误类型:" + sysMessage.getErrorType() + "\n");
-			log.error("错误代码:" + sysMessage.getErrorCode() + "\n");
-			log.error("错误信息:" + sysMessage.getErrorMsg() + "\n");
-		}
+		return response;
 	}
 }

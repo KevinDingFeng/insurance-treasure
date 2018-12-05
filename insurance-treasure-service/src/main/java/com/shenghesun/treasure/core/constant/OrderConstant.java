@@ -83,4 +83,13 @@ public class OrderConstant {
 	 * order
 	 */
 	public static final String Order = "order";
+	
+	/**
+	 * 币种代码后缀
+	 */
+	public static final String CURRENCY_SUFFIX = "curr";
+	/**
+	 * 包装代码后缀
+	 */
+	public static final String PACKAGE_SUFFIX = "pack";
 }

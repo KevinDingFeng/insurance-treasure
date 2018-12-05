@@ -57,7 +57,11 @@ public class AsyncService {
 					}
 				}
 				//记录日志
-				setLog(flag,orderMessage);
+				if(flag) {
+					log.info("订单号为:"+orderMessage.getOrderNo()+"的订单投保成功");
+				}else {
+					log.info("订单号为:"+orderMessage.getOrderNo()+"的订单投保失败");
+				}
 			}
 		}catch(Exception e){
 			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
@@ -77,16 +81,6 @@ public class AsyncService {
 		pmTemp.setVersion(0l);
 		String xml = orderMessage2Xml(pmTemp);
 		return xml;
-	}
-	/**
-	 * 记录投保日志
-	 */
-	public void setLog(Boolean flag,OrderMessage orderMessage) {
-		if(flag) {
-			log.info("订单号为:"+orderMessage.getOrderNo()+"的订单投保成功");
-		}else {
-			log.info("订单号为:"+orderMessage.getOrderNo()+"的订单投保失败");
-		}
 	}
 	/**
 	 * 货运险承保接口应答报文转xml

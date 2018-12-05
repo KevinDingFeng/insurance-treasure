@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -47,7 +48,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/api/order")
 @Slf4j
 public class OrderController {
-
+	
 	@Autowired
 	SysUserService sysUserService;
 	@Autowired
@@ -114,11 +115,21 @@ public class OrderController {
 	 **/ 
 	@RequestMapping(value = "/form", method = RequestMethod.GET)
 	public JSONObject form(String orderNo) {
-		OrderMessage orderMessage = orderMessageService.findByOrderNo(orderNo);
-		OrderShow orderShow = new OrderShow();
-		BeanUtils.copyProperties(orderMessage, orderShow);
-		orderShow.setCurrencyName(redisUtil.get(orderShow.getCurrencyCode()+"curr").toString());
-		orderShow.setPackageType(redisUtil.get(orderShow.getPackCode()+"pack").toString());
+		OrderShow orderShow=null;
+		try {
+			OrderMessage orderMessage = orderMessageService.findByOrderNo(orderNo);
+			orderShow = new OrderShow();
+			BeanUtils.copyProperties(orderMessage, orderShow);
+			if(redisUtil.exists(orderShow.getCurrencyCode()+OrderConstant.CURRENCY_SUFFIX)) {
+				orderShow.setCurrencyName(redisUtil.get(orderShow.getCurrencyCode()+OrderConstant.CURRENCY_SUFFIX).toString());
+			}
+			if(redisUtil.exists(orderShow.getPackCode()+OrderConstant.PACKAGE_SUFFIX)) {
+				orderShow.setPackageType(redisUtil.get(orderShow.getPackCode()+OrderConstant.PACKAGE_SUFFIX).toString());
+			}
+		} catch (BeansException e) {
+			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
+			return JsonUtil.getFailJSONObject();		
+		}
 		return JsonUtil.getSuccessJSONObject(orderShow);
 	}
 	
