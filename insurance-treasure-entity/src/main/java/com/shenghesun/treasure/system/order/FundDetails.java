@@ -34,15 +34,5 @@ public class FundDetails extends BaseEntity implements Serializable{
 	
 	@Column
 	private Long userId;
-	//资金明细与公司关系
-/*	@ManyToOne(fetch = FetchType.EAGER,cascade=CascadeType.MERGE)
-	@JoinColumn(name = "company_id",referencedColumnName="id")
-	@NotFound(action=NotFoundAction.IGNORE)
-	private CompanyMessage companyMessage;*/
-	
-	//资金明细与订单关系
-/*	@ManyToOne(fetch = FetchType.EAGER,cascade=CascadeType.MERGE)
-	@JoinColumn(name = "order_id",referencedColumnName="id")
-	@NotFound(action=NotFoundAction.IGNORE)
-	private OrderMessage orderMessage;*/
+
 }

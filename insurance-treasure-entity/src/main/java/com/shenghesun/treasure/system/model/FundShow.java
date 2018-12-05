@@ -18,12 +18,8 @@ public class FundShow extends BaseEntity implements Serializable{
 
 	private static final long serialVersionUID = -7917411850934668617L;
 
-	//资金数
-	//@Column(columnDefinition="DECIMAL(16,2)")
 	private String preminum;
 	
-	//资金状态，入账还是出账，0代表出账 1代表入账
-	//@Column
 	private String plusOrMinus;
 	
 }

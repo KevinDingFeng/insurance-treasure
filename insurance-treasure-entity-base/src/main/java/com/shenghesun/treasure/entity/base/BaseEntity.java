@@ -19,8 +19,6 @@ import com.shenghesun.treasure.entity.base.listener.BaseEntityListener;
 @EntityListeners(value = {BaseEntityListener.class})
 public class BaseEntity{
 
-	//private static final long serialVersionUID = -5799611251273449184L;
-
 	public Long getId() {
 		return id;
 	}
@@ -68,9 +66,8 @@ public class BaseEntity{
 	protected Timestamp creation;
 	
 //	@Index(name="lastModified")
-	//@JsonFormat(timezone="GMT+8",pattern="yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(timezone="GMT+8",pattern="yyyy-MM-dd HH:mm:ss")
 	@Column()
-	@JsonIgnore
 	protected Timestamp lastModified;
 	
 }

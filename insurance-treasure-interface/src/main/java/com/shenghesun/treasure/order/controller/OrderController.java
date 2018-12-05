@@ -1,6 +1,5 @@
 package com.shenghesun.treasure.order.controller;
 
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,13 +23,10 @@ import com.shenghesun.treasure.core.constant.Presentation;
 import com.shenghesun.treasure.core.constant.TokenConstant;
 import com.shenghesun.treasure.cpic.service.ApprovlService;
 import com.shenghesun.treasure.cpic.service.AsyncService;
-import com.shenghesun.treasure.cpic.service.QueryPolicyService;
 import com.shenghesun.treasure.order.model.OrderCondition;
 import com.shenghesun.treasure.order.service.OrderMessageService;
 import com.shenghesun.treasure.order.support.InsuranceService;
 import com.shenghesun.treasure.system.company.CompanyMessage;
-import com.shenghesun.treasure.system.cpic.Approvl;
-import com.shenghesun.treasure.system.cpic.Policy;
 import com.shenghesun.treasure.system.model.OrderShow;
 import com.shenghesun.treasure.system.order.OrderMessage;
 import com.shenghesun.treasure.system.service.SysUserService;
@@ -63,8 +59,6 @@ public class OrderController {
 	SysUserTypeService sysUserTypeService;
 	@Autowired
 	ApprovlService approvlService;
-	@Autowired
-	private QueryPolicyService queryPolicy;
 	@Autowired
 	private CompanyMessageService companyMessageService;
 	@Autowired
@@ -157,19 +151,6 @@ public class OrderController {
 		} catch (Exception e) {
 			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
 			return JsonUtil.getFailJSONObject();
-		}
-	}
-	
-	@RequestMapping(value = "/temp", method = {RequestMethod.POST})
-	public void findOrder() {
-		System.out.println("定时器执行");
-		List<Approvl> approvlList = approvlService.findAll();
-		for(Approvl approvl:approvlList) {
-			approvl.getApplyNo();
-			Policy policy = queryPolicy.queryPolicyStatus(approvl);
-			if(policy.getStatus().equals(10)) {
-				
-			}
 		}
 	}
 }
