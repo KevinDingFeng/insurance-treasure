@@ -20,7 +20,7 @@ public class FundShow extends BaseEntity implements Serializable{
 
 	//资金数
 	//@Column(columnDefinition="DECIMAL(16,2)")
-	private String orderAmount;
+	private String preminum;
 	
 	//资金状态，入账还是出账，0代表出账 1代表入账
 	//@Column

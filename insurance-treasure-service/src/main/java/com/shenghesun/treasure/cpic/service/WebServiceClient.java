@@ -1,17 +1,11 @@
 package com.shenghesun.treasure.cpic.service;
 
-import java.util.Map;
-
 import javax.xml.rpc.ServiceException;
 
 import org.apache.axis.client.Stub;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import com.shenghesun.treasure.approvl.service.ApprovlResultService;
-import com.shenghesun.treasure.system.order.OrderMessage;
 
 import cn.com.cpic.wss.propertyinsurance.commonservice.freight.FreightCommonServiceLocator;
 import cn.com.cpic.wss.propertyinsurance.commonservice.freight.IZrxCommonService;
@@ -55,8 +49,6 @@ public class WebServiceClient {
 	 */
 	@Value("${cpic.unitcode}")
 	private String unitCode;
-	@Autowired
-	private ApprovlResultService approvlResultService;
 
 	public IZrxCommonService getBinding() throws ServiceException {
 		FreightCommonServiceLocator locator = new FreightCommonServiceLocator();
@@ -105,24 +97,20 @@ public class WebServiceClient {
 	 * asyncServiceExecutor是前面ExecutorConfig.java中的方法名，
 	 * 表明executeAsync方法进入的线程池是asyncServiceExecutor方法创建的
 	 **/ 
-	//@Async("asyncServiceExecutor")
-	public Map<String,Object> approvl(String xml, OrderMessage orderMessage) {
-		Map<String, Object> map = null;
+	public ApprovalResponse approvl(String xml) {
+		ApprovalResponse reposne = null;
 		try {
 			//完善投保用户相关信息
 			ApprovalRequest request = preApprovl(xml);
 			//投保
-			ApprovalResponse reposne = this.getBinding().approval(request);
-			//处理投保返回结果
-			map = approvlResultService.manageApprovl(reposne,orderMessage);
+			reposne = this.getBinding().approval(request);
 			//日志记录
 			logApprovl(reposne);
 		} catch (Exception e) {
 			log.error(e.getMessage());
 		} 
-		return map;
+		return reposne;
 	}
-
 	/**
 	 * 投保日志记录
 	 */

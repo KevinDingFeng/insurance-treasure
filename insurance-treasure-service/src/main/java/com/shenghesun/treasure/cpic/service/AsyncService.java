@@ -1,14 +1,13 @@
 package com.shenghesun.treasure.cpic.service;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import com.shenghesun.treasure.approvl.service.ApprovlResultService;
+import com.shenghesun.treasure.system.cpic.Approvl;
 import com.shenghesun.treasure.system.cpic.webservice.Datas;
 import com.shenghesun.treasure.system.cpic.webservice.Freightcpic;
 import com.shenghesun.treasure.system.cpic.webservice.Header;
@@ -16,6 +15,7 @@ import com.shenghesun.treasure.system.order.OrderMessage;
 import com.shenghesun.util.cpic.StringGenerateUtils;
 import com.shenghesun.util.cpic.XStreamUtil;
 
+import cn.com.cpic.wss.propertyinsurance.commonservice.freight.types.ApprovalResponse;
 import lombok.extern.slf4j.Slf4j;
 
 
@@ -32,29 +32,15 @@ public class AsyncService {
 
 	@Autowired
 	private WebServiceClient webServiceClient;
-
+	@Autowired
+	private ApprovlResultService approvlResultService;
 	/**
 	 * 异步  项目使用投保方法
 	 * @param orderMessage
 	 * @return
 	 */
 	@Async("asyncServiceExecutor")
-	public Map<String,Object> executeAsync(OrderMessage orderMessage) {
-		Map<String, Object> map = execute(orderMessage);
-		return map;
-	}
-	/**
-	 * 同步 提供给外部投保方法
-	 */
-	public Map<String,Object> executeApprovl(OrderMessage orderMessage) {
-		Map<String, Object> map = execute(orderMessage);
-		return map;
-	}
-	/**
-	 * 投保方法
-	 */
-	public Map<String,Object> execute(OrderMessage orderMessage){
-		Map<String,Object> map = new HashMap<String,Object>();
+	public void executeAsync(OrderMessage orderMessage) {
 		log.info("start executeAsync");
 		try{
 			if(orderMessage != null) {
@@ -62,8 +48,10 @@ public class AsyncService {
 				boolean flag = true;
 				if(StringUtils.isNotEmpty(xml)) {
 					//货运险承保接口
-					map = webServiceClient.approvl(xml,orderMessage);
-					flag = (boolean) map.get("flag");
+					ApprovalResponse response = webServiceClient.approvl(xml);
+					Approvl approvl =  approvlResultService.xml2Approvl(response.getPolicyInfo(),orderMessage.getOrderNo());
+					//处理投保返回结果
+					flag = approvlResultService.manageApprovl(approvl,orderMessage);
 					if(!flag) {
 						flag = false;
 					}
@@ -75,8 +63,8 @@ public class AsyncService {
 			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
 		}
 		log.info("end executeAsync");
-		return map;
 	}
+
 	/**
 	 * 将投保对象处理转为xml用于投保
 	 */
@@ -118,16 +106,12 @@ public class AsyncService {
 		freightcpic.setHeader(header);
 
 		Datas datas = new Datas();
-		//		if("2".equals(orderMessage.getClassestype())) {
-		//			orderMessage.setFlightareacode("12040200");
-		//		}
 		datas.setOrderMessage(orderMessage);
 
 		freightcpic.setDatas(datas);
 
 		return XStreamUtil.beanToXmlWithTag(freightcpic);
 	}
-
 
 
 }

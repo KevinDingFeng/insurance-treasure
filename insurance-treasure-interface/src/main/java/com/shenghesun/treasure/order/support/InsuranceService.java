@@ -12,17 +12,16 @@ import com.alibaba.fastjson.JSONObject;
 import com.shenghesun.treasure.company.service.CompanyMessageService;
 import com.shenghesun.treasure.core.constant.OrderConstant;
 import com.shenghesun.treasure.cpic.service.AsyncService;
+import com.shenghesun.treasure.external.service.ExternalOrderService;
 import com.shenghesun.treasure.order.service.OrderMessageService;
 import com.shenghesun.treasure.system.company.CompanyMessage;
+import com.shenghesun.treasure.system.cpic.ReturnApprovl;
 import com.shenghesun.treasure.system.order.OrderMessage;
 import com.shenghesun.treasure.utils.HttpHeaderUtil;
 import com.shenghesun.treasure.utils.JsonUtil;
 import com.shenghesun.treasure.utils.TokenUtil;
 
-import lombok.extern.slf4j.Slf4j;
-
 @Service
-@Slf4j
 public class InsuranceService {
 	@Autowired
 	AsyncService asyncService;
@@ -32,18 +31,14 @@ public class InsuranceService {
 	OrderService orderService;
 	@Autowired
 	OrderMessageService orderMessageService;
+	@Autowired
+	ExternalOrderService externalOrderService;
 	/**
 	 * 投保
 	 */
-	public JSONObject insurance(HttpServletRequest request,@Validated OrderMessage order,String comFrom) {
-		//获取公司信息
-		String token = HttpHeaderUtil.getToken((HttpServletRequest) request); 
-		Long userId = TokenUtil.getLoginUserId(token);
-		Long companyId = TokenUtil.getLoginCompanyId(token);
-		CompanyMessage company = companyService.findById(companyId);
-		log.info("投保用户ID："+userId+"投保公司ID: "+companyId);
+	public JSONObject insurance(Map<String, Object> map,@Validated OrderMessage order,CompanyMessage company,String comFrom) {
 		//完善订单信息
-		Map<String,Object> orderMap = orderService.complete(request,order);
+		Map<String,Object> orderMap = orderService.complete(map,order);
 		order = (OrderMessage) orderMap.get(OrderConstant.Order);
 		//判断完善信息过程中是否出现运输代码查找错误和货物代码错误
 		JSONObject check = orderService.check(orderMap);
@@ -57,26 +52,34 @@ public class InsuranceService {
 	 * 支付
 	 */
 	public JSONObject pay(CompanyMessage company,OrderMessage order,String comFrom) {
-		Map<String, Object> map =null;
 		if(company!=null&&order!=null) {
 			//保费
 			Double preminum = Double.parseDouble(order.getPreminum());
 			//如果余额大于保单金额,才进行支付扣款
 			if(company.getBalance()>=preminum) {
 				company.setBalance(company.getBalance()-preminum);
+				companyService.save(company);
 				//修改订单状态
 				order.setPayStatus(1);
+				orderMessageService.save(order);
 				//调用投保
-				map = approvl(comFrom,order);
+				if(comFrom.equals(OrderConstant.SYS_LOCAL)) {
+					//异步调用
+					asyncService.executeAsync(order);
+				}else {
+					//同步调用
+					ReturnApprovl returnApprovl = externalOrderService.executeApprovl(order);
+					return JsonUtil.getSuccessJSONObject(returnApprovl);
+				}
 			}else {
 				orderMessageService.save(order);
 				return JsonUtil.getFailJSONObject("余额不足，请联系管理员充值");
 			}
-			orderMessageService.save(order);
+			
 		}else {
 			return JsonUtil.getFailJSONObject("公司不存在或订单不存在");
 		}
-		return JsonUtil.getSuccessJSONObject(map);
+		return JsonUtil.getSuccessJSONObject();
 	}
 	
 	/**
@@ -85,15 +88,15 @@ public class InsuranceService {
 	 * @param order
 	 * @return
 	 */
-	public Map<String,Object> approvl(String comFrom,OrderMessage order){
+/*	public ReturnApprovl approvl(String comFrom,OrderMessage order){
 		if(comFrom.equals(OrderConstant.SYS_LOCAL)) {
 			//异步调用
-			return asyncService.executeAsync(order);
+			asyncService.executeAsync(order);
 		}else {
 			//同步调用
 			return asyncService.executeApprovl(order);
 		}
-	}
+	}*/
 	/**
 	 * 完成订单支付
 	 * @param request

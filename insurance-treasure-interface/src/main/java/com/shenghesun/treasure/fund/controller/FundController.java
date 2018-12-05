@@ -84,7 +84,7 @@ public class FundController {
 			fundDetails.setUserId(userId);
 			CompanyMessage company = companyMessageService.findById(fundDetails.getCompanyId());
 			if(company!=null) {
-				company.setBalance(company.getBalance()+fundDetails.getOrderAmount());
+				company.setBalance(company.getBalance()+fundDetails.getPreminum());
 				fundDetailsService.save(fundDetails);
 			}else {
 				return JsonUtil.getFailJSONObject(BaseConstant.COMPANY_ERROR);

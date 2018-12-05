@@ -3,8 +3,6 @@ package com.shenghesun.treasure.order.support;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,15 +12,14 @@ import com.shenghesun.treasure.code.service.CodeListService;
 import com.shenghesun.treasure.code.service.GoodsCodeService;
 import com.shenghesun.treasure.code.service.TransCodeService;
 import com.shenghesun.treasure.core.constant.OrderConstant;
+import com.shenghesun.treasure.core.constant.TokenConstant;
 import com.shenghesun.treasure.system.code.CodeList;
 import com.shenghesun.treasure.system.code.GoodsCode;
 import com.shenghesun.treasure.system.code.TransCode;
 import com.shenghesun.treasure.system.order.OrderMessage;
-import com.shenghesun.treasure.utils.HttpHeaderUtil;
 import com.shenghesun.treasure.utils.JsonUtil;
 import com.shenghesun.treasure.utils.RandomUtil;
 import com.shenghesun.treasure.utils.RedisUtil;
-import com.shenghesun.treasure.utils.TokenUtil;
 
 @Service
 public class OrderService {
@@ -40,12 +37,12 @@ public class OrderService {
 	 * @param orderMessage
 	 * @return
 	 */
-	public Map<String,Object> complete(HttpServletRequest request,OrderMessage orderMessage) {
+	public Map<String,Object> complete(Map<String, Object> tokenMap,OrderMessage orderMessage) {
 		Map<String,Object> map =new HashMap<String,Object>();
 		//校验包装代码是否存在
 		checkCode(orderMessage,map);
 		//设置公共投保信息
-		orderMessage = this.all(request,orderMessage,map);
+		orderMessage = this.all(tokenMap,orderMessage,map);
 		//获取保险进出口类型
 		if(orderMessage.getCity().equals(OrderConstant.INLAND)) {
 			//完善国内投保数据
@@ -113,14 +110,10 @@ public class OrderService {
 	/**
 	 * 完善公共投保数据
 	 */
-	public OrderMessage all(HttpServletRequest request,OrderMessage orderMessage,Map<String,Object> map) {
-		//获取用户信息
-		String token = HttpHeaderUtil.getToken((HttpServletRequest) request);
-		Long userId = TokenUtil.getLoginUserId(token);
-		Long companyId = TokenUtil.getLoginCompanyId(token);
+	public OrderMessage all(Map<String, Object> tokenMap,OrderMessage orderMessage,Map<String,Object> map) {
 		//完善下单信息
-		orderMessage.setUserId(userId);
-		orderMessage.setCompanyId(companyId);
+		orderMessage.setUserId(Long.parseLong(tokenMap.get(TokenConstant.ID_KEY).toString()));
+		orderMessage.setCompanyId(Long.parseLong(tokenMap.get(TokenConstant.COMPANY_KEY).toString()));
 		orderMessage.setPlusOrMinus(OrderConstant.FUND_OUT);
 		//设置订单号
 		String orderNo = System.currentTimeMillis() + RandomUtil.randomString(2);

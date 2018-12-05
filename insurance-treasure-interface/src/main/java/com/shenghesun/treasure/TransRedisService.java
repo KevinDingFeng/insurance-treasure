@@ -55,6 +55,8 @@ public class TransRedisService implements ApplicationRunner{
 		setCodeList();
 		//添加城市
 		setCity();
+		//添加访问接口用户类型
+		setType();
 		//添加联盟速运数据字典
 		unionRedisService.setToRedis();
 	}
@@ -144,6 +146,22 @@ public class TransRedisService implements ApplicationRunner{
 			}
 			long end = System.currentTimeMillis(); 
 			log.info("redis缓存城市信息结束===运行时间:"+(end - start)+"毫秒");
+		}
+	}
+	/**
+	 * 向redis中添加接口用户类型信息   sysUserTypeService
+	 */
+	public void setType() {
+		List<SysUserType> userTypeList = sysUserTypeService.findAll();
+		if(!CollectionUtils.isEmpty(userTypeList)) {
+			log.info("redis缓存用户类型信息:"+userTypeList.size());
+			long start = System.currentTimeMillis();
+			for(int i=0;i<userTypeList.size();i++) {
+				SysUserType userType = userTypeList.get(i);
+				redisUtil.set(userType.getAccount(), userType.getType());
+			}
+			long end = System.currentTimeMillis(); 
+			log.info("redis缓存用户类型信息结束===运行时间:"+(end - start)+"毫秒");
 		}
 	}
 }

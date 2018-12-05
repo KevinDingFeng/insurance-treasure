@@ -55,8 +55,7 @@ public class UnionRedisService {
 			long start = System.currentTimeMillis();
 			for(int i=0;i<goodsCodeList.size();i++) {
 				UnionGoodsCode goodsCode = goodsCodeList.get(i);
-				/*String key = goodsCode.getUniongoodsName();
-				redisUtil.set("union"+key, goodsCode);*/
+				redisUtil.set(goodsCode.getUnionGoodsName(), goodsCode.getWBGoodsCode());
 			}
 			long end = System.currentTimeMillis(); 
 			log.info("redis缓存联盟货物代码表结束===运行时间:"+(end - start)+"毫秒");
@@ -72,8 +71,7 @@ public class UnionRedisService {
 			long start = System.currentTimeMillis();
 			for(int i=0;i<transCodeList.size();i++) {
 				UnionTransCode transCode = transCodeList.get(i);
-				String key = transCode.getUnionTranscode();
-				redisUtil.set("union"+key, transCode);
+				redisUtil.set(transCode.getUnionTranscode(), transCode.getWBTranscode());
 			}
 			long end = System.currentTimeMillis(); 
 			log.info("redis缓存联盟运输代码表结束===运行时间:"+(end - start)+"毫秒");
@@ -89,8 +87,7 @@ public class UnionRedisService {
 			long start = System.currentTimeMillis();
 			for(int i=0;i<packageCodeList.size();i++) {
 				UnionPackageCode packageCode = packageCodeList.get(i);
-				String key = packageCode.getUnionPackagecode();
-				redisUtil.set("union"+key, packageCode);
+				redisUtil.set(packageCode.getUnionPackagecode(), packageCode.getWBPackagecode());
 			}
 			long end = System.currentTimeMillis(); 
 			log.info("redis缓存联盟包装代码表结束===运行时间:"+(end - start)+"毫秒");
@@ -100,6 +97,6 @@ public class UnionRedisService {
 	 * 向redis中添加币种代码
 	 */
 	public void setCurrency() {
-		redisUtil.set("unionRMB", "01");
+		redisUtil.set("RMB", "01");
 	}
 }

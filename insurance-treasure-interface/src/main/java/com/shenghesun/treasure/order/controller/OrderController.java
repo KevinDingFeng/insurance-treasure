@@ -1,7 +1,11 @@
 package com.shenghesun.treasure.order.controller;
 
+import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,23 +17,27 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
-import com.shenghesun.treasure.core.constant.InterfaceConstant;
+import com.shenghesun.treasure.company.service.CompanyMessageService;
 import com.shenghesun.treasure.core.constant.OrderConstant;
 import com.shenghesun.treasure.core.constant.Presentation;
+import com.shenghesun.treasure.core.constant.TokenConstant;
+import com.shenghesun.treasure.cpic.service.ApprovlService;
 import com.shenghesun.treasure.cpic.service.AsyncService;
+import com.shenghesun.treasure.cpic.service.QueryPolicyService;
 import com.shenghesun.treasure.order.model.OrderCondition;
 import com.shenghesun.treasure.order.service.OrderMessageService;
 import com.shenghesun.treasure.order.support.InsuranceService;
-import com.shenghesun.treasure.system.dto.OrderDto;
-import com.shenghesun.treasure.system.entity.SysUser;
-import com.shenghesun.treasure.system.entity.SysUserType;
+import com.shenghesun.treasure.system.company.CompanyMessage;
+import com.shenghesun.treasure.system.cpic.Approvl;
+import com.shenghesun.treasure.system.cpic.Policy;
+import com.shenghesun.treasure.system.model.OrderShow;
 import com.shenghesun.treasure.system.order.OrderMessage;
 import com.shenghesun.treasure.system.service.SysUserService;
 import com.shenghesun.treasure.system.service.SysUserTypeService;
 import com.shenghesun.treasure.union.controller.support.UnionOrderService;
 import com.shenghesun.treasure.utils.HttpHeaderUtil;
 import com.shenghesun.treasure.utils.JsonUtil;
-import com.shenghesun.treasure.utils.MapperUtil;
+import com.shenghesun.treasure.utils.RedisUtil;
 import com.shenghesun.treasure.utils.TokenUtil;
 
 import lombok.extern.slf4j.Slf4j;
@@ -52,6 +60,14 @@ public class OrderController {
 	UnionOrderService unionOrderService;
 	@Autowired
 	SysUserTypeService sysUserTypeService;
+	@Autowired
+	ApprovlService approvlService;
+	@Autowired
+	private QueryPolicyService queryPolicy;
+	@Autowired
+	private CompanyMessageService companyMessageService;
+	@Autowired
+	private RedisUtil redisUtil;
 	/**
 	 * 内部投保接口，用户获取token后直接进行使用
 	 * @param request
@@ -61,50 +77,15 @@ public class OrderController {
 	@RequestMapping(value = "/approvl", method = RequestMethod.POST)
 	public JSONObject save(HttpServletRequest request,@Validated OrderMessage order) {
 		try {
-			return insuranceService.insurance(request,order,OrderConstant.SYS_LOCAL);
-		} catch (Exception e) {
-			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
-			return JsonUtil.getFailJSONObject();
-		}
-	}
-	
-	/**
-	 * 外部投保接口，用户获取token后直接进行使用
-	 * @param request
-	 * @param orderMessage
-	 * @return
-	 */
-	@RequestMapping(value = "/insure", method = RequestMethod.POST)
-	public JSONObject order(HttpServletRequest request,@Validated OrderDto orderDto) {
-		try {
 			String token = HttpHeaderUtil.getToken((HttpServletRequest) request); 
-			Long userId = TokenUtil.getLoginUserId(token);
-			SysUser user = sysUserService.findById(userId);
-			SysUserType type = sysUserTypeService.findByAccount(user.getAccount());
-			//Dto对象转投保实体对象
-			OrderMessage order = new OrderMessage();
-			MapperUtil.mapping(orderDto,order);
-			//根据不同类型，选择不同的翻译方式
-			order = translationCode(type.getType(),order);
-			return insuranceService.insurance(request,order,OrderConstant.SYS_OUT);
+			Map<String, Object> map = TokenUtil.decode(token);
+			Long companyId = Long.parseLong(map.get(TokenConstant.COMPANY_KEY).toString());
+			CompanyMessage company = companyMessageService.findById(companyId);
+			return insuranceService.insurance(map,order,company,OrderConstant.SYS_LOCAL);
 		} catch (Exception e) {
 			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
 			return JsonUtil.getFailJSONObject();
 		}
-	}
-	/**
-	 * 根据类型分支走不同的数据处理
-	 * @param type
-	 * @param order
-	 * @return
-	 */
-	private OrderMessage translationCode(String type,OrderMessage order) {
-		switch(type) {
-			case InterfaceConstant.TYPE:
-				return order = unionOrderService.union_complete(order);
-			 default:
-				return null;
-		}	
 	}
 
 	/**
@@ -134,7 +115,11 @@ public class OrderController {
 	@RequestMapping(value = "/form", method = RequestMethod.GET)
 	public JSONObject form(String orderNo) {
 		OrderMessage orderMessage = orderMessageService.findByOrderNo(orderNo);
-		return JsonUtil.getSuccessJSONObject(orderMessage);
+		OrderShow orderShow = new OrderShow();
+		BeanUtils.copyProperties(orderMessage, orderShow);
+		orderShow.setCurrencyName(redisUtil.get(orderShow.getCurrencyCode()+"curr").toString());
+		orderShow.setPackageType(redisUtil.get(orderShow.getPackCode()+"pack").toString());
+		return JsonUtil.getSuccessJSONObject(orderShow);
 	}
 	
 	/**
@@ -164,4 +149,16 @@ public class OrderController {
 		}
 	}
 	
+	@RequestMapping(value = "/temp", method = {RequestMethod.POST})
+	public void findOrder() {
+		System.out.println("定时器执行");
+		List<Approvl> approvlList = approvlService.findAll();
+		for(Approvl approvl:approvlList) {
+			approvl.getApplyNo();
+			Policy policy = queryPolicy.queryPolicyStatus(approvl);
+			if(policy.getStatus().equals(10)) {
+				
+			}
+		}
+	}
 }
