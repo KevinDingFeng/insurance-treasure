@@ -55,7 +55,7 @@ public class UnionRedisService {
 			long start = System.currentTimeMillis();
 			for(int i=0;i<goodsCodeList.size();i++) {
 				UnionGoodsCode goodsCode = goodsCodeList.get(i);
-				redisUtil.set(goodsCode.getUnionGoodsName(), goodsCode.getWBGoodsCode());
+				redisUtil.setString(goodsCode.getUnionGoodsName(), goodsCode.getWBGoodsCode());
 			}
 			long end = System.currentTimeMillis(); 
 			log.info("redis缓存联盟货物代码表结束===运行时间:"+(end - start)+"毫秒");
@@ -71,7 +71,7 @@ public class UnionRedisService {
 			long start = System.currentTimeMillis();
 			for(int i=0;i<transCodeList.size();i++) {
 				UnionTransCode transCode = transCodeList.get(i);
-				redisUtil.set(transCode.getUnionTranscode(), transCode.getWBTranscode());
+				redisUtil.setString(transCode.getUnionTranscode(), transCode.getWBTranscode());
 			}
 			long end = System.currentTimeMillis(); 
 			log.info("redis缓存联盟运输代码表结束===运行时间:"+(end - start)+"毫秒");
@@ -87,7 +87,7 @@ public class UnionRedisService {
 			long start = System.currentTimeMillis();
 			for(int i=0;i<packageCodeList.size();i++) {
 				UnionPackageCode packageCode = packageCodeList.get(i);
-				redisUtil.set(packageCode.getUnionPackagecode(), packageCode.getWBPackagecode());
+				redisUtil.setString(packageCode.getUnionPackagecode(), packageCode.getWBPackagecode());
 			}
 			long end = System.currentTimeMillis(); 
 			log.info("redis缓存联盟包装代码表结束===运行时间:"+(end - start)+"毫秒");

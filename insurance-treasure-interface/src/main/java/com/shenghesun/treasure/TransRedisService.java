@@ -123,7 +123,7 @@ public class TransRedisService implements ApplicationRunner{
 			for(int i=0;i<cityList.size();i++) {
 				BaseCity baseCity = cityList.get(i);
 				String key = baseCity.getName();
-				redisUtil.set(key, key);
+				redisUtil.setString(key, key);
 			}
 			long end = System.currentTimeMillis(); 
 			log.info("redis缓存城市信息结束===运行时间:"+(end - start)+"毫秒");
@@ -139,7 +139,7 @@ public class TransRedisService implements ApplicationRunner{
 			long start = System.currentTimeMillis();
 			for(int i=0;i<userTypeList.size();i++) {
 				SysUserType userType = userTypeList.get(i);
-				redisUtil.set(userType.getAccount(), userType.getType());
+				redisUtil.setString(userType.getAccount(), userType.getType());
 			}
 			long end = System.currentTimeMillis(); 
 			log.info("redis缓存用户类型信息结束===运行时间:"+(end - start)+"毫秒");
