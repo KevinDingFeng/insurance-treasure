@@ -63,18 +63,6 @@ public class InsuranceService {
 				//修改订单状态
 				order.setPayStatus(1);
 				orderMessageService.save(order);
-//				OrderMessage orderMessage = null;
-//				if(order.getId()!=null) {
-//					//新增
-//					orderMessage = orderMessageService.findById(order.getId());
-//					BeanUtils.copyProperties(order, orderMessage);
-//					orderMessage.setEndPort("黑龙江11");
-//					order.setEndPort("黑龙江22");
-//					orderMessageService.save(orderMessage);
-//				}else {
-//					orderMessageService.save(order);
-//				}
-				
 				//调用投保
 				if(comFrom.equals(OrderConstant.SYS_LOCAL)) {
 					//异步调用

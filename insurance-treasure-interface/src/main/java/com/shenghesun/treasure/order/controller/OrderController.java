@@ -77,7 +77,7 @@ public class OrderController {
 	 * @return
 	 */
 	@RequestMapping(value = "/approvl", method = RequestMethod.POST)
-	public JSONObject save(HttpServletRequest request,@Validated OrderMessage order) {
+	public JSONObject save(HttpServletRequest request,@ModelAttribute("order") OrderMessage order) {
 		System.out.println(order);
 		try {
 			String token = HttpHeaderUtil.getToken((HttpServletRequest) request); 
