@@ -13,13 +13,11 @@ import com.shenghesun.treasure.system.order.OrderMessage;
 @Repository
 public interface OrderMessageDao extends JpaRepository<OrderMessage, Long>, JpaSpecificationExecutor<OrderMessage> {
 	
-	//List<OrderMessage> findByUserId(Long id);
-	
 	Page<OrderMessage> findByUserId(Long id,Pageable page);
 	
-	//Page<OrderMessage> findByInsuranceStatusNot(Integer status);
-	
 	OrderMessage findByOrderNo(String orderNo);
+	
+	OrderMessage findByApplyNo(String applyNo);
 	
 	List<OrderMessage> findByUserId(Long userId);
 }

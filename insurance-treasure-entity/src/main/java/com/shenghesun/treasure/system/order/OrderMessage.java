@@ -251,7 +251,7 @@ public class OrderMessage extends BaseEntity implements Serializable{
 	//保单号
 	@Column(length=20)
 	@XStreamOmitField
-	private String apply_no;
+	private String applyNo;
 	/**
 	 * 保单支付状态 0：下单成功；1：支付成功
 	 * 默认为 0

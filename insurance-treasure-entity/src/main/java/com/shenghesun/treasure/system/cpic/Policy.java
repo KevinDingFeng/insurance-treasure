@@ -2,7 +2,6 @@ package com.shenghesun.treasure.system.cpic;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 
 import com.shenghesun.treasure.entity.base.BaseEntity;
@@ -50,8 +49,7 @@ public class Policy extends BaseEntity{
 	 * 电子保单内容
 	 */
 
-	@Lob
-	@Column(columnDefinition="TEXT")
+	@Column(columnDefinition="MEDIUMTEXT")
 	private String epolicyFile;
 	
 	/**

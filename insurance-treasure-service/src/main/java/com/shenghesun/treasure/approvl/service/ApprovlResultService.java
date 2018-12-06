@@ -38,7 +38,7 @@ public class ApprovlResultService {
 			Integer status = approvl.getStatus();
 			if(StringUtils.isNotEmpty(status.toString())) {
 				orderMessage.setInsuranceStatus(status);
-				orderMessage.setApply_no(approvl.getApplyNo());
+				orderMessage.setApplyNo(approvl.getApplyNo());
 				orderMessageService.save(orderMessage);
 				if(OrderConstant.APPROVL_SUCCESS.equals(status)) {
 					return true;

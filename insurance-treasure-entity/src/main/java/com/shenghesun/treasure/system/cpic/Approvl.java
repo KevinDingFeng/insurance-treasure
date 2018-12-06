@@ -22,10 +22,6 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class Approvl extends BaseEntity{
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -2157720916902075615L;
 	
 	/**
 	 * 订单号

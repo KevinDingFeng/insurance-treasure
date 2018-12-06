@@ -37,6 +37,9 @@ public class OrderMessageService {
 	public OrderMessage findByOrderNo(String orderNo) {
 		return orderMessageDao.findByOrderNo(orderNo);
 	}
+	public OrderMessage findByApplyNo(String applyNo) {
+		return orderMessageDao.findByApplyNo(applyNo);
+	}
 	public List<OrderMessage> findByByUserId(Long userId) {
 		return orderMessageDao.findByUserId(userId);
 	}
