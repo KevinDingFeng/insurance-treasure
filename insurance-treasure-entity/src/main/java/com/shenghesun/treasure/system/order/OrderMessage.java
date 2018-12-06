@@ -15,6 +15,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 //支付相关信息
@@ -25,6 +26,7 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @XStreamAlias("DATA")
 @JsonIgnoreProperties({"handler","hibernateLazyInitializer"})
+@NoArgsConstructor
 public class OrderMessage extends BaseEntity implements Serializable{
 
 	private static final long serialVersionUID = -4353307437903537087L;
@@ -264,6 +266,6 @@ public class OrderMessage extends BaseEntity implements Serializable{
 	 */
 	@Column
 	@XStreamOmitField
-	private Integer insuranceStatus=0; 
-
+	private Integer insuranceStatus=0;
+	
 }

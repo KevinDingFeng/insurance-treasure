@@ -4,6 +4,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -62,6 +63,18 @@ public class InsuranceService {
 				//修改订单状态
 				order.setPayStatus(1);
 				orderMessageService.save(order);
+//				OrderMessage orderMessage = null;
+//				if(order.getId()!=null) {
+//					//新增
+//					orderMessage = orderMessageService.findById(order.getId());
+//					BeanUtils.copyProperties(order, orderMessage);
+//					orderMessage.setEndPort("黑龙江11");
+//					order.setEndPort("黑龙江22");
+//					orderMessageService.save(orderMessage);
+//				}else {
+//					orderMessageService.save(order);
+//				}
+				
 				//调用投保
 				if(comFrom.equals(OrderConstant.SYS_LOCAL)) {
 					//异步调用
@@ -69,17 +82,20 @@ public class InsuranceService {
 				}else {
 					//同步调用
 					ReturnApprovl returnApprovl = externalOrderService.executeApprovl(order);
+					
 					return JsonUtil.getSuccessJSONObject(returnApprovl);
 				}
 			}else {
 				orderMessageService.save(order);
-				return JsonUtil.getFailJSONObject("余额不足，请联系管理员充值");
+				JSONObject json = JsonUtil.getFailJSONObject(order.getOrderNo());
+				json.put("msg", "余额不足，请联系管理员充值");
+				return json;
 			}
 			
 		}else {
 			return JsonUtil.getFailJSONObject("公司不存在或订单不存在");
 		}
-		return JsonUtil.getSuccessJSONObject();
+		return JsonUtil.getSuccessJSONObject(order.getOrderNo());
 	}
 
 	/**

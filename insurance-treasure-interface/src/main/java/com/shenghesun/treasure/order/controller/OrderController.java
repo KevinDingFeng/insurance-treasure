@@ -1,5 +1,8 @@
 package com.shenghesun.treasure.order.controller;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,8 +15,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.ServletRequestDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
@@ -71,6 +78,7 @@ public class OrderController {
 	 */
 	@RequestMapping(value = "/approvl", method = RequestMethod.POST)
 	public JSONObject save(HttpServletRequest request,@Validated OrderMessage order) {
+		System.out.println(order);
 		try {
 			String token = HttpHeaderUtil.getToken((HttpServletRequest) request); 
 			Map<String, Object> map = TokenUtil.decode(token);
@@ -82,7 +90,47 @@ public class OrderController {
 			return JsonUtil.getFailJSONObject();
 		}
 	}
-
+	
+	/**
+	 * 设置允许自动绑定的属性名称
+	 * 
+	 * @param binder
+	 * @param req
+	 */
+	@InitBinder("order")
+	private void initBinder(ServletRequestDataBinder binder, HttpServletRequest req) {
+		List<String> fields = new ArrayList<String>(Arrays.asList("city", "firstGoodsName", "goodsValue", "currencyCode", "packCode"
+				,"transCode","startPort","endPort","saildate","mark","applyName","insurantName","rate","incrate","goodsCode"));
+		switch (req.getMethod()) {
+		case "POST": // 新增
+			binder.setAllowedFields(fields.toArray(new String[fields.size()]));
+			break;
+		case "PUT": // 修改
+			binder.setAllowedFields(fields.toArray(new String[fields.size()]));
+			break;
+		default:
+			break;
+		}
+	}
+	
+	/**
+	 * 预处理，一般用于新增和修改表单提交后的预处理
+	 * 
+	 * @param id
+	 * @param req
+	 * @return
+	 */
+	@ModelAttribute("order")
+	public OrderMessage prepare(@RequestParam(value = Presentation.KEY_ID, required = false)Long id,HttpServletRequest req) {
+		if (id != null && id > 0) {// 修改表单提交后数据绑定之前执行
+			OrderMessage orderMessage = orderMessageService.findById(id);
+			return orderMessage;
+		}else {
+			OrderMessage orderMessage = new OrderMessage();
+			return orderMessage;
+		}
+	}
+	
 	/**
 	 * 订单支付
 	 * @param request

@@ -31,6 +31,9 @@ public class ApprovlService {
 	public Approvl findByOrderNo(String orderNo) {
 		return approvlDao.findByOrderNo(orderNo);
 	}
+	public Approvl findByApplyNo(String applyNo) {
+		return approvlDao.findByApplyNo(applyNo);
+	}
 	public List<Approvl> findAll() {
 		return approvlDao.findAll(new Specification<Approvl>() {
 			@Override

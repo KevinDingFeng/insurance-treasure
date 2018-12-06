@@ -45,8 +45,6 @@ public class TransRedisService implements ApplicationRunner{
 	private CodeListService codeListService;
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
-		//添加接口对照信息
-		setUserType();
 		//添加运输代码对照表
 		setTransport();
 		//添加货物代码对照表
@@ -59,23 +57,6 @@ public class TransRedisService implements ApplicationRunner{
 		setType();
 		//添加联盟速运数据字典
 		unionRedisService.setToRedis();
-	}
-	/**
-	 * 向redis中添加接口对照信息
-	 */
-	private void setUserType() {
-		List<SysUserType> userTypeList = sysUserTypeService.findAll();
-		if(!CollectionUtils.isEmpty(userTypeList)) {
-			log.info("redis缓存用户访问接口类型表:"+userTypeList.size());
-			long start = System.currentTimeMillis();
-			for(int i=0;i<userTypeList.size();i++) {
-				SysUserType userType = userTypeList.get(i);
-				String key = userType.getAccount();
-				redisUtil.set("union"+key, userType);
-			}
-			long end = System.currentTimeMillis(); 
-			log.info("redis缓存用户访问接口类型表结束===运行时间:"+(end - start)+"毫秒");
-		}
 	}
 	/**
 	 * 向redis中添加运输方式代码表
@@ -123,7 +104,7 @@ public class TransRedisService implements ApplicationRunner{
 			long start = System.currentTimeMillis();
 			for(int i=0;i<codeList.size();i++) {
 				CodeList code = codeList.get(i);
-				redisUtil.set(code.getCodeKey(),code.getCodeValue());
+				redisUtil.setString(code.getCodeKey(),code.getCodeValue());
 			}
 			long end = System.currentTimeMillis(); 
 			log.info("redis缓存对照表集合信息结束===运行时间:"+(end - start)+"毫秒");

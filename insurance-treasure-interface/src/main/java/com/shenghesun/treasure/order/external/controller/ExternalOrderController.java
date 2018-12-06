@@ -54,7 +54,6 @@ public class ExternalOrderController {
 	ApprovlService approvlService;
 	@Autowired
 	CompanyMessageService companyMessageService;
-
 	@Autowired
 	private RedisUtil redisUtil;
 	/**

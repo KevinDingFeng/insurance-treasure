@@ -60,7 +60,7 @@ public class Approvl extends BaseEntity{
 	 * 
 	 */
 	@Column(length=5)
-	private String status;
+	private Integer status;
 	
 	@Column
 	private String comments;

@@ -79,7 +79,6 @@ public class RedisUtil {
 	 */
 	public String get(final String key) {
 		Object result = null;
-		redisTemplate.setValueSerializer(new StringRedisSerializer());
 		ValueOperations<Serializable, Object> operations = redisTemplate.opsForValue();
 		try {
 			result = operations.get(key);
@@ -89,18 +88,19 @@ public class RedisUtil {
 		if (result == null) {
 			return null;
 		}
-		String str = result.toString();
+	/*	String str = result.toString();
 		if(str.indexOf("\"")==0) { 
 			str = str.substring(1,str.length());
 		}  //去掉第一个 "
 		if(str.lastIndexOf("\"")==(str.length()-1)) {
 			str = str.substring(0,str.length()-1);  //去掉最后一个 " 
-		}
-		return str.replaceAll("\\\\", "");
+		}*/
+		return result.toString();
 	}
 	
 	public String getString(final String key) {
 		Object result = null;
+		redisTemplate.setValueSerializer(new StringRedisSerializer());
 		ValueOperations<Serializable, Object> operations = redisTemplate.opsForValue();
 		try {
 			result = operations.get(key);
@@ -147,6 +147,18 @@ public class RedisUtil {
 		return result;
 	}
 
+	public boolean setString(final String key, Object value) {
+		boolean result = false;
+		try {
+			redisTemplate.setValueSerializer(new StringRedisSerializer());
+			ValueOperations<Serializable, Object> operations = redisTemplate.opsForValue();
+			operations.set(key, value);
+			result = true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
 	/**
 	 * 写入缓存
 	 * 

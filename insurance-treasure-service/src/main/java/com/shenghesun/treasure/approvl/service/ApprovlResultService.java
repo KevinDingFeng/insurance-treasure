@@ -35,9 +35,9 @@ public class ApprovlResultService {
 			//保存投保结果
 			approvlService.save(approvl);
 			//修改订单
-			String status = approvl.getStatus();
-			if(StringUtils.isNotEmpty(status)) {
-				orderMessage.setInsuranceStatus(Integer.parseInt(status));
+			Integer status = approvl.getStatus();
+			if(StringUtils.isNotEmpty(status.toString())) {
+				orderMessage.setInsuranceStatus(status);
 				orderMessage.setApply_no(approvl.getApplyNo());
 				orderMessageService.save(orderMessage);
 				if(OrderConstant.APPROVL_SUCCESS.equals(status)) {
@@ -91,7 +91,7 @@ public class ApprovlResultService {
 					approvl.setPolicyNo(policyno);
 
 					String status = recordEle.elementTextTrim("STATUS"); // 拿到RESULT节点下的子节点STATUS值
-					approvl.setStatus(status);
+					approvl.setStatus(Integer.parseInt(status));
 
 					String comments = recordEle.elementTextTrim("COMMENTS"); // 拿到RESULT节点下的子节点COMMENTS值
 					approvl.setComments(comments);

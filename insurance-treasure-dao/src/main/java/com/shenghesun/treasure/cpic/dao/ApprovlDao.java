@@ -12,4 +12,6 @@ public interface ApprovlDao extends PagingAndSortingRepository<Approvl, Long>, J
 	public Approvl findByApplyId(String applyId);
 	
 	public Approvl findByOrderNo(String orderNo);
+	
+	public Approvl findByApplyNo(String applyNo);
 }

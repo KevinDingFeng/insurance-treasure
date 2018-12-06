@@ -116,8 +116,10 @@ public class OrderService {
 		orderMessage.setCompanyId(Long.parseLong(tokenMap.get(TokenConstant.COMPANY_KEY).toString()));
 		orderMessage.setPlusOrMinus(OrderConstant.FUND_OUT);
 		//设置订单号
-		String orderNo = System.currentTimeMillis() + RandomUtil.randomString(2);
-		orderMessage.setOrderNo(orderNo);
+		if(orderMessage.getOrderNo()==null) {
+			String orderNo = System.currentTimeMillis() + RandomUtil.randomNum(2);
+			orderMessage.setOrderNo(orderNo);
+		}
 		//设置运输相关信息
 		orderMessage = this.setTansport(orderMessage,map);
 		//设置货物名称相关信息

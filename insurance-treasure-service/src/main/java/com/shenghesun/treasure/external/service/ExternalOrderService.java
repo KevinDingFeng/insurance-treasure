@@ -47,7 +47,6 @@ public class ExternalOrderService {
 		return returnApprovl;
 	}
 	
-	
 	/**
 	 * 提供接口对结果处理投保结果
 	 */
@@ -62,7 +61,7 @@ public class ExternalOrderService {
 			returnApprovl.setWorkType(approvl.getWorkType());
 			returnApprovl.setApplyNo(approvl.getApplyNo());
 			returnApprovl.setPolicyNo(approvl.getPolicyNo());
-			returnApprovl.setStatus(approvl.getStatus());
+			returnApprovl.setStatus(approvl.getStatus().toString());
 			returnApprovl.setComments(approvl.getComments());
 			returnApprovl.setStatusEpolicy(approvl.getStatusEpolicy());
 			returnApprovl.setFileEpolicy(approvl.getFileEpolicy());
