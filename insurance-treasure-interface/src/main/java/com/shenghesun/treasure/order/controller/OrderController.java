@@ -162,10 +162,10 @@ public class OrderController {
 			orderShow = new OrderShow();
 			BeanUtils.copyProperties(orderMessage, orderShow);
 			if(redisUtil.exists(orderShow.getCurrencyCode()+OrderConstant.CURRENCY_SUFFIX)) {
-				orderShow.setCurrencyName(redisUtil.get(orderShow.getCurrencyCode()+OrderConstant.CURRENCY_SUFFIX).toString());
+				orderShow.setCurrencyName(redisUtil.getString(orderShow.getCurrencyCode()+OrderConstant.CURRENCY_SUFFIX).toString());
 			}
 			if(redisUtil.exists(orderShow.getPackCode()+OrderConstant.PACKAGE_SUFFIX)) {
-				orderShow.setPackageType(redisUtil.get(orderShow.getPackCode()+OrderConstant.PACKAGE_SUFFIX).toString());
+				orderShow.setPackageType(redisUtil.getString(orderShow.getPackCode()+OrderConstant.PACKAGE_SUFFIX).toString());
 			}
 		} catch (BeansException e) {
 			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());

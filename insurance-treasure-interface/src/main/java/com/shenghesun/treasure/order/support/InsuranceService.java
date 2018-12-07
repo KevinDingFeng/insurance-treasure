@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -20,9 +21,13 @@ import com.shenghesun.treasure.system.cpic.ReturnApprovl;
 import com.shenghesun.treasure.system.order.OrderMessage;
 import com.shenghesun.treasure.utils.HttpHeaderUtil;
 import com.shenghesun.treasure.utils.JsonUtil;
+import com.shenghesun.treasure.utils.SmsCodeService;
 import com.shenghesun.treasure.utils.TokenUtil;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class InsuranceService {
 	@Autowired
 	AsyncService asyncService;
@@ -34,6 +39,13 @@ public class InsuranceService {
 	OrderMessageService orderMessageService;
 	@Autowired
 	ExternalOrderService externalOrderService;
+	//@Autowired
+	//private SmsCodeService smsCodeService;
+	/**
+	 * 支付成功通知模板code
+	 */
+	/*@Value("${sms.success.template.code}")
+	private String templateCode;*/
 	/**
 	 * 投保
 	 */
@@ -67,6 +79,9 @@ public class InsuranceService {
 				if(comFrom.equals(OrderConstant.SYS_LOCAL)) {
 					//异步调用
 					asyncService.executeAsync(order);
+					//发送成功短信
+					//String smsStatus = smsCodeService.sendSms("", "伟林易航",templateCode,"");
+					//log.info("订单号为:"+order.getOrderNo()+";手机号为："+""+"的订单成功短信通知" + smsStatus);
 				}else {
 					//同步调用
 					ReturnApprovl returnApprovl = externalOrderService.executeApprovl(order);

@@ -97,6 +97,6 @@ public class UnionRedisService {
 	 * 向redis中添加币种代码
 	 */
 	public void setCurrency() {
-		redisUtil.set("RMB", "01");
+		redisUtil.setString("RMB", "01");
 	}
 }

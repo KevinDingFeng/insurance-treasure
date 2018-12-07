@@ -136,7 +136,11 @@ public class OrderService {
 		orderMessage.setOrderAmount(orderMessage.getGoodsValue());
 		//设置保费
 		float preminum = 0.01f*Float.parseFloat(orderMessage.getOrderAmount())*Float.parseFloat(orderMessage.getRate());
-		orderMessage.setPreminum(Double.toString(preminum));
+		if(preminum<5) {
+			orderMessage.setPreminum("5");
+		}else {
+			orderMessage.setPreminum(Double.toString(preminum));
+		}
 		//设置发票金额
 		orderMessage.setInvamount(orderMessage.getOrderAmount());
 		orderMessage.setClassesType(OrderConstant.CLASSESTYPE_IN);
@@ -150,7 +154,11 @@ public class OrderService {
 		orderMessage.setOrderAmount(Float.toString((Float.parseFloat(orderMessage.getGoodsValue())*(1+Float.parseFloat(orderMessage.getIncrate())))));
 		//设置保费
 		float preminum = 0.01f*Float.parseFloat(orderMessage.getOrderAmount())*Float.parseFloat(orderMessage.getRate());
-		orderMessage.setPreminum(Double.toString(preminum));
+		if(preminum<2) {
+			orderMessage.setPreminum("2");
+		}else {
+			orderMessage.setPreminum(Double.toString(preminum));
+		}
 		//设置发票金额 
 		orderMessage.setInvamount(orderMessage.getOrderAmount());
 		orderMessage.setClassesType(OrderConstant.CLASSESTYPE_OUT);
