@@ -25,7 +25,7 @@ public class BindExceptionHanlder {
 	@ExceptionHandler(BindException.class)
 	public Object MethodArgumentNotValidException(BindException ex, HttpServletRequest request,
 			HttpServletResponse response) {
-		log.error(request.getRequestURL().toString()+"==>"+ex.getBindingResult().getAllErrors().toString());
+		log.error(request.getRequestURL().toString()+"==>"+ex.getMessage());
 		// MethodArgumentNotValidException c = (MethodArgumentNotValidException) ex;
 //		List<ObjectError> errors = c.getBindingResult().getAllErrors();
 //		errors.stream().forEach(x -> errorMsg.append(x.getDefaultMessage()).append(";"));
