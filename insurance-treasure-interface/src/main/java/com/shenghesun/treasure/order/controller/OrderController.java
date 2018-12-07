@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -69,6 +71,7 @@ public class OrderController {
 	private CompanyMessageService companyMessageService;
 	@Autowired
 	private RedisUtil redisUtil;
+	
 	/**
 	 * 内部投保接口，用户获取token后直接进行使用
 	 * @param request
@@ -76,14 +79,12 @@ public class OrderController {
 	 * @return
 	 */
 	@RequestMapping(value = "/approvl", method = RequestMethod.POST)
-	public JSONObject save(HttpServletRequest request,@ModelAttribute("order") OrderMessage order) {
+	public JSONObject save(HttpServletRequest request, @ModelAttribute("order") @Validated OrderMessage order) {
 		System.out.println(order);
 		try {
 			String token = HttpHeaderUtil.getToken((HttpServletRequest) request); 
-			Map<String, Object> map = TokenUtil.decode(token);
-			Long companyId = Long.parseLong(map.get(TokenConstant.COMPANY_KEY).toString());
-			CompanyMessage company = companyMessageService.findById(companyId);
-			return insuranceService.insurance(map,order,company,OrderConstant.SYS_LOCAL);
+			CompanyMessage company = companyMessageService.findById(TokenUtil.getLoginCompanyId(token));
+			return insuranceService.insurance(token,order,company,OrderConstant.SYS_LOCAL);
 		} catch (Exception e) {
 			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
 			return JsonUtil.getFailJSONObject();
@@ -98,8 +99,8 @@ public class OrderController {
 	 */
 	@InitBinder("order")
 	private void initBinder(ServletRequestDataBinder binder, HttpServletRequest req) {
-		List<String> fields = new ArrayList<String>(Arrays.asList("city", "firstGoodsName", "goodsValue", "currencyCode", "packCode"
-				,"transCode","startPort","endPort","saildate","mark","applyName","insurantName","rate","incrate","goodsCode"));
+		List<String> fields = new ArrayList<String>(Arrays.asList("city","businessType","firstGoodsName","secondGoodsName", "goodsValue", "currencyCode", "packCode"
+				,"transCode","startPort","endPort","saildate","mark","applyName","insurantName","rate","incrate","goodsCode","orderAmount","firstTransName","secondTransName","transPort","invoiceTitle"));
 		switch (req.getMethod()) {
 		case "POST": // 新增
 			binder.setAllowedFields(fields.toArray(new String[fields.size()]));
@@ -120,13 +121,12 @@ public class OrderController {
 	 * @return
 	 */
 	@ModelAttribute("order")
-	public OrderMessage prepare(@RequestParam(value = Presentation.KEY_ID, required = false)Long id,HttpServletRequest req) {
-		if (id != null && id > 0) {// 修改表单提交后数据绑定之前执行
-			OrderMessage orderMessage = orderMessageService.findById(id);
-			return orderMessage;
+	public OrderMessage prepare(@RequestParam(value = Presentation.KEY_ID, required = false) String orderNo,HttpServletRequest req) {
+		if (!StringUtils.isEmpty(orderNo)) {
+			// 修改表单提交后数据绑定之前执行
+			return orderMessageService.findByOrderNo(orderNo);
 		}else {
-			OrderMessage orderMessage = new OrderMessage();
-			return orderMessage;
+			return new OrderMessage();
 		}
 	}
 	
@@ -139,7 +139,8 @@ public class OrderController {
 	@RequestMapping(value = "/pay", method = RequestMethod.GET)
 	public JSONObject pay(HttpServletRequest request,String orderNo) {
 		try {
-			return insuranceService.completePay(request,orderNo,OrderConstant.SYS_LOCAL);
+			String token = HttpHeaderUtil.getToken((HttpServletRequest) request);
+			return insuranceService.completePay(token,orderNo,OrderConstant.SYS_LOCAL);
 		} catch (Exception e) {
 			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
 			return JsonUtil.getFailJSONObject();
@@ -167,6 +168,7 @@ public class OrderController {
 			if(redisUtil.exists(orderShow.getPackCode()+OrderConstant.PACKAGE_SUFFIX)) {
 				orderShow.setPackageType(redisUtil.getString(orderShow.getPackCode()+OrderConstant.PACKAGE_SUFFIX).toString());
 			}
+			
 		} catch (BeansException e) {
 			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
 			return JsonUtil.getFailJSONObject();		

@@ -20,6 +20,7 @@ import com.shenghesun.treasure.system.order.OrderMessage;
 import com.shenghesun.treasure.utils.JsonUtil;
 import com.shenghesun.treasure.utils.RandomUtil;
 import com.shenghesun.treasure.utils.RedisUtil;
+import com.shenghesun.treasure.utils.TokenUtil;
 
 @Service
 public class OrderService {
@@ -37,12 +38,12 @@ public class OrderService {
 	 * @param orderMessage
 	 * @return
 	 */
-	public Map<String,Object> complete(Map<String, Object> tokenMap,OrderMessage orderMessage) {
+	public Map<String,Object> complete(OrderMessage orderMessage) {
 		Map<String,Object> map =new HashMap<String,Object>();
 		//校验包装代码是否存在
 		checkCode(orderMessage,map);
 		//设置公共投保信息
-		orderMessage = this.all(tokenMap,orderMessage,map);
+		orderMessage = this.all(orderMessage,map);
 		//获取保险进出口类型
 		if(orderMessage.getCity().equals(OrderConstant.INLAND)) {
 			//完善国内投保数据
@@ -110,10 +111,8 @@ public class OrderService {
 	/**
 	 * 完善公共投保数据
 	 */
-	public OrderMessage all(Map<String, Object> tokenMap,OrderMessage orderMessage,Map<String,Object> map) {
+	public OrderMessage all(OrderMessage orderMessage,Map<String,Object> map) {
 		//完善下单信息
-		orderMessage.setUserId(Long.parseLong(tokenMap.get(TokenConstant.ID_KEY).toString()));
-		orderMessage.setCompanyId(Long.parseLong(tokenMap.get(TokenConstant.COMPANY_KEY).toString()));
 		orderMessage.setPlusOrMinus(OrderConstant.FUND_OUT);
 		//设置订单号
 		if(orderMessage.getOrderNo()==null) {

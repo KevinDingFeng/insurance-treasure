@@ -1,6 +1,7 @@
 package com.shenghesun.treasure.auth.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -31,6 +32,8 @@ public class RegisterController {
 	private RedisUtil redisUtil;
 	@Autowired
 	private RegisterService registerService;
+	@Value("${sms.template.code}")
+	private String templateCode;
 	/**
 	 * 用户注册
 	 * @param request
@@ -63,6 +66,9 @@ public class RegisterController {
 		try {
 			code = RandomUtil.randomNum();
 			redisUtil.set(account, code, CustomConfig.SMSCODE_TIME_SECOND);
+			//正式时用
+			//String sendSmsCode = SmsCodeService.sendSms(account,"伟林易航",templateCode,"{\"code\":\""+code+"\"}");
+			//临时发送短信
 			String sendSmsCode = SmsCodeService.sendSmsCode(account, code);
 			if(BaseConstant.ACCPUNT_LIMIT_CODE.equals(sendSmsCode)) {
 				return JsonUtil.getFailJSONObject(BaseConstant.ACCPUNT_LIMIT_CONTENT);

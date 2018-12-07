@@ -2,11 +2,7 @@ package com.shenghesun.treasure.order.support;
 
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -19,15 +15,10 @@ import com.shenghesun.treasure.order.service.OrderMessageService;
 import com.shenghesun.treasure.system.company.CompanyMessage;
 import com.shenghesun.treasure.system.cpic.ReturnApprovl;
 import com.shenghesun.treasure.system.order.OrderMessage;
-import com.shenghesun.treasure.utils.HttpHeaderUtil;
 import com.shenghesun.treasure.utils.JsonUtil;
-import com.shenghesun.treasure.utils.SmsCodeService;
 import com.shenghesun.treasure.utils.TokenUtil;
 
-import lombok.extern.slf4j.Slf4j;
-
 @Service
-@Slf4j
 public class InsuranceService {
 	@Autowired
 	AsyncService asyncService;
@@ -49,9 +40,13 @@ public class InsuranceService {
 	/**
 	 * 投保
 	 */
-	public JSONObject insurance(Map<String, Object> map,@Validated OrderMessage order,CompanyMessage company,String comFrom) {
+	public JSONObject insurance(String token,@Validated OrderMessage order,CompanyMessage company,String comFrom) {
+		//获取投保用户
+		String account = TokenUtil.getLoginUserAccount(token);
 		//完善订单信息
-		Map<String,Object> orderMap = orderService.complete(map,order);
+		order.setUserId(TokenUtil.getLoginUserId(token));
+		order.setCompanyId(TokenUtil.getLoginCompanyId(token));
+		Map<String,Object> orderMap = orderService.complete(order);
 		order = (OrderMessage) orderMap.get(OrderConstant.Order);
 		//判断完善信息过程中是否出现运输代码查找错误和货物代码错误
 		JSONObject check = orderService.check(orderMap);
@@ -59,12 +54,12 @@ public class InsuranceService {
 			return check;
 		}
 		//支付扣款并且进行投保
-		return pay(company,order,comFrom);
+		return pay(company,order,comFrom,account);
 	}
 	/**
 	 * 支付
 	 */
-	public JSONObject pay(CompanyMessage company,OrderMessage order,String comFrom) {
+	public JSONObject pay(CompanyMessage company,OrderMessage order,String comFrom,String account) {
 		if(company!=null&&order!=null) {
 			//保费
 			Double preminum = Double.parseDouble(order.getPreminum());
@@ -80,12 +75,11 @@ public class InsuranceService {
 					//异步调用
 					asyncService.executeAsync(order);
 					//发送成功短信
-					//String smsStatus = smsCodeService.sendSms("", "伟林易航",templateCode,"");
-					//log.info("订单号为:"+order.getOrderNo()+";手机号为："+""+"的订单成功短信通知" + smsStatus);
+					//String smsStatus = smsCodeService.sendSms(account, "伟林易航",templateCode,"");
+					//log.info("订单号为:"+order.getOrderNo()+";手机号为："+account+"的订单成功短信通知" + smsStatus);
 				}else {
 					//同步调用
 					ReturnApprovl returnApprovl = externalOrderService.executeApprovl(order);
-					
 					return JsonUtil.getSuccessJSONObject(returnApprovl);
 				}
 			}else {
@@ -108,14 +102,14 @@ public class InsuranceService {
 	 * @param sysLocal
 	 * @return
 	 */
-	public JSONObject completePay(HttpServletRequest request, String orderNo, String sysLocal) {
+	public JSONObject completePay(String token, String orderNo, String sysLocal) {
 		//获取登陆用户信息
-		String token = HttpHeaderUtil.getToken((HttpServletRequest) request);
 		Long companyId = TokenUtil.getLoginCompanyId(token);
+		String account = TokenUtil.getLoginUserAccount(token);
 		//根据订单id查找到订单信息
 		OrderMessage order = orderMessageService.findByOrderNo(orderNo);
 		CompanyMessage company = companyService.findById(companyId);
-		return pay(company,order,sysLocal);
+		return pay(company,order,sysLocal,account);
 	}
 	
 }

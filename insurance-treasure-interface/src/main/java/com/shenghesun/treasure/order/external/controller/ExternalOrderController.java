@@ -1,7 +1,5 @@
 package com.shenghesun.treasure.order.external.controller;
 
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.BeanUtils;
@@ -15,7 +13,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.shenghesun.treasure.company.service.CompanyMessageService;
 import com.shenghesun.treasure.core.constant.InterfaceConstant;
 import com.shenghesun.treasure.core.constant.OrderConstant;
-import com.shenghesun.treasure.core.constant.TokenConstant;
 import com.shenghesun.treasure.cpic.service.ApprovlService;
 import com.shenghesun.treasure.cpic.service.AsyncService;
 import com.shenghesun.treasure.order.service.OrderMessageService;
@@ -67,18 +64,16 @@ public class ExternalOrderController {
 		try {
 			//解析token获取用户信息
 			String token = HttpHeaderUtil.getToken((HttpServletRequest) request); 
-			Map<String, Object> map = TokenUtil.decode(token);
-			Long companyId = Long.parseLong(map.get(TokenConstant.COMPANY_KEY).toString());
-			CompanyMessage company = companyMessageService.findById(companyId);
+			CompanyMessage company = companyMessageService.findById(TokenUtil.getLoginCompanyId(token));
 			float preminum = 0.01f*Float.parseFloat(orderDto.getGoodsValue())*Float.parseFloat(orderDto.getRate());
 			if(company.getBalance()<preminum) {
 				return JsonUtil.getFailJSONObject("账户余额不足，请联系管理员充值");
 			}
-			String userType = map.get(TokenConstant.ACCOUNT_KEY).toString();
+			//对外接口 用户类型
 			String type = null;
 			OrderMessage order = null;
-			if(redisUtil.exists(userType)){
-				type = redisUtil.get(userType);
+			if(redisUtil.exists(TokenUtil.getLoginUserAccount(token))){
+				type = redisUtil.get(TokenUtil.getLoginUserAccount(token));
 			}
 			if(type!=null) {
 				//Dto对象转投保实体对象
@@ -89,7 +84,7 @@ public class ExternalOrderController {
 			}else {
 				return JsonUtil.getFailJSONObject("无权访问该接口，请联系相关人员处理");
 			}
-			return insuranceService.insurance(map,order,company,OrderConstant.SYS_OUT);
+			return insuranceService.insurance(token,order,company,OrderConstant.SYS_OUT);
 		} catch (Exception e) {
 			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
 			return JsonUtil.getFailJSONObject();

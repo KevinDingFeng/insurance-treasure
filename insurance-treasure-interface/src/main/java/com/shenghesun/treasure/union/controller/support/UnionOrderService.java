@@ -45,7 +45,7 @@ public class UnionOrderService {
 		}else {
 			UnionGoodsCode unionGoodsCode = unionGoodsCodeService.findByGoodsName(order.getFirstGoodsName());
 			if(unionGoodsCode!=null) {
-				redisUtil.set(unionGoodsCode.getUnionGoodsName(), unionGoodsCode.getWBGoodsCode());
+				redisUtil.setString(unionGoodsCode.getUnionGoodsName(), unionGoodsCode.getWBGoodsCode());
 			}
 		}
 		return order;
@@ -60,7 +60,7 @@ public class UnionOrderService {
 		}else {
 			UnionTransCode trans = unionTransCodeService.findByTransCode(order.getTransCode());
 			if(trans!=null) {
-				redisUtil.set(trans.getUnionTranscode(), trans.getWBTranscode());
+				redisUtil.setString(trans.getUnionTranscode(), trans.getWBTranscode());
 			}
 		}
 		return order;
@@ -75,7 +75,7 @@ public class UnionOrderService {
 		}else {
 			UnionPackageCode pack = unionPackageCodeService.findByPackageCode(order.getPackCode());
 			if(pack!=null) {
-				redisUtil.set(pack.getUnionPackagecode(), pack.getWBPackagecode());
+				redisUtil.setString(pack.getUnionPackagecode(), pack.getWBPackagecode());
 			}
 		}
 		return order;
@@ -88,7 +88,7 @@ public class UnionOrderService {
 			String string = redisUtil.get(order.getCurrencyCode());
 			order.setCurrencyCode(string);
 		}else {
-			redisUtil.set("RMB", "01");
+			redisUtil.setString("RMB", "01");
 		}
 		return order;
 	}
