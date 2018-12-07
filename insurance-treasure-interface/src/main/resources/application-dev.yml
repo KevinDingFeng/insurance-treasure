@@ -44,7 +44,8 @@ sms:
         key: LTAIwHu0sqMlrOjl
         secret: HYD7y8YO2NIvp5KBH6acAZYbTSZQ5P
     template:
-        code: SMS_149710018
+        tcode: SMS_149710018
+        code: SMS_149424108
 cpic:
     web:
         wsdl.url: http://182.150.60.64/freight/zrxservices/FreightCommonService?wsdl
