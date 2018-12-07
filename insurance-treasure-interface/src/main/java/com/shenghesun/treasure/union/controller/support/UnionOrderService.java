@@ -4,10 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.shenghesun.treasure.system.order.OrderMessage;
-import com.shenghesun.treasure.system.union.code.UnionGoodsCode;
 import com.shenghesun.treasure.system.union.code.UnionPackageCode;
 import com.shenghesun.treasure.system.union.code.UnionTransCode;
-import com.shenghesun.treasure.union.service.UnionGoodsCodeService;
 import com.shenghesun.treasure.union.service.UnionPackageCodeService;
 import com.shenghesun.treasure.union.service.UnionTransCodeService;
 import com.shenghesun.treasure.utils.RedisUtil;
@@ -17,8 +15,6 @@ public class UnionOrderService {
 
 	@Autowired
 	private RedisUtil redisUtil;
-	@Autowired
-	private UnionGoodsCodeService unionGoodsCodeService;
 	@Autowired
 	private UnionTransCodeService unionTransCodeService;
 	@Autowired
@@ -43,10 +39,7 @@ public class UnionOrderService {
 			String string = redisUtil.get(order.getFirstGoodsName());
 			order.setGoodsCode(string);
 		}else {
-			UnionGoodsCode unionGoodsCode = unionGoodsCodeService.findByGoodsName(order.getFirstGoodsName());
-			if(unionGoodsCode!=null) {
-				redisUtil.setString(unionGoodsCode.getUnionGoodsName(), unionGoodsCode.getWBGoodsCode());
-			}
+			order.setGoodsCode("600");
 		}
 		return order;
 	}

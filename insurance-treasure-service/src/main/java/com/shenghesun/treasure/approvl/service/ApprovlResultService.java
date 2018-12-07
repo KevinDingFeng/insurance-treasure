@@ -95,7 +95,7 @@ public class ApprovlResultService {
 
 					String comments = recordEle.elementTextTrim("COMMENTS"); // 拿到RESULT节点下的子节点COMMENTS值
 					approvl.setComments(comments);
-
+					
 					String statusEpolicy = recordEle.elementTextTrim("STATUS_EPOLICY"); // 拿到RESULT节点下的子节点STATUS_EPOLICY值
 					approvl.setStatusEpolicy(statusEpolicy);
 

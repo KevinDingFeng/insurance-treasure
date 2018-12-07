@@ -36,6 +36,7 @@ public class ExternalOrderService {
 				if(StringUtils.isNotEmpty(xml)) {
 					//货运险承保接口
 					ApprovalResponse response = webServiceClient.approvl(xml);
+					System.out.println(response.getPolicyInfo());
 					Approvl approvl =  approvlResultService.xml2Approvl(response.getPolicyInfo(),orderMessage.getOrderNo());
 					returnApprovl = manageOutApprovl(approvl,orderMessage);
 				}
@@ -65,6 +66,7 @@ public class ExternalOrderService {
 			returnApprovl.setComments(approvl.getComments());
 			returnApprovl.setStatusEpolicy(approvl.getStatusEpolicy());
 			returnApprovl.setFileEpolicy(approvl.getFileEpolicy());
+			returnApprovl.setPreminum(orderMessage.getPreminum());
 		}
 		return returnApprovl;
 	}

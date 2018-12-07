@@ -60,7 +60,7 @@ public class Approvl extends BaseEntity{
 	
 	@Column
 	private String comments;
-	
+
 	/**
 	 * 电子保单状态
 	 * 0 创建失败 1 创建成功 2 未创建 

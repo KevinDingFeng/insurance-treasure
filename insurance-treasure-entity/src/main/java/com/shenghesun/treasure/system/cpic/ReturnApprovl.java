@@ -27,4 +27,6 @@ public class ReturnApprovl{
 	private String statusEpolicy;
 	
 	private String fileEpolicy;
+	
+	private String preminum;
 }

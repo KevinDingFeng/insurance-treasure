@@ -99,8 +99,9 @@ public class OrderController {
 	 */
 	@InitBinder("order")
 	private void initBinder(ServletRequestDataBinder binder, HttpServletRequest req) {
-		List<String> fields = new ArrayList<String>(Arrays.asList("city","businessType","firstGoodsName","secondGoodsName", "goodsValue", "currencyCode", "packCode"
-				,"transCode","startPort","endPort","saildate","mark","applyName","insurantName","rate","incrate","goodsCode","orderAmount","firstTransName","secondTransName","transPort","invoiceTitle"));
+		List<String> fields = new ArrayList<String>(Arrays.asList("city","businessType","firstGoodsName","secondGoodsName","goodsValue",
+				"currencyCode", "packCode","transCode","startPort","endPort","saildate","mark","applyName","insurantName","rate","incrate",
+				"goodsCode","orderAmount","firstTransName","secondTransName","transPort","invoiceTitle"));
 		switch (req.getMethod()) {
 		case "POST": // 新增
 			binder.setAllowedFields(fields.toArray(new String[fields.size()]));
