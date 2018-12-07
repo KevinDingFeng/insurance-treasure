@@ -3,7 +3,6 @@ package com.shenghesun.treasure.order.controller;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -28,7 +27,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.shenghesun.treasure.company.service.CompanyMessageService;
 import com.shenghesun.treasure.core.constant.OrderConstant;
 import com.shenghesun.treasure.core.constant.Presentation;
-import com.shenghesun.treasure.core.constant.TokenConstant;
 import com.shenghesun.treasure.cpic.service.ApprovlService;
 import com.shenghesun.treasure.cpic.service.AsyncService;
 import com.shenghesun.treasure.order.model.OrderCondition;
@@ -80,7 +78,6 @@ public class OrderController {
 	 */
 	@RequestMapping(value = "/approvl", method = RequestMethod.POST)
 	public JSONObject save(HttpServletRequest request, @ModelAttribute("order") @Validated OrderMessage order) {
-		System.out.println(order);
 		try {
 			String token = HttpHeaderUtil.getToken((HttpServletRequest) request); 
 			CompanyMessage company = companyMessageService.findById(TokenUtil.getLoginCompanyId(token));

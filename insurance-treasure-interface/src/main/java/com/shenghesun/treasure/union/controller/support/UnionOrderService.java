@@ -36,7 +36,7 @@ public class UnionOrderService {
 	 */
 	public OrderMessage unionGoods(OrderMessage order) {
 		if(redisUtil.exists(order.getFirstGoodsName())) {
-			String string = redisUtil.get(order.getFirstGoodsName());
+			String string = redisUtil.getString(order.getFirstGoodsName());
 			order.setGoodsCode(string);
 		}else {
 			order.setGoodsCode("600");
@@ -48,7 +48,7 @@ public class UnionOrderService {
 	 */
 	public OrderMessage unionTrans(OrderMessage order) {
 		if(redisUtil.exists(order.getTransCode())) {
-			String string = redisUtil.get(order.getTransCode());
+			String string = redisUtil.getString(order.getTransCode());
 			order.setTransCode(string);
 		}else {
 			UnionTransCode trans = unionTransCodeService.findByTransCode(order.getTransCode());
@@ -63,7 +63,7 @@ public class UnionOrderService {
 	 */
 	public OrderMessage unionPackage(OrderMessage order) {
 		if(redisUtil.exists(order.getPackCode())) {
-			String string = redisUtil.get(order.getPackCode());
+			String string = redisUtil.getString(order.getPackCode());
 			order.setPackCode(string);
 		}else {
 			UnionPackageCode pack = unionPackageCodeService.findByPackageCode(order.getPackCode());
@@ -78,7 +78,7 @@ public class UnionOrderService {
 	 */
 	public OrderMessage unionCurrency(OrderMessage order) {
 		if(redisUtil.exists(order.getCurrencyCode())){
-			String string = redisUtil.get(order.getCurrencyCode());
+			String string = redisUtil.getString(order.getCurrencyCode());
 			order.setCurrencyCode(string);
 		}else {
 			redisUtil.setString("RMB", "01");

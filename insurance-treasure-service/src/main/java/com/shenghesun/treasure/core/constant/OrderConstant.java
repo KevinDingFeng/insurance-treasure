@@ -80,6 +80,26 @@ public class OrderConstant {
 	public static final String CURRENCY_MESSAGE = ": 币种代码不存在";
 	
 	/**
+	 * 费率错误key  RATE_ERROR
+	 */
+	public static final String RATE_ERROR = "rate_error";
+
+	/**
+	 * 费率错误key  RATE_ERROR
+	 */
+	public static final String RATE_MESSAGE = ": 费率低于最低费率";
+	
+	/**
+	 * 货物价值低于0key
+	 */
+	public static final String GOODSVALUE_ERROR = "goodsValue_error";
+	
+	/**
+	 * 货物价值低于0value
+	 */
+	public static final String GOODSVALUE_MESSAGE = ": 货物价值有误";
+	
+	/**
 	 * order
 	 */
 	public static final String Order = "order";

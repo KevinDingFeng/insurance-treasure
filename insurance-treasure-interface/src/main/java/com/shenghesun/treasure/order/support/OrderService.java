@@ -12,7 +12,6 @@ import com.shenghesun.treasure.code.service.CodeListService;
 import com.shenghesun.treasure.code.service.GoodsCodeService;
 import com.shenghesun.treasure.code.service.TransCodeService;
 import com.shenghesun.treasure.core.constant.OrderConstant;
-import com.shenghesun.treasure.core.constant.TokenConstant;
 import com.shenghesun.treasure.system.code.CodeList;
 import com.shenghesun.treasure.system.code.GoodsCode;
 import com.shenghesun.treasure.system.code.TransCode;
@@ -20,7 +19,6 @@ import com.shenghesun.treasure.system.order.OrderMessage;
 import com.shenghesun.treasure.utils.JsonUtil;
 import com.shenghesun.treasure.utils.RandomUtil;
 import com.shenghesun.treasure.utils.RedisUtil;
-import com.shenghesun.treasure.utils.TokenUtil;
 
 @Service
 public class OrderService {
@@ -172,8 +170,9 @@ public class OrderService {
 	 * 检验代码是否存在
 	 */
 	public void checkCode(OrderMessage orderMessage,Map<String,Object> map) {
-		String pack = orderMessage.getPackCode()+"pack";
-		String currency = orderMessage.getCurrencyCode()+"curr";
+		String pack = orderMessage.getPackCode()+OrderConstant.PACKAGE_SUFFIX;
+		String currency = orderMessage.getCurrencyCode()+OrderConstant.CURRENCY_SUFFIX;
+		//代码如果不存在redis中，则去数据库中查找，查找到对象为空，则表示该代码不存在，返回代码不存在异常
 		if(!redisUtil.exists(pack)){
 			CodeList packCode = codeListService.findByKey(pack);
 			if(packCode==null) {
@@ -189,6 +188,12 @@ public class OrderService {
 			}else {
 				redisUtil.set(currCode.getCodeKey(), currCode.getCodeValue());
 			}
+		}
+		if(Float.parseFloat(orderMessage.getRate())<0.02f) {
+			map.put(OrderConstant.RATE_ERROR, OrderConstant.RATE_MESSAGE);
+		}
+		if(Integer.parseInt(orderMessage.getGoodsValue())<0) {
+			map.put(OrderConstant.GOODSVALUE_ERROR, OrderConstant.GOODSVALUE_MESSAGE);
 		}
 	}
 	
@@ -208,6 +213,12 @@ public class OrderService {
 		}
 		if(orderMap.get(OrderConstant.CURRENCY_ERROR)!=null) {
 			return JsonUtil.getFailJSONObject(orderMap.get(OrderConstant.CURRENCY_ERROR));
+		}
+		if(orderMap.get(OrderConstant.RATE_ERROR)!=null) {
+			return JsonUtil.getFailJSONObject(orderMap.get(OrderConstant.RATE_ERROR));
+		}
+		if(orderMap.get(OrderConstant.GOODSVALUE_ERROR)!=null) {
+			return JsonUtil.getFailJSONObject(orderMap.get(OrderConstant.GOODSVALUE_ERROR));
 		}
 		return null;
 	}
