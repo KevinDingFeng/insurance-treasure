@@ -79,15 +79,15 @@ public class ExternalOrderController {
 			if(redisUtil.exists(TokenUtil.getLoginUserAccount(token))){
 				type = redisUtil.get(TokenUtil.getLoginUserAccount(token));
 			}
+			//Dto对象转投保实体对象
+			order = new OrderMessage();
+			BeanUtils.copyProperties(orderDto, order);
 			if(type!=null) {
-				//Dto对象转投保实体对象
-				order = new OrderMessage();
-				BeanUtils.copyProperties(orderDto, order);
 				//根据不同类型，选择不同的翻译方式
 				order = translationCode(type,order);
-			}else {
-				return JsonUtil.getFailJSONObject("无权访问该接口，请联系相关人员处理");
-			}
+			}/*else {
+				//return JsonUtil.getFailJSONObject("无权访问该接口，请联系相关人员处理");
+			}*/
 			return insuranceService.insurance(token,order,company,OrderConstant.SYS_OUT);
 		} catch (Exception e) {
 			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
@@ -102,8 +102,10 @@ public class ExternalOrderController {
 	 */
 	private OrderMessage translationCode(String type,OrderMessage order) {
 		switch(type) {
-			case InterfaceConstant.TYPE:
+			case InterfaceConstant.TYPE1:
 				return order = unionOrderService.unionComplete(order);
+			case InterfaceConstant.TYPE2:
+				return order;
 			 default:
 				return null;
 		}	
