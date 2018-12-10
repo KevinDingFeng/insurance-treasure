@@ -62,18 +62,12 @@ public class OrderMessageService {
 					predicate.getExpressions().add(cb.equal(root.get("userId"), condition.getUserId()));
 				}
 				if (condition.getInsuranceStatus() != null) {
-					/*if(condition.getInsuranceStatus().equals("10")) {
-						predicate.getExpressions().add(cb.equal(root.get("insuranceStatus"), condition.getInsuranceStatus()));
-					}else {
-						predicate.getExpressions().add(cb.notEqual(root.get("insuranceStatus"), "10"));
-					}*/
 					if(condition.getInsuranceStatus().equals("10")) {
 						predicate.getExpressions().add(cb.isNotNull(root.get("applyNo")));
 					}else {
 						predicate.getExpressions().add(cb.isNull(root.get("applyNo")));
 					}
 				}
-				
 		        if(condition.getKeyword() != null){
 	            	//根据订单号、业务类型、保单号进行查询
 	            	Predicate pre = cb.like(root.get("orderNo").as(String.class), "%" + condition.getKeyword() + "%");

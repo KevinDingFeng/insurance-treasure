@@ -129,10 +129,13 @@ public class OrderController {
 	}
 	
 	/**
-	 * 订单支付
-	 * @param request
-	 * @param orderNo
-	 * @return
+	 * 	@Title pay
+	 *  @param request
+	 *  @param orderNo
+	 *  @return JSONObject
+	 *  @author zdd
+	 *	@date 2018年12月10日下午2:27:45
+	 *  @Description 订单支付
 	 */
 	@RequestMapping(value = "/pay", method = RequestMethod.GET)
 	public JSONObject pay(HttpServletRequest request,String orderNo) {

@@ -195,7 +195,7 @@ public class OrderService {
 			map.put(OrderConstant.RATE_ERROR, OrderConstant.RATE_MESSAGE);
 		}
 		//验证货物价值是否小于0
-		if(Integer.parseInt(orderMessage.getGoodsValue())<0) {
+		if(Float.parseFloat(orderMessage.getGoodsValue())<0) {
 			map.put(OrderConstant.GOODSVALUE_ERROR, OrderConstant.GOODSVALUE_MESSAGE);
 		}
 	}
