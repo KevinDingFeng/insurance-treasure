@@ -36,6 +36,10 @@ public class AsyncService {
 	private ApprovlResultService approvlResultService;
 	/**
 	 * 异步  项目使用投保方法
+	 * 1.将订单信息转为投保需要的xml
+	 * 2.调用货运承保接口，将xml提交进行投保，获取响应信息
+	 * 3.将响应的xml信息转为承保返回的对象
+	 * 4.处理响应回的对象，根据处理结果，返回投保是成功还是失败，然后记录该日志
 	 * @param orderMessage
 	 * @return
 	 */

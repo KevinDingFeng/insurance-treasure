@@ -29,6 +29,9 @@ public class ApprovlResultService {
 
 	/**
 	 * 处理投保结果
+	 * 1.保存响应对象
+	 * 2.更新订单信息的保险状态和保单号，然后进行保存
+	 * 3.获取响应的保单状态，如果状态为10，则表示投保成功,状态为7代表太保人工审核，其他表示投保失败
 	 */
 	public Boolean manageApprovl(Approvl approvl,OrderMessage orderMessage) {
 		if(approvl != null) {
@@ -42,7 +45,9 @@ public class ApprovlResultService {
 				orderMessageService.save(orderMessage);
 				if(OrderConstant.APPROVL_SUCCESS.equals(status)) {
 					return true;
-				}else if(OrderConstant.APPROVL_FAIL.equals(status)) {
+				}else if(OrderConstant.APPROVL_WAIT.equals(status)) {
+					return true;
+				}else {
 					return false;
 				}
 			}

@@ -38,7 +38,7 @@ public class OrderService {
 	 */
 	public Map<String,Object> complete(OrderMessage orderMessage) {
 		Map<String,Object> map =new HashMap<String,Object>();
-		//校验包装代码是否存在
+		//校验表单数据
 		checkCode(orderMessage,map);
 		//设置公共投保信息
 		orderMessage = this.all(orderMessage,map);
@@ -168,6 +168,7 @@ public class OrderService {
 	}
 	/**
 	 * 检验代码是否存在
+	 * @return 
 	 */
 	public void checkCode(OrderMessage orderMessage,Map<String,Object> map) {
 		String pack = orderMessage.getPackCode()+OrderConstant.PACKAGE_SUFFIX;
@@ -189,9 +190,11 @@ public class OrderService {
 				redisUtil.set(currCode.getCodeKey(), currCode.getCodeValue());
 			}
 		}
+		//验证订单费率是否小于最低费率
 		if(Float.parseFloat(orderMessage.getRate())<0.02f) {
 			map.put(OrderConstant.RATE_ERROR, OrderConstant.RATE_MESSAGE);
 		}
+		//验证货物价值是否小于0
 		if(Integer.parseInt(orderMessage.getGoodsValue())<0) {
 			map.put(OrderConstant.GOODSVALUE_ERROR, OrderConstant.GOODSVALUE_MESSAGE);
 		}

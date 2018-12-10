@@ -55,6 +55,10 @@ public class ExternalOrderController {
 	private RedisUtil redisUtil;
 	/**
 	 * 外部投保接口，用户获取token后直接进行使用
+	 * 1.解析token获取用户和公司信息
+	 * 2.计算订单的保费与公司的余额进行比较，余额不足直接返回信息，不进行订单数据处理
+	 * 3.获取用户的登陆类型，根据用户的不同类型选择不同的数据翻译
+	 * 4.用户登陆类型不存在，返回无权访问接口信息，存在时对订单信息进行翻译
 	 * @param request
 	 * @param orderMessage
 	 * @return

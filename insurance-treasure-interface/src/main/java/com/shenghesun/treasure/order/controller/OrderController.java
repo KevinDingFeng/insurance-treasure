@@ -138,7 +138,13 @@ public class OrderController {
 	public JSONObject pay(HttpServletRequest request,String orderNo) {
 		try {
 			String token = HttpHeaderUtil.getToken((HttpServletRequest) request);
-			return insuranceService.completePay(token,orderNo,OrderConstant.SYS_LOCAL);
+			//获取登陆用户信息
+			Long companyId = TokenUtil.getLoginCompanyId(token);
+			String account = TokenUtil.getLoginUserAccount(token);
+			//根据订单id查找到订单信息
+			OrderMessage order = orderMessageService.findByOrderNo(orderNo);
+			CompanyMessage company = companyMessageService.findById(companyId);
+			return insuranceService.pay(company,order,OrderConstant.SYS_LOCAL,account);
 		} catch (Exception e) {
 			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
 			return JsonUtil.getFailJSONObject();

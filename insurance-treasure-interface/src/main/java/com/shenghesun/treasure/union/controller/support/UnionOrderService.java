@@ -21,6 +21,8 @@ public class UnionOrderService {
 	private UnionPackageCodeService unionPackageCodeService;
 	/**
 	 * 完善订单信息方法入口
+	 * 1.将联盟速运数据字典翻译成物流宝宝数据字典
+	 * 2.翻译内容包括货物名称、运输方式、包装类型、币种代码
 	 * @param order
 	 * @return
 	 */

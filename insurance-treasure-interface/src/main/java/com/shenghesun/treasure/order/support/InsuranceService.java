@@ -30,15 +30,16 @@ public class InsuranceService {
 	OrderMessageService orderMessageService;
 	@Autowired
 	ExternalOrderService externalOrderService;
-	//@Autowired
-	//private SmsCodeService smsCodeService;
+	/*@Autowired
+	private SmsCodeService smsCodeService;*/
 	/**
 	 * 支付成功通知模板code
 	 */
-	/*@Value("${sms.success.template.code}")
+	/*@Value("${sms.template.code}")
 	private String templateCode;*/
 	/**
-	 * 投保
+	 * 1.投保前完善保单信息
+	 * 2.检验提交表单中的数据是否正确，验证失败直接返回错误信息，验证通过后进行支付
 	 */
 	public JSONObject insurance(String token,@Validated OrderMessage order,CompanyMessage company,String comFrom) {
 		//获取投保用户
@@ -57,7 +58,12 @@ public class InsuranceService {
 		return pay(company,order,comFrom,account);
 	}
 	/**
-	 * 支付
+	 * 1.判断公司信息和办单信息是否为空，不为空进行支付操作
+	 * 2.获取公司余额，判断是否大于保单的保费，如果余额不足则返回消息，并保存订单数据，便于日后进行支付操作
+	 * 			余额充足，更新下保单后的剩余金额，保存公司信息。
+	 * 3.修改订单支付状态，保存订单信息
+	 * 4.支付完成后进行投保，根据接口访问的方式，区分为内部系统访问(需要异步进行投保)和外部系统访问(需要同步进行投保返回数据)，
+	 * 5.内部系统异步投保后进行短信通知
 	 */
 	public JSONObject pay(CompanyMessage company,OrderMessage order,String comFrom,String account) {
 		if(company!=null&&order!=null) {
@@ -94,22 +100,4 @@ public class InsuranceService {
 		}
 		return JsonUtil.getSuccessJSONObject(order.getOrderNo());
 	}
-
-	/**
-	 * 完成订单支付
-	 * @param request
-	 * @param orderNo
-	 * @param sysLocal
-	 * @return
-	 */
-	public JSONObject completePay(String token, String orderNo, String sysLocal) {
-		//获取登陆用户信息
-		Long companyId = TokenUtil.getLoginCompanyId(token);
-		String account = TokenUtil.getLoginUserAccount(token);
-		//根据订单id查找到订单信息
-		OrderMessage order = orderMessageService.findByOrderNo(orderNo);
-		CompanyMessage company = companyService.findById(companyId);
-		return pay(company,order,sysLocal,account);
-	}
-	
 }

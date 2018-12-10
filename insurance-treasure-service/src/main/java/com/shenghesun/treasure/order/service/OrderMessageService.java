@@ -8,7 +8,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -63,20 +62,26 @@ public class OrderMessageService {
 					predicate.getExpressions().add(cb.equal(root.get("userId"), condition.getUserId()));
 				}
 				if (condition.getInsuranceStatus() != null) {
-					if(condition.getInsuranceStatus().equals("10")) {
+					/*if(condition.getInsuranceStatus().equals("10")) {
 						predicate.getExpressions().add(cb.equal(root.get("insuranceStatus"), condition.getInsuranceStatus()));
 					}else {
 						predicate.getExpressions().add(cb.notEqual(root.get("insuranceStatus"), "10"));
+					}*/
+					if(condition.getInsuranceStatus().equals("10")) {
+						predicate.getExpressions().add(cb.isNotNull(root.get("applyNo")));
+					}else {
+						predicate.getExpressions().add(cb.isNull(root.get("applyNo")));
 					}
 				}
 				
-				if (StringUtils.isNotEmpty(condition.getKeyword())) {
-					Predicate pre = cb.like(
-							cb.concat(root.get("orderNo"), root.get("businessType")),
-							"%" + condition.getKeyword() + "%");
-					predicate.getExpressions().add(pre);
-				}
-				
+		        if(condition.getKeyword() != null){
+	            	//根据订单号、业务类型、保单号进行查询
+	            	Predicate pre = cb.like(root.get("orderNo").as(String.class), "%" + condition.getKeyword() + "%");
+	            	//商家名称
+	            	Predicate pre2 = cb.like(root.get("businessType").as(String.class), "%" + condition.getKeyword() + "%");
+	            	Predicate pre3 = cb.like(root.get("applyNo").as(String.class), "%" + condition.getKeyword() + "%");
+	            	predicate.getExpressions().add(cb.or(pre,pre2,pre3));
+	            }
 				
 				if (condition.getBeginDate() != null) {
 					predicate.getExpressions()
