@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.shenghesun.treasure.company.service.CompanyMessageService;
 import com.shenghesun.treasure.core.constant.OrderConstant;
@@ -32,6 +33,7 @@ import com.shenghesun.treasure.cpic.service.AsyncService;
 import com.shenghesun.treasure.order.model.OrderCondition;
 import com.shenghesun.treasure.order.service.OrderMessageService;
 import com.shenghesun.treasure.order.support.InsuranceService;
+import com.shenghesun.treasure.system.code.TransCode;
 import com.shenghesun.treasure.system.company.CompanyMessage;
 import com.shenghesun.treasure.system.model.OrderShow;
 import com.shenghesun.treasure.system.order.OrderMessage;
@@ -169,12 +171,18 @@ public class OrderController {
 			OrderMessage orderMessage = orderMessageService.findByOrderNo(orderNo);
 			orderShow = new OrderShow();
 			BeanUtils.copyProperties(orderMessage, orderShow);
+			//将币种代码翻译成币种名称
 			if(redisUtil.exists(orderShow.getCurrencyCode()+OrderConstant.CURRENCY_SUFFIX)) {
 				orderShow.setCurrencyName(redisUtil.getString(orderShow.getCurrencyCode()+OrderConstant.CURRENCY_SUFFIX).toString());
 			}
+			//将包装代码翻译成包装名称
 			if(redisUtil.exists(orderShow.getPackCode()+OrderConstant.PACKAGE_SUFFIX)) {
 				orderShow.setPackageType(redisUtil.getString(orderShow.getPackCode()+OrderConstant.PACKAGE_SUFFIX).toString());
 			}
+			//根据运输代码获取标识符名称
+			String trans = redisUtil.get(orderMessage.getTransCode());
+			TransCode transCode = JSON.parseObject(trans, TransCode.class);
+			orderShow.setMarkName(transCode.getMarkName());
 			
 		} catch (BeansException e) {
 			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());

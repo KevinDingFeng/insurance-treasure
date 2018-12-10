@@ -17,5 +17,9 @@ public class OrderShow extends OrderMessage{
 	 * 包装代码对应名称
 	 */
 	private String packageType;
+	/**
+	 * 标识符名称
+	 */
+	private String markName;
 	
 }
