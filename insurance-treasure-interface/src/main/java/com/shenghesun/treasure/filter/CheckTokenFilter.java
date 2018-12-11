@@ -43,6 +43,7 @@ public class CheckTokenFilter implements Filter{
 		if(request instanceof HttpServletRequest) {
 			String token = HttpHeaderUtil.getToken((HttpServletRequest) request);
 			String json = redisUtil.get(CustomConfig.REDIS_USER_ID+token);
+			System.out.println(json);
 			if(StringUtils.isEmpty(token)) {
 				this.setReturnResponse((HttpServletResponse) response,"token为空",null);
 				return;

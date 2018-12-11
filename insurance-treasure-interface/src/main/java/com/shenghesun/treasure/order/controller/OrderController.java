@@ -173,11 +173,27 @@ public class OrderController {
 			BeanUtils.copyProperties(orderMessage, orderShow);
 			//将币种代码翻译成币种名称
 			if(redisUtil.exists(orderShow.getCurrencyCode()+OrderConstant.CURRENCY_SUFFIX)) {
-				orderShow.setCurrencyName(redisUtil.getString(orderShow.getCurrencyCode()+OrderConstant.CURRENCY_SUFFIX).toString());
+				String currency =  redisUtil.getString(orderShow.getCurrencyCode()+OrderConstant.CURRENCY_SUFFIX);
+				System.out.println(currency);
+				orderShow.setCurrencyName(currency);
 			}
 			//将包装代码翻译成包装名称
 			if(redisUtil.exists(orderShow.getPackCode()+OrderConstant.PACKAGE_SUFFIX)) {
 				orderShow.setPackageType(redisUtil.getString(orderShow.getPackCode()+OrderConstant.PACKAGE_SUFFIX).toString());
+			}
+			//翻译保单状态
+			switch(orderShow.getInsuranceStatus()){
+				case "7":
+					orderShow.setInsuranceStatus("待审核");
+					break;
+				case "10":
+					orderShow.setInsuranceStatus("已出单");
+					break;
+				case "0":
+					orderShow.setInsuranceStatus("未出单");
+					break;
+				default:
+					break;
 			}
 			//根据运输代码获取标识符名称
 			String trans = redisUtil.get(orderMessage.getTransCode());

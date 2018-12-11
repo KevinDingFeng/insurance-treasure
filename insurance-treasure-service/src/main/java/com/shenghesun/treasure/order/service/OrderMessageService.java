@@ -62,6 +62,7 @@ public class OrderMessageService {
 					predicate.getExpressions().add(cb.equal(root.get("userId"), condition.getUserId()));
 				}
 				if (condition.getInsuranceStatus() != null) {
+					//已出单和未出单标志，提交数据insuranceStatus为10则表示查找已经出单成功的订单，后台查找保单号不为空的订单
 					if(condition.getInsuranceStatus().equals("10")) {
 						predicate.getExpressions().add(cb.isNotNull(root.get("applyNo")));
 					}else {

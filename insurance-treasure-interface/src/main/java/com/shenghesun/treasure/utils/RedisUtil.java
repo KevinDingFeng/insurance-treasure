@@ -159,6 +159,19 @@ public class RedisUtil {
 		}
 		return result;
 	}
+	
+	public boolean setString(final String key, String value, Long expireTime) {
+		boolean result = false;
+		try {
+			redisTemplate.setValueSerializer(new StringRedisSerializer());
+			ValueOperations<Serializable, String> operations = redisTemplate.opsForValue();
+			operations.set(key, value,expireTime);
+			result = true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
 	/**
 	 * 写入缓存
 	 * 

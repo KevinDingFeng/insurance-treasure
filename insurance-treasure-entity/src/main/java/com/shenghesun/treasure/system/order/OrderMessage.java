@@ -266,6 +266,6 @@ public class OrderMessage extends BaseEntity implements Serializable{
 	 */
 	@Column
 	@XStreamOmitField
-	private Integer insuranceStatus=0;
+	private String insuranceStatus="0";
 	
 }
