@@ -99,9 +99,9 @@ public class RedisUtil {
 	}
 	
 	public String getString(final String key) {
-		Object result = null;
+		String result = null;
 		redisTemplate.setValueSerializer(new StringRedisSerializer());
-		ValueOperations<Serializable, Object> operations = redisTemplate.opsForValue();
+		ValueOperations<Serializable, String> operations = redisTemplate.opsForValue();
 		try {
 			result = operations.get(key);
 		} catch (Exception e) {
@@ -110,7 +110,7 @@ public class RedisUtil {
 		if (result == null) {
 			return null;
 		}
-		return result.toString();
+		return result;
 	}
 	
 	public Object getObj(final String key) {
@@ -147,11 +147,11 @@ public class RedisUtil {
 		return result;
 	}
 
-	public boolean setString(final String key, Object value) {
+	public boolean setString(final String key, String value) {
 		boolean result = false;
 		try {
 			redisTemplate.setValueSerializer(new StringRedisSerializer());
-			ValueOperations<Serializable, Object> operations = redisTemplate.opsForValue();
+			ValueOperations<Serializable, String> operations = redisTemplate.opsForValue();
 			operations.set(key, value);
 			result = true;
 		} catch (Exception e) {
