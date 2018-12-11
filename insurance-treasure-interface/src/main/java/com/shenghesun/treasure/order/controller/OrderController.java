@@ -187,10 +187,10 @@ public class OrderController {
 					orderShow.setInsuranceStatus("待审核");
 					break;
 				case "10":
-					orderShow.setInsuranceStatus("已出单");
+					orderShow.setInsuranceStatus("保单生效");
 					break;
 				case "0":
-					orderShow.setInsuranceStatus("未出单");
+					orderShow.setInsuranceStatus("待审核");
 					break;
 				default:
 					break;
