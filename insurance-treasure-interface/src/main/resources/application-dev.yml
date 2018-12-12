@@ -44,9 +44,9 @@ sms:
         key: LTAIbUTA1CHiki8W
         secret: 9YNLqzVFoKbSFgVbc3twoMtPgLS5Y5
     template:
-        register-code: SMS_152509672
-        update-code: SMS_152509668
-        success-code: SMS_152509726
+        register.code: SMS_152509672
+        update.code: SMS_152509668
+        success.code: SMS_152509726
 cpic:
     web:
         wsdl.url: http://182.150.60.64/freight/zrxservices/FreightCommonService?wsdl
