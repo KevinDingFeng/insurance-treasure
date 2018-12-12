@@ -21,17 +21,17 @@ public class OrderConstant {
 	/**
 	 * 投保返回状态10，成功
 	 */
-	public static final Integer APPROVL_SUCCESS = 10;
+	public static final String APPROVL_SUCCESS = "10";
 	
 	/**
 	 * 投保返回状态7，人工核保
 	 */
-	public static final Integer APPROVL_WAIT = 7;
+	public static final String APPROVL_WAIT = "7";
 	
 	/**
 	 * 投保返回状态19,提交失败
 	 */
-	public static final Integer APPROVL_FAIL = 19;
+	public static final String APPROVL_FAIL = "19";
 	
 	/**
 	 * 资金消耗

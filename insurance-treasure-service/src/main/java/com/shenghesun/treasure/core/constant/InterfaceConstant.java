@@ -8,4 +8,5 @@ public class InterfaceConstant {
 	public static final String TYPE1 = "1";
 	
 	public static final String TYPE2 = "2";
+	
 }

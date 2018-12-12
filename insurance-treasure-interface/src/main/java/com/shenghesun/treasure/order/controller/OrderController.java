@@ -30,6 +30,7 @@ import com.shenghesun.treasure.core.constant.OrderConstant;
 import com.shenghesun.treasure.core.constant.Presentation;
 import com.shenghesun.treasure.cpic.service.ApprovlService;
 import com.shenghesun.treasure.cpic.service.AsyncService;
+import com.shenghesun.treasure.order.emnum.InsuranceStatusEnum;
 import com.shenghesun.treasure.order.model.OrderCondition;
 import com.shenghesun.treasure.order.service.OrderMessageService;
 import com.shenghesun.treasure.order.support.InsuranceService;
@@ -191,6 +192,8 @@ public class OrderController {
 					break;
 				case "0":
 					orderShow.setInsuranceStatus("待审核");
+					InsuranceStatusEnum cancel = InsuranceStatusEnum.CANCEL;
+					System.out.println(cancel);
 					break;
 				default:
 					break;

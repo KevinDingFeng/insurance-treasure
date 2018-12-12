@@ -32,8 +32,10 @@ public class RegisterController {
 	private RedisUtil redisUtil;
 	@Autowired
 	private RegisterService registerService;
-	@Value("${sms.template.code}")
-	private String templateCode;
+	@Value("${sms.template.register.code}")
+	private String registertemplateCode;
+	@Value("${sms.template.update.code}")
+	private String modifytemplateCode;
 	/**
 	 * 用户注册
 	 * @param request
@@ -58,18 +60,40 @@ public class RegisterController {
 		}
 	}
 	/**
-	 * 发送手机验证码
+	 * 发送注册手机验证码
 	 */
 	@RequestMapping(value = "/sms", method = RequestMethod.GET)
-	public JSONObject sendMessage(String account) {
+	public JSONObject sendCode(String account) {
 		String code=null;
 		try {
 			code = RandomUtil.randomNum();
 			redisUtil.set(account, code, CustomConfig.SMSCODE_TIME_SECOND);
 			//正式时用
-			//String sendSmsCode = SmsCodeService.sendSms(account,"伟林易航",templateCode,"{\"code\":\""+code+"\"}");
-			//临时发送短信
-			String sendSmsCode = SmsCodeService.sendSmsCode(account, code);
+			String sendSmsCode = SmsCodeService.sendSms(account,"物流保宝",registertemplateCode,"{\"code\":\""+code+"\"}");
+			if(BaseConstant.ACCPUNT_LIMIT_CODE.equals(sendSmsCode)) {
+				return JsonUtil.getFailJSONObject(BaseConstant.ACCPUNT_LIMIT_CONTENT);
+			}
+		} catch (Exception e) {
+			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
+		}
+		return JsonUtil.getSuccessJSONObject(code);
+	}
+	
+	/**
+	 * 	@Title
+	 *  @param account
+	 *  @return JSONObject
+	 *  @author zdd
+	 *	@date 2018年12月12日下午1:57:06
+	 *  @Description 发送修改手机号验证码
+	 */
+	@RequestMapping(value = "/smsModify", method = RequestMethod.GET)
+	public JSONObject sendModifyCode(String account) {
+		String code=null;
+		try {
+			code = RandomUtil.randomNum();
+			redisUtil.set(account, code, CustomConfig.SMSCODE_TIME_SECOND);
+			String sendSmsCode = SmsCodeService.sendSms(account,"物流保宝",modifytemplateCode,"{\"code\":\""+code+"\"}");
 			if(BaseConstant.ACCPUNT_LIMIT_CODE.equals(sendSmsCode)) {
 				return JsonUtil.getFailJSONObject(BaseConstant.ACCPUNT_LIMIT_CONTENT);
 			}

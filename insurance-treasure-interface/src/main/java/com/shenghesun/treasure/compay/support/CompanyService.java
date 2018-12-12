@@ -22,6 +22,7 @@ import com.shenghesun.treasure.config.CustomConfig;
 import com.shenghesun.treasure.system.company.CompanyMessage;
 import com.shenghesun.treasure.system.entity.SysUser;
 import com.shenghesun.treasure.system.service.SysUserService;
+import com.shenghesun.treasure.utils.CustomerNoUtil;
 import com.shenghesun.treasure.utils.HttpHeaderUtil;
 import com.shenghesun.treasure.utils.JsonUtil;
 import com.shenghesun.treasure.utils.RandomUtil;
@@ -69,6 +70,14 @@ public class CompanyService {
 		if(companyMessage.getCreditCard()==null) {
 			return JsonUtil.getFailJSONObject("请上传公司凭证");
 		}
+		String maxCompanyNo = companyService.maxCompanyNo();
+		System.out.println(maxCompanyNo.length());
+		if(maxCompanyNo.length()>0) {
+			companyMessage.setCustomerNo(CustomerNoUtil.getNo(maxCompanyNo));
+		}else {
+			companyMessage.setCustomerNo(CustomerNoUtil.getFirstNo());
+		}
+		
 		//保存公司信息
 		CompanyMessage company = companyService.save(companyMessage);
 		//更新当前用户的公司信息

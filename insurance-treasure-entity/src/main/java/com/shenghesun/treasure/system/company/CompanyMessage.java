@@ -70,4 +70,10 @@ public class CompanyMessage extends BaseEntity implements Serializable{
 	@Column(columnDefinition="DECIMAL(16,2)")
 	private Double balance=0d;
 	
+	/**
+	 * 客户编号
+	 */
+	@Column(length = 10)
+	private String customerNo;
+	
 }

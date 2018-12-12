@@ -4,12 +4,21 @@ import java.util.Random;
 
 public class RandomUtil {
 
-	
+	//获取随机验证码，包含字母和数字
 	public static String randomString(int n) {
+		String pool = "asdfghjklqwertyuiopzxcvbnm0123456789";
+		return randomString(n,pool);
+	}
+	//获取随机大写英文码
+	public static String randomUpString(int n) {
+		String pool = "QWERTYUIOPASDFGHJKKLZXCVBNM";
+		return randomString(n,pool);
+	}
+	public static String randomString(int n,String pool) {
 		if(n < 1) {
 			return "";
 		}
-		String pool = "asdfghjklqwertyuiopzxcvbnm0123456789";
+		//String pool = "asdfghjklqwertyuiopzxcvbnm0123456789";
 		Random r = new Random();
 		StringBuilder b = new StringBuilder();
 		b.append(pool.charAt(r.nextInt(pool.length())));
@@ -18,6 +27,7 @@ public class RandomUtil {
 		}
 		return b.toString();
 	}
+	
 //	 //生成随机数字和字母,  
 //  public static String getStringRandom(int length) {  
 //        
@@ -59,10 +69,14 @@ public class RandomUtil {
 		return randomNum(6);
 	}
 	
-	public static void main(String[] args) {
-//		for(int i = 0 ; i < 10 ; i ++) {
-//			System.out.println(randomString());
-//		}
-		System.out.println(randomNum());
+	//获取险种代码前两位
+	public static String getClassCode(String code) {
+		return code.substring(0, 2);
 	}
+	//
+	
+	public static void main(String[] args) {
+		System.out.println(randomUpString(1));
+	}
+	
 }

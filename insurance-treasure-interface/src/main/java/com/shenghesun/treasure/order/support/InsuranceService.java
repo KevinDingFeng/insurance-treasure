@@ -3,6 +3,7 @@ package com.shenghesun.treasure.order.support;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -16,9 +17,13 @@ import com.shenghesun.treasure.system.company.CompanyMessage;
 import com.shenghesun.treasure.system.cpic.ReturnApprovl;
 import com.shenghesun.treasure.system.order.OrderMessage;
 import com.shenghesun.treasure.utils.JsonUtil;
+import com.shenghesun.treasure.utils.SmsCodeService;
 import com.shenghesun.treasure.utils.TokenUtil;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class InsuranceService {
 	@Autowired
 	AsyncService asyncService;
@@ -30,13 +35,13 @@ public class InsuranceService {
 	OrderMessageService orderMessageService;
 	@Autowired
 	ExternalOrderService externalOrderService;
-	/*@Autowired
-	private SmsCodeService smsCodeService;*/
+	@Autowired
+	private SmsCodeService smsCodeService;
 	/**
 	 * 支付成功通知模板code
 	 */
-	/*@Value("${sms.template.code}")
-	private String templateCode;*/
+	@Value("${sms.template.success.code}")
+	private String templateCode;
 	/**
 	 * 1.投保前完善保单信息
 	 * 2.检验提交表单中的数据是否正确，验证失败直接返回错误信息，验证通过后进行支付
@@ -47,7 +52,7 @@ public class InsuranceService {
 		//完善订单信息
 		order.setUserId(TokenUtil.getLoginUserId(token));
 		order.setCompanyId(TokenUtil.getLoginCompanyId(token));
-		Map<String,Object> orderMap = orderService.complete(order);
+		Map<String,Object> orderMap = orderService.complete(order,company);
 		order = (OrderMessage) orderMap.get(OrderConstant.Order);
 		//判断完善信息过程中是否出现运输代码查找错误和货物代码错误
 		JSONObject check = orderService.check(orderMap);
@@ -81,8 +86,8 @@ public class InsuranceService {
 					//异步调用
 					asyncService.executeAsync(order);
 					//发送成功短信
-					//String smsStatus = smsCodeService.sendSms(account, "伟林易航",templateCode,"");
-					//log.info("订单号为:"+order.getOrderNo()+";手机号为："+account+"的订单成功短信通知" + smsStatus);
+					String smsStatus = smsCodeService.sendSms(account,"物流保宝",templateCode,"");
+					log.info("订单号为:"+order.getOrderNo()+";手机号为："+account+"的订单成功短信通知" + smsStatus);
 				}else {
 					//同步调用
 					ReturnApprovl returnApprovl = externalOrderService.executeApprovl(order);

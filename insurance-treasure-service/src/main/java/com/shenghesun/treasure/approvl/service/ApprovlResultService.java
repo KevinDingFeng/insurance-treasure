@@ -38,7 +38,7 @@ public class ApprovlResultService {
 			//保存投保结果
 			approvlService.save(approvl);
 			//修改订单
-			Integer status = approvl.getStatus();
+			String status = approvl.getStatus().toString();
 			if(StringUtils.isNotEmpty(status.toString())) {
 				orderMessage.setInsuranceStatus(status);
 				orderMessage.setApplyNo(approvl.getApplyNo());

@@ -11,11 +11,14 @@ import com.alibaba.fastjson.JSONObject;
 import com.shenghesun.treasure.code.service.CodeListService;
 import com.shenghesun.treasure.code.service.GoodsCodeService;
 import com.shenghesun.treasure.code.service.TransCodeService;
+import com.shenghesun.treasure.core.constant.InsuranceCompanyConstant;
 import com.shenghesun.treasure.core.constant.OrderConstant;
 import com.shenghesun.treasure.system.code.CodeList;
 import com.shenghesun.treasure.system.code.GoodsCode;
 import com.shenghesun.treasure.system.code.TransCode;
+import com.shenghesun.treasure.system.company.CompanyMessage;
 import com.shenghesun.treasure.system.order.OrderMessage;
+import com.shenghesun.treasure.utils.DateUtil;
 import com.shenghesun.treasure.utils.JsonUtil;
 import com.shenghesun.treasure.utils.RandomUtil;
 import com.shenghesun.treasure.utils.RedisUtil;
@@ -36,12 +39,12 @@ public class OrderService {
 	 * @param orderMessage
 	 * @return
 	 */
-	public Map<String,Object> complete(OrderMessage orderMessage) {
+	public Map<String,Object> complete(OrderMessage orderMessage,CompanyMessage companyMessage) {
 		Map<String,Object> map =new HashMap<String,Object>();
 		//校验表单数据
 		checkCode(orderMessage,map);
 		//设置公共投保信息
-		orderMessage = this.all(orderMessage,map);
+		orderMessage = this.all(orderMessage,map,companyMessage);
 		//获取保险进出口类型
 		if(orderMessage.getCity().equals(OrderConstant.INLAND)) {
 			//完善国内投保数据
@@ -109,20 +112,28 @@ public class OrderService {
 	/**
 	 * 完善公共投保数据
 	 */
-	public OrderMessage all(OrderMessage orderMessage,Map<String,Object> map) {
+	public OrderMessage all(OrderMessage orderMessage,Map<String,Object> map,CompanyMessage companyMessage) {
 		//完善下单信息
 		orderMessage.setPlusOrMinus(OrderConstant.FUND_OUT);
-		//设置订单号
-		if(orderMessage.getOrderNo()==null) {
-			String orderNo = System.currentTimeMillis() + RandomUtil.randomNum(2);
-			orderMessage.setOrderNo(orderNo);
-		}
 		//设置运输相关信息
 		orderMessage = this.setTansport(orderMessage,map);
 		//设置货物名称相关信息
 		orderMessage = this.setGoods(orderMessage,map);
 		//设置起保日期
 		orderMessage.setEffectDate(orderMessage.getSaildate());
+		if(orderMessage.getOrderNo()==null) {
+			//设置订单号
+			//获取险种代码
+			String classCode = RandomUtil.getClassCode(orderMessage.getTransCode());
+			//获取8位数字随机码
+			String num = RandomUtil.randomNum(8);
+			//获取1位大写英文码
+			String upString = RandomUtil.randomUpString(1);
+			//获取当前年月
+			String date = DateUtil.getDate();
+			String orderNo = classCode+InsuranceCompanyConstant.COMPANY1+companyMessage.getCustomerNo()+date+num+upString;
+			orderMessage.setOrderNo(orderNo);
+		}
 		return orderMessage;
 	}
 	/**
@@ -199,7 +210,7 @@ public class OrderService {
 			map.put(OrderConstant.GOODSVALUE_ERROR, OrderConstant.GOODSVALUE_MESSAGE);
 		}
 	}
-	
+
 	/**
 	 * 判断完善信息过程中是否出现运输代码查找错误和货物代码错误
 	 * @return 

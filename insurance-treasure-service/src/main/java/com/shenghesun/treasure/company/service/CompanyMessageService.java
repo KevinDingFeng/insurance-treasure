@@ -14,8 +14,12 @@ public class CompanyMessageService {
 	public CompanyMessage findById(Long id) {
 		return companyMessageDao.findOne(id);
 	}
-	
+
 	public CompanyMessage save(CompanyMessage companyMessage) {
 		return companyMessageDao.save(companyMessage);
+	}
+
+	public String maxCompanyNo() {
+		return companyMessageDao.findByCustomerMax();
 	}
 }
