@@ -12,13 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
 import com.shenghesun.treasure.auth.support.LoginSuccessService;
-import com.shenghesun.treasure.config.CustomConfig;
 import com.shenghesun.treasure.core.constant.BaseConstant;
 import com.shenghesun.treasure.system.entity.SysUser;
 import com.shenghesun.treasure.system.service.SysUserService;
 import com.shenghesun.treasure.utils.JsonUtil;
 import com.shenghesun.treasure.utils.PasswordUtil;
-import com.shenghesun.treasure.utils.RedisUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,16 +28,17 @@ public class LoginController {
 	private SysUserService sysUserService;
 	@Autowired
 	private LoginSuccessService loginSuccessService;
-	@Autowired
-	private RedisUtil redisUtil;
 
 	/**
-	 * 系统用户登陆，先判断验证码是否正确，正确进行登陆
-	 * 
-	 * @param user
-	 * @param bindingResult
-	 * @param model
-	 * @return
+	 * 	@Title
+	 *  @param request
+	 *  @param account
+	 *  @param password
+	 *  @param code
+	 *  @return JSONObject
+	 *  @author zdd
+	 *	@date 2018年12月13日下午2:33:46
+	 *  @Description 系统使用接口进行用户登陆
 	 */
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public JSONObject login(HttpServletRequest request, @Validated String account,
@@ -52,8 +51,14 @@ public class LoginController {
 		}
 	}
 	/**
-	 * 获取对外接口token
-	 * @return
+	 * 	@Title
+	 *  @param request
+	 *  @param account
+	 *  @param password
+	 *  @return JSONObject
+	 *  @author zdd
+	 *	@date 2018年12月13日下午2:34:43
+	 *  @Description 提供对外接口进行用户登陆，获取token
 	 */
 	@RequestMapping(value = "/getToken")
 	public JSONObject getToken(HttpServletRequest request, @Validated String account,
@@ -65,35 +70,17 @@ public class LoginController {
 			return JsonUtil.getFailJSONObject();
 		}
 	}
-
 	/**
-	 * 检测token是否失效
-	 */
-	@RequestMapping(value = "/checkToken", method = RequestMethod.GET)
-	public JSONObject checkToken(HttpServletRequest request, @Validated String token) {
-		try {
-			if(redisUtil.exists(CustomConfig.REDIS_TOKEN_PREFIX+token)) {
-				return JsonUtil.getSuccessJSONObject(true);
-			}else {
-				return JsonUtil.getSuccessJSONObject(false);
-			}
-		} catch (Exception e) {
-			return JsonUtil.getFailJSONObject();
-		}
-	}
-	/**
-	 * 判断是否可以登录逻辑，库存密码存在且与输入的现有密码相等，即登录成功
-	 * 
-	 * @param passwordSource 库存密码
-	 * @param password       现有密码
-	 * @return
-	 */
-	private boolean login(String passwordSource, String password) {
-		return passwordSource != null && passwordSource.equals(password);
-	}
-
-	/**
-	 * 登陆
+	 * 	@Title
+	 *  @param account
+	 *  @param password
+	 *  @return JSONObject
+	 *  @author zdd
+	 *	@date 2018年12月13日下午2:35:20
+	 *  @Description 用户登陆
+	 *  			1.根据用户名获取用户
+	 *  			2.加密登陆密码与数据库中密码比对
+	 *  			3.设置登陆成功返回token等信息
 	 */
 	private JSONObject loginToken(String account,String password) {
 		// 获取登录名对应的数据
@@ -111,4 +98,14 @@ public class LoginController {
 			return JsonUtil.getFailJSONObject(BaseConstant.PASSWORD_ERROR); 
 		}
 	}
+	/**
+	 * 判断是否可以登录逻辑，库存密码存在且与输入的现有密码相等，即登录成功
+	 * @param passwordSource 库存密码
+	 * @param password       现有密码
+	 * @return
+	 */
+	private boolean login(String passwordSource, String password) {
+		return passwordSource != null && passwordSource.equals(password);
+	}
+
 }

@@ -92,7 +92,6 @@ public class OrderController {
 	
 	/**
 	 * 设置允许自动绑定的属性名称
-	 * 
 	 * @param binder
 	 * @param req
 	 */
@@ -115,7 +114,6 @@ public class OrderController {
 	
 	/**
 	 * 预处理，一般用于新增和修改表单提交后的预处理
-	 * 
 	 * @param id
 	 * @param req
 	 * @return
@@ -129,7 +127,6 @@ public class OrderController {
 			return new OrderMessage();
 		}
 	}
-	
 	/**
 	 * 	@Title pay
 	 *  @param request
@@ -163,6 +160,11 @@ public class OrderController {
 	 * @return  JSONObject 
 	 * @author yangzp
 	 * @date 2018年11月20日下午3:54:40
+	 * @Description 根据订单号查找保单信息，对保单信息进行处理
+	 * 				1.将币种代码翻译成币种名称
+	 * 				2.将包装代码翻译成包装名称
+	 * 				3.将保单状态代码翻译成中文
+	 * 				4.根据运输代码翻译标识符名称
 	 **/ 
 	@RequestMapping(value = "/form", method = RequestMethod.GET)
 	public JSONObject form(String orderNo) {
@@ -172,23 +174,16 @@ public class OrderController {
 			orderShow = new OrderShow();
 			BeanUtils.copyProperties(orderMessage, orderShow);
 			//将币种代码翻译成币种名称
-			if(redisUtil.exists(orderShow.getCurrencyCode()+OrderConstant.CURRENCY_SUFFIX)) {
-				String currency =  redisUtil.getString(orderShow.getCurrencyCode()+OrderConstant.CURRENCY_SUFFIX);
-				orderShow.setCurrencyName(currency);
-			}
+			orderShow.setCurrencyName(redisUtil.getString(orderShow.getCurrencyCode()+OrderConstant.CURRENCY_SUFFIX));
 			//将包装代码翻译成包装名称
-			if(redisUtil.exists(orderShow.getPackCode()+OrderConstant.PACKAGE_SUFFIX)) {
-				orderShow.setPackageType(redisUtil.getString(orderShow.getPackCode()+OrderConstant.PACKAGE_SUFFIX).toString());
-			}
+			orderShow.setPackageType(redisUtil.getString(orderShow.getPackCode()+OrderConstant.PACKAGE_SUFFIX).toString());
 			//翻译保单状态
 			String insurance = redisUtil.get(orderShow.getInsuranceStatus());
 			orderShow.setInsuranceStatus(insurance);
-			
 			//根据运输代码获取标识符名称
 			String trans = redisUtil.get(orderMessage.getTransCode());
 			TransCode transCode = JSON.parseObject(trans, TransCode.class);
 			orderShow.setMarkName(transCode.getMarkName());
-			
 		} catch (BeansException e) {
 			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
 			return JsonUtil.getFailJSONObject();		
@@ -198,13 +193,13 @@ public class OrderController {
 	
 	/**
 	 * @Title: list 
-	 * @Description: 按照条件查询我的保单 
 	 * @param request
 	 * @param pageable
 	 * @param condition
 	 * @return  JSONObject 
 	 * @author yangzp
 	 * @date 2018年11月20日下午4:34:15
+	 * @Description: 按照条件查询我的保单 
 	 **/ 
 	@RequestMapping(value = "/list", method = {RequestMethod.POST})
 	public JSONObject list(HttpServletRequest request,

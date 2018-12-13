@@ -43,8 +43,16 @@ public class InsuranceService {
 	@Value("${sms.template.success.code}")
 	private String templateCode;
 	/**
-	 * 1.投保前完善保单信息
-	 * 2.检验提交表单中的数据是否正确，验证失败直接返回错误信息，验证通过后进行支付
+	 * 	@Title
+	 *  @param token
+	 *  @param order
+	 *  @param company
+	 *  @param comFrom
+	 *  @return JSONObject
+	 *  @author zdd
+	 *	@date 2018年12月13日上午11:22:35
+	 *  @Description 1.投保前完善保单信息
+	 * 				 2.检验提交表单中的数据是否正确，验证失败直接返回错误信息，验证通过后进行支付
 	 */
 	public JSONObject insurance(String token,@Validated OrderMessage order,CompanyMessage company,String comFrom) {
 		//获取投保用户
@@ -53,7 +61,6 @@ public class InsuranceService {
 		order.setUserId(TokenUtil.getLoginUserId(token));
 		order.setCompanyId(TokenUtil.getLoginCompanyId(token));
 		Map<String,Object> orderMap = orderService.complete(order,company);
-		order = (OrderMessage) orderMap.get(OrderConstant.Order);
 		//判断完善信息过程中是否出现运输代码查找错误和货物代码错误
 		JSONObject check = orderService.check(orderMap);
 		if(check!=null) {
@@ -63,12 +70,20 @@ public class InsuranceService {
 		return pay(company,order,comFrom,account);
 	}
 	/**
-	 * 1.判断公司信息和办单信息是否为空，不为空进行支付操作
-	 * 2.获取公司余额，判断是否大于保单的保费，如果余额不足则返回消息，并保存订单数据，便于日后进行支付操作
-	 * 			余额充足，更新下保单后的剩余金额，保存公司信息。
-	 * 3.修改订单支付状态，保存订单信息
-	 * 4.支付完成后进行投保，根据接口访问的方式，区分为内部系统访问(需要异步进行投保)和外部系统访问(需要同步进行投保返回数据)，
-	 * 5.内部系统异步投保后进行短信通知
+	 * 	@Title
+	 *  @param company
+	 *  @param order
+	 *  @param comFrom
+	 *  @param account
+	 *  @return JSONObject
+	 *  @author zdd
+	 *	@date 2018年12月13日上午11:23:50
+	 *  @Description 1.判断公司信息和保单信息是否为空，不为空进行支付操作
+	 * 				 2.获取公司余额，判断是否大于保单的保费，如果余额不足则返回消息，并保存订单数据，便于日后进行支付操作
+	 * 					余额充足，更新下保单后的剩余金额，保存公司信息。
+	 * 				 3.修改订单支付状态，保存订单信息
+	 * 				 4.支付完成后进行投保，根据接口访问的方式，区分为内部系统访问(需要异步进行投保)和外部系统访问(需要同步进行投保返回数据)，
+	 * 				 5.内部系统异步投保后进行短信通知
 	 */
 	public JSONObject pay(CompanyMessage company,OrderMessage order,String comFrom,String account) {
 		if(company!=null&&order!=null) {
@@ -95,11 +110,8 @@ public class InsuranceService {
 				}
 			}else {
 				orderMessageService.save(order);
-				JSONObject json = JsonUtil.getFailJSONObject(order.getOrderNo());
-				json.put("msg", "余额不足，请联系管理员充值");
-				return json;
+				return JsonUtil.getFailJSONObject(order.getOrderNo(),"余额不足，请联系管理员充值");
 			}
-			
 		}else {
 			return JsonUtil.getFailJSONObject("公司不存在或订单不存在");
 		}

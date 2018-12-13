@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import com.shenghesun.treasure.system.cpic.Approvl;
 import com.shenghesun.treasure.system.cpic.Policy;
-import com.shenghesun.treasure.system.order.OrderMessage;
 import com.shenghesun.util.cpic.XmlUtils;
 import org.apache.axis.client.Stub;
 import org.apache.commons.lang3.StringUtils;
@@ -145,10 +144,10 @@ public class QueryPolicyService {
 						policy.setEpolicyStatus(epolicyStatus);
 
 						String epolicyFile = data.elementTextTrim("FILE_EPOLICY");
-						//policy.setEpolicyFile(epolicyFile);
+						policy.setEpolicyFile(epolicyFile);
 
 						String status = data.elementTextTrim("STATUS");
-						policy.setStatus(Integer.parseInt(status));
+						policy.setStatus(status);
 					}
 				}
 				return policy;

@@ -28,12 +28,18 @@ public class ApprovlResultService {
 	private OrderMessageService orderMessageService;
 
 	/**
-	 * 处理投保结果
-	 * 1.保存响应对象
-	 * 2.更新订单信息的保险状态和保单号，然后进行保存
-	 * 3.获取响应的保单状态，如果状态为10，则表示投保成功,状态为7代表太保人工审核，其他表示投保失败
+	 * 	@Title
+	 *  @param approvl
+	 *  @param orderMessage
+	 *  @return void
+	 *  @author zdd
+	 *	@date 2018年12月13日上午11:29:53
+	 *  @Description 处理投保结果
+	 * 				1.保存响应对象
+	 * 				2.更新订单信息的保险状态和保单号，然后进行保存
+	 * 				3.获取响应的保单状态，如果状态为10，则表示投保成功,状态为7代表太保人工审核，其他表示投保失败，进行日志记录
 	 */
-	public Boolean manageApprovl(Approvl approvl,OrderMessage orderMessage) {
+	public void manageApprovl(Approvl approvl,OrderMessage orderMessage) {
 		if(approvl != null) {
 			//保存投保结果
 			approvlService.save(approvl);
@@ -43,16 +49,13 @@ public class ApprovlResultService {
 				orderMessage.setInsuranceStatus(status);
 				orderMessage.setApplyNo(approvl.getApplyNo());
 				orderMessageService.save(orderMessage);
-				if(OrderConstant.APPROVL_SUCCESS.equals(status)) {
-					return true;
-				}else if(OrderConstant.APPROVL_WAIT.equals(status)) {
-					return true;
+				if(OrderConstant.APPROVL_SUCCESS.equals(status)||OrderConstant.APPROVL_WAIT.equals(status)) {
+					log.info("订单号为:"+orderMessage.getOrderNo()+"的订单投保成功");
 				}else {
-					return false;
+					log.info("订单号为:"+orderMessage.getOrderNo()+"的订单投保失败");
 				}
 			}
 		}
-		return false;
 	}
 	/**
 	 * 货运险承保接口应答报文转对象
@@ -96,7 +99,7 @@ public class ApprovlResultService {
 					approvl.setPolicyNo(policyno);
 
 					String status = recordEle.elementTextTrim("STATUS"); // 拿到RESULT节点下的子节点STATUS值
-					approvl.setStatus(Integer.parseInt(status));
+					approvl.setStatus(status);
 
 					String comments = recordEle.elementTextTrim("COMMENTS"); // 拿到RESULT节点下的子节点COMMENTS值
 					approvl.setComments(comments);

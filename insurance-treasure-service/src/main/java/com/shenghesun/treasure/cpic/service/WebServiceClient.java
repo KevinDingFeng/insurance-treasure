@@ -57,7 +57,12 @@ public class WebServiceClient {
 		return locator.getFreightCommonServicePort();
 	}
 	/**
-	 * 货运承保前完善用户信息以及产品信息等
+	 * 	@Title
+	 *  @param xml
+	 *  @return ApprovalRequest
+	 *  @author zdd
+	 *	@date 2018年12月13日上午11:35:50
+	 *  @Description  货运承保前完善用户信息以及产品信息等
 	 */
 	public ApprovalRequest preApprovl(String xml) {
 		ApprovalRequest request = null;
@@ -92,7 +97,6 @@ public class WebServiceClient {
 	 * @return  String 
 	 * @author yangzp
 	 * @date 2018年9月30日下午1:48:27
-	 * 
 	 * 注解@Async(“asyncServiceExecutor”)，
 	 * asyncServiceExecutor是前面ExecutorConfig.java中的方法名，
 	 * 表明executeAsync方法进入的线程池是asyncServiceExecutor方法创建的

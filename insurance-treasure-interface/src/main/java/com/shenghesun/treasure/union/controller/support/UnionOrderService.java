@@ -27,28 +27,27 @@ public class UnionOrderService {
 	 * @return
 	 */
 	public OrderMessage unionComplete(OrderMessage order) {
-		order = unionGoods(order);
-		order = unionTrans(order);
-		order = unionPackage(order);
-		order = unionCurrency(order);
+		unionGoods(order);
+		unionTrans(order);
+		unionPackage(order);
+		unionCurrency(order);
 		return order;
 	}
 	/**
 	 * 完善货物名称信息
 	 */
-	public OrderMessage unionGoods(OrderMessage order) {
+	public void unionGoods(OrderMessage order) {
 		if(redisUtil.exists(order.getFirstGoodsName())) {
 			String string = redisUtil.getString(order.getFirstGoodsName());
 			order.setGoodsCode(string);
 		}else {
 			order.setGoodsCode("600");
 		}
-		return order;
 	}
 	/**
 	 * 完善运输信息
 	 */
-	public OrderMessage unionTrans(OrderMessage order) {
+	public void unionTrans(OrderMessage order) {
 		if(redisUtil.exists(order.getTransCode())) {
 			String string = redisUtil.getString(order.getTransCode());
 			order.setTransCode(string);
@@ -58,12 +57,11 @@ public class UnionOrderService {
 				redisUtil.setString(trans.getUnionTranscode(), trans.getWBTranscode());
 			}
 		}
-		return order;
 	}
 	/**
 	 * 完善包装信息
 	 */
-	public OrderMessage unionPackage(OrderMessage order) {
+	public void unionPackage(OrderMessage order) {
 		if(redisUtil.exists(order.getPackCode())) {
 			String string = redisUtil.getString(order.getPackCode());
 			order.setPackCode(string);
@@ -73,18 +71,16 @@ public class UnionOrderService {
 				redisUtil.setString(pack.getUnionPackagecode(), pack.getWBPackagecode());
 			}
 		}
-		return order;
 	}
 	/**
 	 * 完善币种信息
 	 */
-	public OrderMessage unionCurrency(OrderMessage order) {
+	public void unionCurrency(OrderMessage order) {
 		if(redisUtil.exists(order.getCurrencyCode())){
 			String string = redisUtil.getString(order.getCurrencyCode());
 			order.setCurrencyCode(string);
 		}else {
 			redisUtil.setString("RMB", "01");
 		}
-		return order;
 	}
 }

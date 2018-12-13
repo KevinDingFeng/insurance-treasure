@@ -1,6 +1,7 @@
 package com.shenghesun.treasure.external.service;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +26,16 @@ public class ExternalOrderService {
 	@Autowired
 	private AsyncService asyncService;
 	/**
-	 * 同步 提供给外部投保方法
+	 * 	@Title
+	 *  @param orderMessage
+	 *  @return ReturnApprovl
+	 *  @author zdd
+	 *	@date 2018年12月13日上午11:37:53
+	 *  @Description 对外接口使用，同步进行投保返回数据
+	 *  			1.将投保对象转成xml
+	 *  			2.进行投保，获取响应xml
+	 *  			3.将响应xml转对象
+	 *  			4.处理响应对象
 	 */
 	public ReturnApprovl executeApprovl(OrderMessage orderMessage) {
 		log.info("start executeAsync");
@@ -46,26 +56,24 @@ public class ExternalOrderService {
 		log.info("end executeAsync");
 		return returnApprovl;
 	}
-	
 	/**
-	 * 提供接口对结果处理投保结果
+	 * 	@Title
+	 *  @param approvl
+	 *  @param orderMessage
+	 *  @return ReturnApprovl
+	 *  @author zdd
+	 *	@date 2018年12月13日上午11:40:21
+	 *  @Description 对外接口使用
+	 *  			1.处理响应对象，进行保存更新订单信息等操作
+	 *  			2.创建接口返回对象，设置需要返回的信息
 	 */
 	public ReturnApprovl manageOutApprovl(Approvl approvl,OrderMessage orderMessage) {
 		approvlResultService.manageApprovl(approvl, orderMessage);
 		ReturnApprovl returnApprovl = new ReturnApprovl();
 		if(approvl != null) {
 			//设置外部接口调用返回数据
-			returnApprovl.setOrderNo(approvl.getOrderNo());
-			returnApprovl.setApplyId(approvl.getApplyId());
-			returnApprovl.setType(approvl.getType());
-			returnApprovl.setWorkType(approvl.getWorkType());
-			returnApprovl.setApplyNo(approvl.getApplyNo());
-			returnApprovl.setPolicyNo(approvl.getPolicyNo());
-			returnApprovl.setStatus(approvl.getStatus().toString());
-			returnApprovl.setComments(approvl.getComments());
-			returnApprovl.setStatusEpolicy(approvl.getStatusEpolicy());
-			returnApprovl.setFileEpolicy(approvl.getFileEpolicy());
 			returnApprovl.setPreminum(orderMessage.getPreminum());
+			BeanUtils.copyProperties(approvl, returnApprovl);
 		}
 		return returnApprovl;
 	}

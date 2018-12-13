@@ -84,7 +84,7 @@ public class ExternalOrderController {
 				order = new OrderMessage();
 				BeanUtils.copyProperties(orderDto, order);
 				//根据不同类型，选择不同的翻译方式
-				order = translationCode(type,order);
+				translationCode(type,order);
 			}else {
 				return JsonUtil.getFailJSONObject("无权访问该接口，请联系相关人员处理");
 			}
@@ -95,19 +95,24 @@ public class ExternalOrderController {
 		}
 	}
 	/**
-	 * 根据类型分支走不同的数据处理
-	 * @param type
-	 * @param order
-	 * @return
+	 * 	@Title
+	 *  @param type
+	 *  @param order void
+	 *  @author zdd
+	 *	@date 2018年12月13日上午11:18:29
+	 *  @Description 根据类型分支走不同的数据处理
+	 *  			此处翻译为保单进入正式投保的第一层翻译，用于对外接口
+	 *  			第二层翻译为物流宝宝字典翻译为太平洋保险数据字典进行投保
 	 */
-	private OrderMessage translationCode(String type,OrderMessage order) {
+	private void translationCode(String type,OrderMessage order) {
 		switch(type) {
 			case InterfaceConstant.TYPE1:
-				return order = unionOrderService.unionComplete(order);
+				unionOrderService.unionComplete(order);
+				break;
 			case InterfaceConstant.TYPE2:
-				return order;
+				break;
 			 default:
-				return null;
+				break;
 		}	
 	}
 }

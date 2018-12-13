@@ -35,8 +35,14 @@ public class CompanyController {
 	@Autowired
 	private CompanyService company;
 	/**
-	 * 完善公司信息
-	 * @return
+	 * 	@Title
+	 *  @param request
+	 *  @param companyMessage
+	 *  @param file
+	 *  @return JSONObject
+	 *  @author zdd
+	 *	@date 2018年12月13日下午2:47:34
+	 *  @Description 完善公司信息
 	 */
 	@PostMapping(value = "/complete")
 	public JSONObject completeCompanyMessage(HttpServletRequest request,@Validated CompanyMessage companyMessage,@RequestParam(value = "file", required = false) MultipartFile file) {
@@ -47,9 +53,13 @@ public class CompanyController {
 			return JsonUtil.getFailJSONObject();
 		}
 	}
-	
 	/**
-	 * 查看公司信息
+	 * 	@Title
+	 *  @param request
+	 *  @return JSONObject
+	 *  @author zdd
+	 *	@date 2018年12月13日下午2:47:48
+	 *  @Description 查看公司信息
 	 */
 	@RequestMapping(value = "/find", method = RequestMethod.GET)
 	public JSONObject findCompany(HttpServletRequest request) {

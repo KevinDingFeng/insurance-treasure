@@ -46,6 +46,16 @@ public class JsonUtil {
 		json.put("data", data);
 		return json;
 	}
+	
+	/**
+	 * 获取一个失败的json对象
+	 * @return
+	 */
+	public static JSONObject getFailJSONObject(Object data,String msg) {
+		JSONObject json = getFailJSONObject(data);
+		json.put("msg", msg);
+		return json;
+	}
 	/**
 	 * tokenFilter返回数据
 	 * @return

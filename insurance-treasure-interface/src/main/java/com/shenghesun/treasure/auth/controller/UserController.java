@@ -30,7 +30,17 @@ public class UserController {
 	private SysUserService sysUserService;
 
 	/**
-	 * 修改手机号
+	 * 	@Title
+	 *  @param request
+	 *  @param account
+	 *  @param code
+	 *  @return JSONObject
+	 *  @author zdd
+	 *	@date 2018年12月13日下午2:32:02
+	 *  @Description 修改手机号
+	 *  			1.校验验证码
+	 *  			2.判断修改的手机号是否已经被注册
+	 *  			3.获取登陆用户，更改信息并保存
 	 */
 	@RequestMapping(value = "/cell", method = RequestMethod.GET)
 	public JSONObject changeCell(HttpServletRequest request,String account,String code) {
@@ -57,9 +67,20 @@ public class UserController {
 		}
 		return JsonUtil.getSuccessJSONObject();
 	}
-	
 	/**
-	 * 修改密码
+	 * 	@Title
+	 *  @param request
+	 *  @param old
+	 *  @param current
+	 *  @param code
+	 *  @return JSONObject
+	 *  @author zdd
+	 *	@date 2018年12月13日下午2:29:39
+	 *  @Description 修改密码
+	 *  			1.获取用户信息，查找出当前对象
+	 *  			2.用户输入原始密码加密后与数据库中密码比对，比对未通过则返回信息
+	 *  			3.校验验证码是否正确
+	 *  			4.保存新密码
 	 */
 	@RequestMapping(value = "/password", method = RequestMethod.GET)
 	public JSONObject changePassword(HttpServletRequest request,String old,String current,String code) {
@@ -87,7 +108,15 @@ public class UserController {
 		return JsonUtil.getSuccessJSONObject();
 	}
 	/**
-	 * 获取邀请码
+	 * 	@Title
+	 *  @param request
+	 *  @param old
+	 *  @param current
+	 *  @param code
+	 *  @return JSONObject
+	 *  @author zdd
+	 *	@date 2018年12月13日下午2:29:18
+	 *  @Description 发送邀请码
 	 */
 	@RequestMapping(value = "/invite", method = RequestMethod.GET)
 	public JSONObject invite(HttpServletRequest request,String old,String current,String code) {
@@ -103,11 +132,16 @@ public class UserController {
 		}
 	}
 	/**
-	 * 从redis中取出验证码
+	 * 	@Title
+	 *  @param code
+	 *  @return String
+	 *  @author zdd
+	 *	@date 2018年12月13日下午2:33:15
+	 *  @Description 从redis中取出验证码
 	 */
 	public String getCode(String code) {
-		String smsCode = (String) redisUtil.getObj(code);
-		String sms = smsCode.replaceAll("\"", "");
-		return sms;
+		//String smsCode = (String) redisUtil.getObj(code);
+		//String sms = smsCode.replaceAll("\"", "");
+		return redisUtil.getString(code);
 	}
 }

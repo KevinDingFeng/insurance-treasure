@@ -10,6 +10,7 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -43,7 +44,16 @@ public class CompanyService {
 	@Autowired
 	private LoginService loginService;
 	/**
-	 * 完善公司信息
+	 * 	@Title
+	 *  @param request
+	 *  @param file
+	 *  @param companyMessage
+	 *  @return JSONObject
+	 *  @author zdd
+	 *	@date 2018年12月13日下午2:48:09
+	 *  @Description 完善公司信息
+	 *  			1.图片上传
+	 *  			2.判断公司id是否存在，存在则修改公司信息，不存在未注册
 	 */
 	public JSONObject complte(HttpServletRequest request,MultipartFile file,CompanyMessage companyMessage) {
 		//获取请求用户信息
@@ -63,7 +73,18 @@ public class CompanyService {
 		return JsonUtil.getSuccessJSONObject();
 	}
 	/**
-	 * 首次填写公司信息
+	 * 	@Title
+	 *  @param companyMessage
+	 *  @param userId
+	 *  @return JSONObject
+	 *  @author zdd
+	 *	@date 2018年12月13日下午2:49:14
+	 *  @Description 首次注册公司信息
+	 *  			1.判断是否进行文件上传，生成文件路径
+	 *  			2.查找公司信息中最大的编码值，设置新注册公司的编码值
+	 *  			3.保存公司信息
+	 *  			4.获取登陆用户信息，设置用户的公司id，保存用户信息
+	 *  			5.生成带有公司信息的新token
 	 */
 	public JSONObject register(CompanyMessage companyMessage,Long userId) {
 		//用户注册完善公司信息
@@ -71,12 +92,7 @@ public class CompanyService {
 			return JsonUtil.getFailJSONObject("请上传公司凭证");
 		}
 		String maxCompanyNo = companyService.maxCompanyNo();
-		System.out.println(maxCompanyNo.length());
-		if(maxCompanyNo.length()>0) {
-			companyMessage.setCustomerNo(CustomerNoUtil.getNo(maxCompanyNo));
-		}else {
-			companyMessage.setCustomerNo(CustomerNoUtil.getFirstNo());
-		}
+		companyMessage.setCustomerNo(CustomerNoUtil.getNo(maxCompanyNo));
 		
 		//保存公司信息
 		CompanyMessage company = companyService.save(companyMessage);
@@ -88,10 +104,16 @@ public class CompanyService {
 		return JsonUtil.getSuccessJSONObject(newToken);
 	}
 	/**
-	 * 修改公司信息
+	 * 	@Title
+	 *  @param companyMessage
+	 *  @param companyId void
+	 *  @author zdd
+	 *	@date 2018年12月13日下午2:52:52
+	 *  @Description 修改公司信息
+	 *  			1.
 	 */
 	public void modify(CompanyMessage companyMessage,Long companyId) {
-		//修改用户信息
+		//修改用户信息  
 		CompanyMessage company = companyService.findById(companyId);
 		//保存公司信息
 		company.setCompanyName(companyMessage.getCompanyName());

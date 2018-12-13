@@ -60,5 +60,5 @@ public class Policy extends BaseEntity{
 	 * 
 	 */
 	@Column(length=5)
-	private Integer status;
+	private String status;
 }

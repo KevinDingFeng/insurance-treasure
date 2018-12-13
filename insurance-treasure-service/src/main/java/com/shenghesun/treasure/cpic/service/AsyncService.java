@@ -35,13 +35,15 @@ public class AsyncService {
 	@Autowired
 	private ApprovlResultService approvlResultService;
 	/**
-	 * 异步  项目使用投保方法
-	 * 1.将订单信息转为投保需要的xml
-	 * 2.调用货运承保接口，将xml提交进行投保，获取响应信息
-	 * 3.将响应的xml信息转为承保返回的对象
-	 * 4.处理响应回的对象，根据处理结果，返回投保是成功还是失败，然后记录该日志
-	 * @param orderMessage
-	 * @return
+	 * 	@Title
+	 *  @param orderMessage void
+	 *  @author zdd
+	 *	@date 2018年12月13日上午11:29:04
+	 *  @Description 异步  项目使用投保方法
+	 * 				1.将订单信息转为投保需要的xml
+	 * 				2.调用货运承保接口，将xml提交进行投保，获取响应信息
+	 * 				3.将响应的xml信息转为承保返回的对象
+	 * 				4.处理响应回的对象
 	 */
 	@Async("asyncServiceExecutor")
 	public void executeAsync(OrderMessage orderMessage) {
@@ -49,22 +51,12 @@ public class AsyncService {
 		try{
 			if(orderMessage != null) {
 				String xml = getOrderMessageXml(orderMessage);
-				boolean flag = true;
 				if(StringUtils.isNotEmpty(xml)) {
 					//货运险承保接口
 					ApprovalResponse response = webServiceClient.approvl(xml);
 					Approvl approvl =  approvlResultService.xml2Approvl(response.getPolicyInfo(),orderMessage.getOrderNo());
 					//处理投保返回结果
-					flag = approvlResultService.manageApprovl(approvl,orderMessage);
-					if(!flag) {
-						flag = false;
-					}
-				}
-				//记录日志
-				if(flag) {
-					log.info("订单号为:"+orderMessage.getOrderNo()+"的订单投保成功");
-				}else {
-					log.info("订单号为:"+orderMessage.getOrderNo()+"的订单投保失败");
+					approvlResultService.manageApprovl(approvl,orderMessage);
 				}
 			}
 		}catch(Exception e){

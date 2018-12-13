@@ -37,10 +37,13 @@ public class RegisterController {
 	@Value("${sms.template.update.code}")
 	private String modifytemplateCode;
 	/**
-	 * 用户注册
-	 * @param request
-	 * @param user
-	 * @return
+	 * 	@Title
+	 *  @param user
+	 *  @return JSONObject
+	 *  @author zdd
+	 *	@date 2018年12月13日下午2:24:18
+	 *  @Description 用户注册
+	 *  			  根据手机号查找用户，用户存在返回用户存在信息，不存在完善用户信息后进行保存
 	 */
 	@RequestMapping(value = "/register",method = RequestMethod.POST)
 	public JSONObject register(@Validated SysUser user) {
@@ -50,6 +53,7 @@ public class RegisterController {
 			if (findUser != null) {
 				return JsonUtil.getFailJSONObject(BaseConstant.ACCOUNT_ERROR);
 			}
+			//完善用户信息
 			user = registerService.regist(user);
 			//保存用户
 			sysUserService.save(user);
@@ -60,16 +64,23 @@ public class RegisterController {
 		}
 	}
 	/**
-	 * 发送注册手机验证码
+	 * 	@Title
+	 *  @param account
+	 *  @return JSONObject
+	 *  @author zdd
+	 *	@date 2018年12月13日下午2:26:03
+	 *  @Description 发送注册手机验证码
 	 */
 	@RequestMapping(value = "/sms", method = RequestMethod.GET)
 	public JSONObject sendCode(String account) {
 		String code=null;
 		try {
+			//生成随机验证码，并存储至redis中
 			code = RandomUtil.randomNum();
-			redisUtil.set(account, code, CustomConfig.SMSCODE_TIME_SECOND);
-			//正式时用
+			redisUtil.setString(account, code, CustomConfig.SMSCODE_TIME_SECOND);
+			//发送短信
 			String sendSmsCode = SmsCodeService.sendSms(account,"物流保宝",registertemplateCode,"{\"code\":\""+code+"\"}");
+			//判断是否有超出手机短信发送条数限制
 			if(BaseConstant.ACCPUNT_LIMIT_CODE.equals(sendSmsCode)) {
 				return JsonUtil.getFailJSONObject(BaseConstant.ACCPUNT_LIMIT_CONTENT);
 			}

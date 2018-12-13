@@ -21,7 +21,6 @@ import com.shenghesun.treasure.utils.TokenUtil;
  * 将来可能扩展到为登出做服务支持，因为登出时，有很多缓存等信息需要清空，目前都使用过期时间的机制，暂时不会有影响
  * 
  * @author kevin
- *
  */
 @Service
 public class LoginService {
@@ -31,14 +30,16 @@ public class LoginService {
 	@Autowired
 	private RedisUtil redisUtil;
 
-
 	/**
-	 * 为登录成功的用户做服务支持 获取登录对应的 token 获取登录用户的 角色和权限信息 将用户的 token 和 角色权限信息放入 redis 缓存 返回
-	 * token
-	 * 
-	 * @param userId
-	 * @param account
-	 * @return
+	 * 	@Title
+	 *  @param userId
+	 *  @param account
+	 *  @param companyId
+	 *  @return String
+	 *  @author zdd
+	 *	@date 2018年12月13日下午2:37:55
+	 *  @Description 为登录成功的用户做服务支持 获取登录对应的 token 获取登录用户的 角色和权限信息 将用户的 token 和 角色权限信息放入 redis 缓存 返回
+	 *  			token存储用户id、用户名称和公司id
 	 */
 	public String login(Long userId, String account,Long companyId) {
 		String token = TokenUtil.create(userId, account,companyId);
@@ -90,7 +91,6 @@ public class LoginService {
 					permsObj.put(sysPermission.getPerm(), sysPermission.getId());// 添加权限信息
 				}
 			}
-
 			if (rolesObj != null) {
 				json.put("roles", rolesObj);// {"ROLE1":"ID1"[,"ROLE2":"ID2"..."ROLE3":"ID3"]}
 			}

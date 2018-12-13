@@ -1,6 +1,8 @@
 package com.shenghesun.treasure.base.controller;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -122,13 +124,23 @@ public class BaseDictionaryController {
 		
 	}
 	/**
-	 * 城市信息模糊查询
+	 * 	@Title
+	 *  @param city
+	 *  @return JSONObject
+	 *  @author zdd
+	 *	@date 2018年12月13日下午2:42:58
+	 *  @Description 城市信息模糊查询
 	 */
 	@RequestMapping(value = "/getCity", method = RequestMethod.GET)
 	public JSONObject getCity(String city) {
 		try {
-			Set<Object> citySet = redisUtil.keys("*"+city+"*");
-			return JsonUtil.getSuccessJSONObject(citySet);
+			Set<Object> citySet = redisUtil.keys("city:*"+city+"*");
+			Set<Object> cSet = new HashSet<Object>();
+			Iterator<Object> it = citySet.iterator();
+			while(it.hasNext()) {
+				cSet.add(redisUtil.getString(it.next().toString()));
+			}
+			return JsonUtil.getSuccessJSONObject(cSet);
 		} catch (Exception e) {
 			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
 			return JsonUtil.getFailJSONObject();

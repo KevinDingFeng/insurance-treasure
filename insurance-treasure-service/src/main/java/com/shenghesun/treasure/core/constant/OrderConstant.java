@@ -117,4 +117,8 @@ public class OrderConstant {
 	 * 包装代码后缀
 	 */
 	public static final String PACKAGE_SUFFIX = "pack";
+	/**
+	 * 费率最小值
+	 */
+	public static final float MIN_RATE = 0.02f;
 }

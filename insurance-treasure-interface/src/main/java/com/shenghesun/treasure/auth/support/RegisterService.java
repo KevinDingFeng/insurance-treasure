@@ -18,9 +18,12 @@ public class RegisterService {
 	@Autowired
 	SysRoleService sysRoleService;
 	/**
-	 * 为注册用户完善基础信息
-	 * @param user
-	 * @return
+	 * 	@Title
+	 *  @param user
+	 *  @return SysUser
+	 *  @author zdd
+	 *	@date 2018年12月13日下午2:25:40
+	 *  @Description 为注册用户完善基础信息
 	 */
 	public SysUser regist(SysUser user) {
 		//生成用户邀请码

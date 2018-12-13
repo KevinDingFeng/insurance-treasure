@@ -19,14 +19,20 @@ public class LoginSuccessService {
 	@Autowired
 	private CompanyMessageService companyService;
 	/**
-	 * 添加登陆成功后的返回信息
-	 * @param returnMap
-	 * @return
+	 * 	@Title
+	 *  @param user
+	 *  @return Map<String,Object>
+	 *  @author zdd
+	 *	@date 2018年12月13日下午2:36:44
+	 *  @Description 添加登陆成功后的返回信息
+	 *  			1.返回账户余额
+	 *  			2.返回公司编码
+	 *  			3.返回token
 	 */
 	public Map<String, Object> setReturnMessage(SysUser user) {
 		Map<String, Object> returnMap = new HashMap<>();
 		Long companyId = user.getCompanyId();
-		//返回token
+		//生成token
 		String token = loginService.login(user.getId(), user.getAccount(),user.getCompanyId()==null?0:user.getCompanyId());
 		//返回公司是否存在，存在时1  不存在是0
 		if(companyId!=null) {
