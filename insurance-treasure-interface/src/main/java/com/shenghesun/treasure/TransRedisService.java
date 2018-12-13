@@ -13,9 +13,11 @@ import com.shenghesun.treasure.base.service.BaseCityService;
 import com.shenghesun.treasure.code.service.CodeListService;
 import com.shenghesun.treasure.code.service.GoodsCodeService;
 import com.shenghesun.treasure.code.service.TransCodeService;
+import com.shenghesun.treasure.cpic.service.InsurancesStatusService;
 import com.shenghesun.treasure.system.code.CodeList;
 import com.shenghesun.treasure.system.code.GoodsCode;
 import com.shenghesun.treasure.system.code.TransCode;
+import com.shenghesun.treasure.system.cpic.InsurancesStatus;
 import com.shenghesun.treasure.system.dictionary.BaseCity;
 import com.shenghesun.treasure.system.entity.SysUserType;
 import com.shenghesun.treasure.system.service.SysUserTypeService;
@@ -43,6 +45,8 @@ public class TransRedisService implements ApplicationRunner{
 	private com.shenghesun.treasure.union.controller.support.UnionRedisService unionRedisService;
 	@Autowired
 	private CodeListService codeListService;
+	@Autowired
+	private InsurancesStatusService insurancesStatusService;
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
 		//添加运输代码对照表
@@ -55,8 +59,26 @@ public class TransRedisService implements ApplicationRunner{
 		setCity();
 		//添加访问接口用户类型
 		setType();
+		//添加保险状态对照表
+		setStatus();
 		//添加联盟速运数据字典
 		unionRedisService.setToRedis();
+	}
+	/**
+	 * 向redis中添加保险状态代码表
+	 */
+	private void setStatus() {
+		List<InsurancesStatus> statusList = insurancesStatusService.findAll();
+		if(!CollectionUtils.isEmpty(statusList)) {
+			log.info("redis缓存保险状态代码表:"+statusList.size());
+			long start = System.currentTimeMillis();
+			for(int i=0;i<statusList.size();i++) {
+				InsurancesStatus insurancesStatus = statusList.get(i);
+				redisUtil.setString(insurancesStatus.getCode(), insurancesStatus.getName());
+			}
+			long end = System.currentTimeMillis(); 
+			log.info("redis缓存缓存保险状态代码表结束===运行时间:"+(end - start)+"毫秒");
+		}
 	}
 	/**
 	 * 向redis中添加运输方式代码表
@@ -100,14 +122,14 @@ public class TransRedisService implements ApplicationRunner{
 		List<CodeList> codeList = codeListService.findAll();
 		
 		if(!CollectionUtils.isEmpty(codeList)) {
-			log.info("redis缓存对照表集合信息:"+codeList.size());
+			log.info("redis缓存费率包装币种对照表集合信息:"+codeList.size());
 			long start = System.currentTimeMillis();
 			for(int i=0;i<codeList.size();i++) {
 				CodeList code = codeList.get(i);
 				redisUtil.setString(code.getCodeKey(),code.getCodeValue());
 			}
 			long end = System.currentTimeMillis(); 
-			log.info("redis缓存对照表集合信息结束===运行时间:"+(end - start)+"毫秒");
+			log.info("redis缓存费率包装币种对照表集合信息结束===运行时间:"+(end - start)+"毫秒");
 		}
 	}
 	

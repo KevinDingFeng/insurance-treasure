@@ -30,7 +30,6 @@ import com.shenghesun.treasure.core.constant.OrderConstant;
 import com.shenghesun.treasure.core.constant.Presentation;
 import com.shenghesun.treasure.cpic.service.ApprovlService;
 import com.shenghesun.treasure.cpic.service.AsyncService;
-import com.shenghesun.treasure.order.emnum.InsuranceStatusEnum;
 import com.shenghesun.treasure.order.model.OrderCondition;
 import com.shenghesun.treasure.order.service.OrderMessageService;
 import com.shenghesun.treasure.order.support.InsuranceService;
@@ -175,7 +174,6 @@ public class OrderController {
 			//将币种代码翻译成币种名称
 			if(redisUtil.exists(orderShow.getCurrencyCode()+OrderConstant.CURRENCY_SUFFIX)) {
 				String currency =  redisUtil.getString(orderShow.getCurrencyCode()+OrderConstant.CURRENCY_SUFFIX);
-				System.out.println(currency);
 				orderShow.setCurrencyName(currency);
 			}
 			//将包装代码翻译成包装名称
@@ -183,21 +181,9 @@ public class OrderController {
 				orderShow.setPackageType(redisUtil.getString(orderShow.getPackCode()+OrderConstant.PACKAGE_SUFFIX).toString());
 			}
 			//翻译保单状态
-			switch(orderShow.getInsuranceStatus()){
-				case "7":
-					orderShow.setInsuranceStatus("待审核");
-					break;
-				case "10":
-					orderShow.setInsuranceStatus("保单生效");
-					break;
-				case "0":
-					orderShow.setInsuranceStatus("待审核");
-					InsuranceStatusEnum cancel = InsuranceStatusEnum.CANCEL;
-					System.out.println(cancel);
-					break;
-				default:
-					break;
-			}
+			String insurance = redisUtil.get(orderShow.getInsuranceStatus());
+			orderShow.setInsuranceStatus(insurance);
+			
 			//根据运输代码获取标识符名称
 			String trans = redisUtil.get(orderMessage.getTransCode());
 			TransCode transCode = JSON.parseObject(trans, TransCode.class);

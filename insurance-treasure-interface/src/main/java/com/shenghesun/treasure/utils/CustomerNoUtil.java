@@ -21,4 +21,7 @@ public class CustomerNoUtil {
 		}
 		return first+last;
 	}
+	public static void main(String[] args) {
+		System.out.println(getNo("C00"));
+	}
 }
