@@ -19,7 +19,7 @@ public class BaseConstant {
 	/**
 	 * 输入信息有误 
 	 */
-	public static final String INPUT_ERROR = "输入信息有误";
+	public static final String INPUT_ERROR = "用户名不存在";
 	
 	/**
 	 * 密码错误

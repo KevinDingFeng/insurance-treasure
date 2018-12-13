@@ -43,8 +43,14 @@ public class FundController {
 	@Autowired
 	FundShowService fundShowService;
 	/**
-	 * 查询资金明细
-	 * @return
+	 * 	@Title
+	 *  @param request
+	 *  @param page
+	 *  @param size
+	 *  @return JSONObject
+	 *  @author zdd
+	 *	@date 2018年12月13日下午3:32:50
+	 *  @Description 查询资金明细
 	 */
 	@RequestMapping(value = "/detail", method = RequestMethod.GET)
 	public JSONObject completeCompanyMessage(HttpServletRequest request,@RequestParam(value="page", defaultValue=BaseConstant.ZERO) Integer page,
@@ -66,14 +72,19 @@ public class FundController {
 			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
 			return JsonUtil.getFailJSONObject();
 		}
-		
-		
 	}
 	
 	/**
-	 * 管理用户增加公司余额
-	 * @param req
-	 * @return
+	 * 	@Title
+	 *  @param request
+	 *  @param fundDetails
+	 *  @return JSONObject
+	 *  @author zdd
+	 *	@date 2018年12月13日下午3:31:26
+	 *  @Description 管理用户增加公司余额
+	 *  			 1.设置资金入账标识
+	 *  			 2.设置充值人id
+	 *  			 3.查找公司更新公司余额
 	 */
 	@RequestMapping(value = "/balance", method = RequestMethod.POST)
 	public JSONObject updateBalance(HttpServletRequest request,FundDetails fundDetails) {
