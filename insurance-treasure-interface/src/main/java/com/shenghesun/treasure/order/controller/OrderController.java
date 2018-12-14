@@ -179,7 +179,11 @@ public class OrderController {
 			orderShow.setPackageType(redisUtil.getString(orderShow.getPackCode()+OrderConstant.PACKAGE_SUFFIX).toString());
 			//翻译保单状态
 			String insurance = redisUtil.get(orderShow.getInsuranceStatus());
-			orderShow.setInsuranceStatus(insurance);
+			if(orderShow.getInsuranceStatus().equals(orderMessage.getPayStatus().toString())) {
+				orderShow.setInsuranceStatus("待支付");
+			}else {
+				orderShow.setInsuranceStatus(insurance);
+			}
 			//根据运输代码获取标识符名称
 			String trans = redisUtil.get(orderMessage.getTransCode());
 			TransCode transCode = JSON.parseObject(trans, TransCode.class);

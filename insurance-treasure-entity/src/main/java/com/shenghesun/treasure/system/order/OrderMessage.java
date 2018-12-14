@@ -72,7 +72,7 @@ public class OrderMessage extends BaseEntity implements Serializable{
 	@XStreamOmitField
 	private String secondGoodsName;
 	//货物价值
-	@Column(columnDefinition="DECIMAL(16,2)")
+	@Column(columnDefinition="DECIMAL(18,2)")
 	@XStreamOmitField
 	private String goodsValue;
 	//一级运输方式
@@ -116,7 +116,7 @@ public class OrderMessage extends BaseEntity implements Serializable{
 	private String insurantName;
 	//费率
 	@NotBlank(message = "{order.rate.notBlank}")
-	@Column(columnDefinition="DECIMAL(16,2)")
+	@Column(columnDefinition="DECIMAL(18,2)")
 	@XStreamAlias("RATE")
 	private String rate;
 	//始发地
@@ -208,11 +208,11 @@ public class OrderMessage extends BaseEntity implements Serializable{
 	@XStreamAlias("CLAIMPAYPLACE")
 	private String claimpayplace;
 	//保费
-	@Column(columnDefinition="DECIMAL(16,2)")
+	@Column(columnDefinition="DECIMAL(18,2)")
 	@XStreamAlias("PREMIUM")
 	private String preminum;
 	//加成比例
-	@Column(columnDefinition="DECIMAL(16,2)")
+	@Column(columnDefinition="DECIMAL(18,2)")
 	@XStreamAlias("INCRATE")
 	private String incrate;
 	//保费币种
@@ -231,11 +231,11 @@ public class OrderMessage extends BaseEntity implements Serializable{
 	/**
 	 * 保单总金额
 	 */
-	@Column(columnDefinition="DECIMAL(16,2)")
+	@Column(columnDefinition="DECIMAL(18,2)")
 	@XStreamAlias("AMOUNT")
 	private String orderAmount;
 	//发票金额
-	@Column(columnDefinition="DECIMAL(16,2)")
+	@Column(columnDefinition="DECIMAL(18,2)")
 	@XStreamAlias("INVAMOUNT")
 	private String invamount;
 	//险类

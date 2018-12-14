@@ -94,13 +94,13 @@ public class SysUser extends BaseEntity implements Serializable{
 
 	@JsonIgnore
 	@ManyToOne(cascade = { CascadeType.REFRESH }, fetch = FetchType.LAZY)
-	@JoinColumn(name = "sys_pool_id", nullable = false)
+	@JoinColumn(name = "sys_pool_id", nullable = true)
 	private SysPool sysPool;
 	
 	/**
 	 * 池 id
 	 */
-	@Column(name = "sys_pool_id", insertable = false, updatable = false, nullable = false)
+	@Column(name = "sys_pool_id", insertable = false, updatable = false, nullable = true)
 	private Long sysPoolId;
 
 	/**
