@@ -1,5 +1,7 @@
 package com.shenghesun.treasure.utils;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class CustomerNoUtil {
 
 	/**
@@ -22,7 +24,7 @@ public class CustomerNoUtil {
 	 *	
 	 */
 	public static String getNo(String no) {
-		if(no.length()>0) {
+		if(StringUtils.isNotEmpty(no)) {
 			char first =  no.charAt(0);
 			String last = no.substring(1,3);
 			if(last.equals("99")) {
