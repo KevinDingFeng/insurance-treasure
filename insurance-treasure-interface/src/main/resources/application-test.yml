@@ -1,5 +1,15 @@
 server:
     port: 2234
+    maxHttpHeaderSize: 8192
+    tomcat:
+        basedir: /data/insurance-treasure/logs
+        accesslog:
+           enabled: true
+           directory: access/
+           prefix: access_log
+           suffix: .log
+           file-date-format: .yyyy-MM-dd
+           pattern: "%h %l %u %t %r %s %b %D %{Referer}i %{treasure_token}i %{Cookie}i %{User-Agent}i %{a}r"
 spring:
     cache:
         type: simple
@@ -38,13 +48,15 @@ logging:
         root: INFO
         org.springframework.web: INFO
         org.hibernate: INFO
-    file: ./log/log.log
+    file: /data/insurance-treasure/logs/log.log
 sms:
     app:
         key: LTAIwHu0sqMlrOjl
         secret: HYD7y8YO2NIvp5KBH6acAZYbTSZQ5P
     template:
-        code: SMS_149710018
+        register.code: SMS_152509672
+        update.code: SMS_152509668
+        success.code: SMS_152509726
 cpic:
     web:
         wsdl.url: http://182.150.60.49/freight/zrxservices/FreightCommonService?wsdl
