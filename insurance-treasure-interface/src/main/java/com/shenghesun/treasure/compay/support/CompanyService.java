@@ -10,7 +10,6 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -145,15 +144,15 @@ public class CompanyService {
 			//模块+日期子目录
 			String dir = CustomConfig.MODEL+sdf.format(new Date());
 			//判断上传文件路径是否存在，不存在则创建
-			filePath = filePath+dir;
-			File f = new File(filePath);
+			String fileUploadPath = filePath+dir;
+			File f = new File(dir);
 			if (!f.exists()) {
 				f.mkdirs();
 			}
 			//创建文件流，开始文件上传
 			InputStream is = file.getInputStream();
 			byte[] bytes = new byte[is.available()];
-			OutputStream os = new FileOutputStream(filePath+name);
+			OutputStream os = new FileOutputStream(fileUploadPath+name);
 			is.read(bytes);
 			os.write(bytes);
 			is.close();

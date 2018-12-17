@@ -49,7 +49,7 @@ public class RegisterController {
 	public JSONObject register(@Validated SysUser user,String code) {
 		try {
 			//验证码是否正确
-			String smsCode = redisUtil.getString(code);
+			String smsCode = redisUtil.getString(user.getCellphone());
 			if(smsCode==null || !smsCode.equals(code)) {
 				return JsonUtil.getFailJSONObject(BaseConstant.CODE_ERROR); 
 			}
@@ -82,7 +82,8 @@ public class RegisterController {
 		try {
 			//生成随机验证码，并存储至redis中
 			code = RandomUtil.randomNum();
-			redisUtil.setString(account, code, CustomConfig.SMSCODE_TIME_SECOND);
+			redisUtil.set(account, code, CustomConfig.SMSCODE_TIME_SECOND);
+			//redisUtil.setString(account, code, CustomConfig.SMSCODE_TIME_SECOND);
 			//发送短信
 			String sendSmsCode = SmsCodeService.sendSms(account,"物流保宝",registertemplateCode,"{\"code\":\""+code+"\"}");
 			//判断是否有超出手机短信发送条数限制
