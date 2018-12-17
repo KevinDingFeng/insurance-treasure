@@ -212,6 +212,10 @@ public class OrderService {
 		if(Float.parseFloat(orderMessage.getGoodsValue())<0) {
 			map.put(OrderConstant.GOODSVALUE_ERROR, OrderConstant.GOODSVALUE_MESSAGE);
 		}
+		//验证货物价值是否超出边界
+		if(orderMessage.getGoodsValue().toString().replace(".", "").length()>16) {
+			map.put(OrderConstant.GOODSVALUE_OUTOFRANGE, OrderConstant.GOODSVALUE_OUTOFRANGE_MESSAGE);
+		}
 	}
 	/**
 	 * 	@Title
@@ -239,6 +243,10 @@ public class OrderService {
 		}
 		if(orderMap.get(OrderConstant.GOODSVALUE_ERROR)!=null) {
 			return JsonUtil.getFailJSONObject(orderMap.get(OrderConstant.GOODSVALUE_ERROR));
+		}
+		if(orderMap.get(OrderConstant.GOODSVALUE_OUTOFRANGE)!=null) {
+			Object object = orderMap.get(OrderConstant.GOODSVALUE_OUTOFRANGE);
+			return JsonUtil.getFailJSONObject(object);
 		}
 		return null;
 	}

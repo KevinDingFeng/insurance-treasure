@@ -46,8 +46,13 @@ public class RegisterController {
 	 *  			  根据手机号查找用户，用户存在返回用户存在信息，不存在完善用户信息后进行保存
 	 */
 	@RequestMapping(value = "/register",method = RequestMethod.POST)
-	public JSONObject register(@Validated SysUser user) {
+	public JSONObject register(@Validated SysUser user,String code) {
 		try {
+			//验证码是否正确
+			String smsCode = redisUtil.getString(code);
+			if(smsCode==null || !smsCode.equals(code)) {
+				return JsonUtil.getFailJSONObject(BaseConstant.CODE_ERROR); 
+			}
 			// 获取登录名对应的数据
 			SysUser findUser = sysUserService.findByCell(user.getCellphone());
 			if (findUser != null) {

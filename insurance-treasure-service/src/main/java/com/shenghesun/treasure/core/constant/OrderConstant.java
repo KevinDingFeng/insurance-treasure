@@ -103,7 +103,16 @@ public class OrderConstant {
 	 * 货物价值低于0value
 	 */
 	public static final String GOODSVALUE_MESSAGE = ": 货物价值有误";
+
+	/**
+	 * 货物价值超出边界key
+	 */
+	public static final String GOODSVALUE_OUTOFRANGE = "goodsValue_outOfRange";
 	
+	/**
+	 *  货物价值超出边界value
+	 */
+	public static final String GOODSVALUE_OUTOFRANGE_MESSAGE = ": 货物价值过大，请输入合理范围";
 	/**
 	 * order
 	 */

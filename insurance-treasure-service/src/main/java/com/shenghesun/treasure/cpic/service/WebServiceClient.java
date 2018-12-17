@@ -3,6 +3,7 @@ package com.shenghesun.treasure.cpic.service;
 import javax.xml.rpc.ServiceException;
 
 import org.apache.axis.client.Stub;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -110,7 +111,7 @@ public class WebServiceClient {
 			response = this.getBinding().approval(request);
 			//日志记录
 			SysMessage sysMessage = response.getSysMessage();
-			if (sysMessage != null) {
+			if (StringUtils.isNotEmpty(sysMessage.getErrorCode())) {
 				log.error("错误类型:"+sysMessage.getErrorType() +"错误代码:"+sysMessage.getErrorCode()+"错误信息:"+sysMessage.getErrorMsg());
 			}
 		} catch (Exception e) {
