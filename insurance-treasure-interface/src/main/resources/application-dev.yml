@@ -1,5 +1,15 @@
 server:
     port: 4455
+    maxHttpHeaderSize: 8192
+    tomcat:
+        basedir: /data/insurance-treasure/logs
+        accesslog:
+           enabled: true
+           directory: access/
+           prefix: access_log
+           suffix: .log
+           file-date-format: .yyyy-MM-dd
+           pattern: "%h %l %u %t %r %s %b %D %{Referer}i %{treasure_token}i %{Cookie}i %{User-Agent}i %{a}r"
 spring:
     cache:
         type: simple
