@@ -8,13 +8,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
+import com.shenghesun.treasure.auth.support.UserService;
 import com.shenghesun.treasure.core.constant.BaseConstant;
 import com.shenghesun.treasure.system.entity.SysUser;
 import com.shenghesun.treasure.system.service.SysUserService;
 import com.shenghesun.treasure.utils.HttpHeaderUtil;
 import com.shenghesun.treasure.utils.JsonUtil;
 import com.shenghesun.treasure.utils.PasswordUtil;
-import com.shenghesun.treasure.utils.RedisUtil;
 import com.shenghesun.treasure.utils.TokenUtil;
 
 import lombok.extern.slf4j.Slf4j;
@@ -23,12 +23,10 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/api/user")
 @Slf4j
 public class UserController {
-
-	@Autowired
-	private RedisUtil redisUtil;
 	@Autowired
 	private SysUserService sysUserService;
-
+	@Autowired
+	private UserService userService;
 	/**
 	 * 	@Title
 	 *  @param request
@@ -46,9 +44,9 @@ public class UserController {
 	public JSONObject changeCell(HttpServletRequest request,String account,String code) {
 		try {
 			//验证码是否正确
-			String smsCode = getCode(account);
-			if(smsCode==null || !smsCode.equals(code)) {
-				return JsonUtil.getFailJSONObject(BaseConstant.CODE_ERROR); 
+			JSONObject checkSmsCode = userService.checkSmsCode(account, code);
+			if(checkSmsCode!=null) {
+				return checkSmsCode;
 			}
 			//验证新修改的手机号是否已经被注册
 			if(sysUserService.findByAccount(account)!=null) {
@@ -95,10 +93,11 @@ public class UserController {
 			}
 			//验证码判断
 			//验证码是否正确
-			String sms = getCode(user.getCellphone());
-			if(sms==null || !sms.equals(code)) {
-				return JsonUtil.getFailJSONObject(BaseConstant.CODE_ERROR); 
+			JSONObject checkSmsCode = userService.checkSmsCode(user.getAccount(), code);
+			if(checkSmsCode!=null) {
+				return checkSmsCode;
 			}
+			//修改密码，进行保存
 			user.setPassword(PasswordUtil.encrypt(current, user.getSalt()));
 			sysUserService.save(user);
 		} catch (Exception e) {
@@ -130,18 +129,5 @@ public class UserController {
 			log.error("Exception {} in {}", e.getStackTrace(), Thread.currentThread().getName());
 			return JsonUtil.getFailJSONObject();
 		}
-	}
-	/**
-	 * 	@Title
-	 *  @param code
-	 *  @return String
-	 *  @author zdd
-	 *	@date 2018年12月13日下午2:33:15
-	 *  @Description 从redis中取出验证码
-	 */
-	public String getCode(String code) {
-		//String smsCode = (String) redisUtil.getObj(code);
-		//String sms = smsCode.replaceAll("\"", "");
-		return redisUtil.getString(code);
 	}
 }

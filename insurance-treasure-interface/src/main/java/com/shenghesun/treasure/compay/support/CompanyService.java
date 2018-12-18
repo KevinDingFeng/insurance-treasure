@@ -90,9 +90,9 @@ public class CompanyService {
 		if(companyMessage.getCreditCard()==null) {
 			return JsonUtil.getFailJSONObject("请上传公司凭证");
 		}
+		//查找公司最大编号，设置新公司编号
 		String maxCompanyNo = companyService.maxCompanyNo();
 		companyMessage.setCustomerNo(CustomerNoUtil.getNo(maxCompanyNo));
-		
 		//保存公司信息
 		CompanyMessage company = companyService.save(companyMessage);
 		//更新当前用户的公司信息
@@ -145,7 +145,7 @@ public class CompanyService {
 			String dir = CustomConfig.MODEL+sdf.format(new Date());
 			//判断上传文件路径是否存在，不存在则创建
 			String fileUploadPath = filePath+dir;
-			File f = new File(dir);
+			File f = new File(fileUploadPath);
 			if (!f.exists()) {
 				f.mkdirs();
 			}

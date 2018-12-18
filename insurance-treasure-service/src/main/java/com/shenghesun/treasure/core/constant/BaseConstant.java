@@ -2,6 +2,10 @@ package com.shenghesun.treasure.core.constant;
 
 public class BaseConstant {
 	/**
+	 * 验证码前缀 CODE
+	 */
+	public static final String CODE = "code:";
+	/**
 	 * 空表示0
 	 */
 	public static final String ZERO = "0";
