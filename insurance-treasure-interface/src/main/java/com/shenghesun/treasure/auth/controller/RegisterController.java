@@ -29,6 +29,7 @@ public class RegisterController {
 	private String registertemplateCode;
 	@Value("${sms.template.update.code}")
 	private String modifytemplateCode;
+	
 	/**
 	 * 	@Title
 	 *  @param user
